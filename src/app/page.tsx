@@ -44,7 +44,7 @@ export default function Home() {
   const [sortAsc, setSortAsc] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showTrack, setShowTrack] = useState<boolean>(true);
-  const pageSize = 15;
+  const pageSize = 50;
 
   useEffect(() => {
     Promise.all([
