@@ -33,7 +33,6 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({
   onSelectGene,
   selectedGene,
 }) => {
-  // Sample or cap data for chart performance if necessary (e.g. max 500 top points)
   const chartData = React.useMemo(() => {
     return [...data]
       .sort((a, b) => b.negLogFdr - a.negLogFdr)
@@ -44,43 +43,38 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({
     if (active && payload && payload.length) {
       const item: VolcanoItem = payload[0].payload;
       return (
-        <div className="bg-slate-900/95 border border-slate-700 p-3 rounded-lg shadow-xl backdrop-blur-md max-w-xs z-50">
-          <div className="flex items-center justify-between gap-2 mb-1">
-            <span className="font-bold text-white text-sm">{item.gene}</span>
+        <div className="bg-white border border-slate-300 p-3 rounded-lg shadow-lg max-w-xs z-50 text-xs space-y-1">
+          <div className="flex items-center justify-between gap-2 mb-1 border-b border-slate-100 pb-1">
+            <span className="font-bold text-slate-900 text-sm">{item.gene}</span>
             {item.isPtsd && (
-              <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-amber-400/20 text-amber-300 border border-amber-400/30 rounded">
+              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 rounded">
                 PTSD Target
               </span>
             )}
           </div>
-          <div className="text-xs space-y-1 text-slate-300">
-            <div className="flex justify-between">
-              <span className="text-slate-400">Chromosome:</span>
-              <span>{item.chr}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Avg Δβ (Top-3):</span>
-              <span
-                className={
-                  item.deltaBeta > 0
-                    ? 'text-emerald-400 font-mono font-semibold'
-                    : 'text-cyan-400 font-mono font-semibold'
-                }
-              >
-                {item.deltaBeta > 0 ? `+${item.deltaBeta.toFixed(4)}` : item.deltaBeta.toFixed(4)}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">FDR P-value:</span>
-              <span className="font-mono">{item.fdr < 1e-15 ? '< 1e-15' : item.fdr.toExponential(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Direction:</span>
-              <span className="font-medium text-slate-200">{item.direction}</span>
-            </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500">Chromosome:</span>
+            <span className="font-mono text-slate-800">{item.chr}</span>
           </div>
-          <div className="mt-2 text-[10px] text-cyan-400/80 italic border-t border-slate-800 pt-1">
-            Click point to inspect full details
+          <div className="flex justify-between">
+            <span className="text-slate-500">Avg Δβ (Top-3):</span>
+            <span
+              className={
+                item.deltaBeta > 0
+                  ? 'text-red-600 font-mono font-bold'
+                  : 'text-blue-600 font-mono font-bold'
+              }
+            >
+              {item.deltaBeta > 0 ? `+${item.deltaBeta.toFixed(4)}` : item.deltaBeta.toFixed(4)}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500">FDR P-value:</span>
+            <span className="font-mono text-slate-800">{item.fdr < 1e-15 ? '< 1e-15' : item.fdr.toExponential(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500">Direction:</span>
+            <span className="font-semibold text-slate-700">{item.direction}</span>
           </div>
         </div>
       );
@@ -89,31 +83,31 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({
   };
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 backdrop-blur-md">
+    <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
-            <span>DMR Volcano & Effect Size Distribution</span>
-            <span className="text-xs font-normal text-slate-400">
-              (Δβ vs -log10 FDR)
+          <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <span>DMR Volcano Effect Size Distribution</span>
+            <span className="text-xs font-normal text-slate-500">
+              (Top-3 Δβ vs -log₁₀ FDR)
             </span>
           </h3>
-          <p className="text-xs text-slate-400">
-            Showing top {chartData.length} significant DMRs. Click any node to inspect probe details.
+          <p className="text-xs text-slate-500">
+            Top {chartData.length} significant DMRs. Click point to inspect probe details.
           </p>
         </div>
         <div className="flex items-center space-x-3 text-xs">
           <div className="flex items-center space-x-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span>
-            <span className="text-slate-300">Hypermethylated</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span>
+            <span className="text-slate-600 font-medium">Hyper</span>
           </div>
           <div className="flex items-center space-x-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block"></span>
-            <span className="text-slate-300">Hypomethylated</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block"></span>
+            <span className="text-slate-600 font-medium">Hypo</span>
           </div>
           <div className="flex items-center space-x-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block ring-2 ring-amber-400/30"></span>
-            <span className="text-slate-300 font-semibold text-amber-300">PTSD Target</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block ring-2 ring-amber-300"></span>
+            <span className="text-slate-800 font-bold">PTSD</span>
           </div>
         </div>
       </div>
@@ -133,7 +127,7 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({
                 value: 'Top-3 Avg Δβ (Methylation Difference)',
                 position: 'bottom',
                 offset: 0,
-                fill: '#94a3b8',
+                fill: '#475569',
                 fontSize: 11,
               }}
             />
@@ -144,16 +138,16 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({
               stroke="#64748b"
               fontSize={11}
               label={{
-                value: '-log10(FDR)',
+                value: '-log₁₀(FDR)',
                 angle: -90,
                 position: 'insideLeft',
-                fill: '#94a3b8',
+                fill: '#475569',
                 fontSize: 11,
               }}
             />
             <ZAxis type="number" range={[40, 140]} />
             <Tooltip content={<CustomTooltip />} />
-            <ReferenceLine x={0} stroke="#334155" strokeDasharray="3 3" />
+            <ReferenceLine x={0} stroke="#cbd5e1" strokeDasharray="3 3" />
             <ReferenceLine y={-Math.log10(0.05)} stroke="#ef4444" strokeDasharray="3 3" />
             <Scatter
               data={chartData}
@@ -168,17 +162,17 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({
             >
               {chartData.map((entry, index) => {
                 const isSelected = selectedGene === entry.gene;
-                let fillColor = entry.deltaBeta > 0 ? '#34d399' : '#38bdf8';
-                if (entry.direction === 'Mixed') fillColor = '#f59e0b';
-                if (entry.isPtsd) fillColor = '#fbbf24'; // Amber for PTSD
+                let fillColor = entry.deltaBeta > 0 ? '#dc2626' : '#2563eb';
+                if (entry.direction === 'Mixed') fillColor = '#d97706';
+                if (entry.isPtsd) fillColor = '#f59e0b';
 
                 return (
                   <Cell
                     key={`cell-${index}`}
                     fill={fillColor}
-                    stroke={isSelected ? '#ffffff' : entry.isPtsd ? '#f59e0b' : 'none'}
-                    strokeWidth={isSelected ? 3 : entry.isPtsd ? 1.5 : 0}
-                    opacity={isSelected ? 1 : 0.8}
+                    stroke={isSelected ? '#0f172a' : entry.isPtsd ? '#b45309' : 'none'}
+                    strokeWidth={isSelected ? 2.5 : entry.isPtsd ? 1.2 : 0}
+                    opacity={isSelected ? 1 : 0.85}
                   />
                 );
               })}

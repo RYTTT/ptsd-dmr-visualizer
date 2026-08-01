@@ -170,17 +170,17 @@ export default function Home() {
 
   if (loading || !masterData) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-10 h-10 text-cyan-400 animate-spin" />
-          <span className="text-slate-300 text-sm">Loading DMR & Annotation datasets...</span>
+          <Loader2 className="w-10 h-10 text-slate-800 animate-spin" />
+          <span className="text-slate-600 text-sm font-medium">Loading academic DMR datasets...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-white pb-12">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-slate-900 selection:text-white pb-16">
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
@@ -204,18 +204,18 @@ export default function Home() {
         />
 
         {/* Controls & Filter Bar */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mb-6 backdrop-blur-md flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 mb-6 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
             <input
               type="text"
-              placeholder="Search gene or chromosome (e.g. HTR2A, AHRR, ZBTB16, chr13)..."
+              placeholder="Search gene symbol or chromosome (e.g. HTR2A, AHRR, ZBTB16, chr13)..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:bg-white transition"
             />
           </div>
 
@@ -225,40 +225,40 @@ export default function Home() {
                 setPtsdOnly(!ptsdOnly);
                 setCurrentPage(1);
               }}
-              className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg font-semibold border transition ${
+              className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg font-bold border transition ${
                 ptsdOnly
-                  ? 'bg-amber-400/20 text-amber-300 border-amber-400/40 shadow-lg shadow-amber-400/10'
-                  : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  ? 'bg-amber-100 text-amber-900 border-amber-300 shadow-xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
+              <ShieldAlert className="w-3.5 h-3.5 text-amber-700" />
               <span>PTSD Only</span>
-              {ptsdOnly && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />}
+              {ptsdOnly && <CheckCircle2 className="w-3.5 h-3.5 text-amber-700" />}
             </button>
 
-            <div className="flex items-center space-x-1.5 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg">
-              <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <div className="flex items-center space-x-1.5 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
+              <Filter className="w-3.5 h-3.5 text-slate-500" />
               <select
                 value={directionFilter}
                 onChange={(e) => {
                   setDirectionFilter(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="bg-transparent text-white focus:outline-none cursor-pointer font-medium"
+                className="bg-transparent text-slate-800 focus:outline-none cursor-pointer font-bold"
               >
-                <option value="All" className="bg-slate-900">All Directions</option>
-                <option value="Hypermethylated" className="bg-slate-900">Hyper</option>
-                <option value="Hypomethylated" className="bg-slate-900">Hypo</option>
-                <option value="Mixed" className="bg-slate-900">Mixed</option>
+                <option value="All" className="bg-white">All Directions</option>
+                <option value="Hypermethylated" className="bg-white">Hypermethylated</option>
+                <option value="Hypomethylated" className="bg-white">Hypomethylated</option>
+                <option value="Mixed" className="bg-white">Mixed</option>
               </select>
             </div>
 
             <button
               onClick={handleExportCSV}
-              className="flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition font-semibold"
+              className="flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition font-semibold shadow-xs"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>CSV</span>
+              <span>Export CSV</span>
             </button>
           </div>
         </div>
@@ -282,16 +282,16 @@ export default function Home() {
 
         {/* ===== Genomic Track Section ===== */}
         <div className="mb-6">
-          <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 backdrop-blur-md">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-cyan-400" />
+                <MapPin className="w-5 h-5 text-slate-800" />
                 <div>
-                  <h3 className="text-sm font-bold text-white">
-                    Probe-Level Genomic Track (Scientific Publication View)
+                  <h3 className="text-sm font-bold text-slate-900">
+                    Probe-Level Genomic Track (Nature Scientific Report Standard)
                   </h3>
-                  <p className="text-xs text-slate-400">
-                    CpG-resolution lollipop track with CpG Island annotation & p-value thresholds (White Background)
+                  <p className="text-xs text-slate-500">
+                    CpG-resolution lollipop track with CpG Island annotation & p-value threshold lines
                   </p>
                 </div>
               </div>
@@ -299,11 +299,11 @@ export default function Home() {
                 <select
                   value={selectedGene || ''}
                   onChange={(e) => setSelectedGene(e.target.value || null)}
-                  className="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 min-w-[160px]"
+                  className="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 font-semibold focus:outline-none focus:border-slate-900 min-w-[160px]"
                 >
-                  <option value="" className="bg-slate-900">-- Select Gene --</option>
+                  <option value="" className="bg-white">-- Select Gene --</option>
                   {trackGeneList.map((g) => (
-                    <option key={g} value={g} className="bg-slate-900">
+                    <option key={g} value={g} className="bg-white">
                       {g}
                     </option>
                   ))}
@@ -312,8 +312,8 @@ export default function Home() {
                   onClick={() => setShowTrack(!showTrack)}
                   className={`px-3 py-1.5 text-xs rounded-lg border transition font-semibold ${
                     showTrack
-                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30'
-                      : 'bg-slate-950 text-slate-400 border-slate-800'
+                      ? 'bg-slate-900 text-white border-slate-900'
+                      : 'bg-slate-50 text-slate-700 border-slate-300'
                   }`}
                 >
                   {showTrack ? 'Hide Track' : 'Show Track'}
@@ -325,12 +325,12 @@ export default function Home() {
               <GenomicTrackPlot geneData={selectedTrackData} />
             )}
             {showTrack && selectedGene && !selectedTrackData && (
-              <div className="text-center py-10 text-slate-500 text-sm">
-                No probe-level data available for <strong>{selectedGene}</strong>. Select an annotated PTSD gene.
+              <div className="text-center py-10 text-slate-400 text-sm">
+                No probe-level data available for <strong>{selectedGene}</strong>. Select an annotated gene from the dropdown.
               </div>
             )}
             {showTrack && !selectedGene && (
-              <div className="text-center py-10 text-slate-500 text-sm">
+              <div className="text-center py-10 text-slate-400 text-sm">
                 Select a gene to view its genomic track.
               </div>
             )}
@@ -338,25 +338,25 @@ export default function Home() {
         </div>
 
         {/* Data Table */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden backdrop-blur-md shadow-xl">
-          <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+          <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
             <div className="flex items-center space-x-2">
-              <Dna className="w-4 h-4 text-cyan-400" />
-              <h3 className="text-sm font-bold text-white">
+              <Dna className="w-4 h-4 text-slate-700" />
+              <h3 className="text-sm font-bold text-slate-900">
                 DMR Registry ({filteredData.length} genes)
               </h3>
             </div>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-slate-500 font-medium">
               Page {currentPage} / {totalPages}
             </span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left">
-              <thead className="bg-slate-800/80 text-slate-300 border-b border-slate-800 font-semibold uppercase tracking-wider">
+              <thead className="bg-slate-100/70 text-slate-700 border-b border-slate-200 font-bold uppercase tracking-wider">
                 <tr>
                   <th
-                    className="p-3.5 cursor-pointer hover:text-white"
+                    className="p-3.5 cursor-pointer hover:text-slate-900"
                     onClick={() => {
                       setSortField('gene');
                       setSortAsc(sortField === 'gene' ? !sortAsc : true);
@@ -364,13 +364,13 @@ export default function Home() {
                   >
                     <div className="flex items-center space-x-1">
                       <span>Gene</span>
-                      <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                      <ArrowUpDown className="w-3 h-3 text-slate-400" />
                     </div>
                   </th>
                   <th className="p-3.5">Chr</th>
                   <th className="p-3.5">CpGs</th>
                   <th
-                    className="p-3.5 cursor-pointer hover:text-white"
+                    className="p-3.5 cursor-pointer hover:text-slate-900"
                     onClick={() => {
                       setSortField('fdr');
                       setSortAsc(sortField === 'fdr' ? !sortAsc : true);
@@ -378,11 +378,11 @@ export default function Home() {
                   >
                     <div className="flex items-center space-x-1">
                       <span>FDR</span>
-                      <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                      <ArrowUpDown className="w-3 h-3 text-slate-400" />
                     </div>
                   </th>
                   <th
-                    className="p-3.5 cursor-pointer hover:text-white"
+                    className="p-3.5 cursor-pointer hover:text-slate-900"
                     onClick={() => {
                       setSortField('deltaBeta');
                       setSortAsc(sortField === 'deltaBeta' ? !sortAsc : true);
@@ -390,7 +390,7 @@ export default function Home() {
                   >
                     <div className="flex items-center space-x-1">
                       <span>Δβ</span>
-                      <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                      <ArrowUpDown className="w-3 h-3 text-slate-400" />
                     </div>
                   </th>
                   <th className="p-3.5">Direction</th>
@@ -398,7 +398,7 @@ export default function Home() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-slate-800/60 bg-slate-900/40">
+              <tbody className="divide-y divide-slate-100 bg-white">
                 {paginatedData.map((row: any) => {
                   const isSelected = selectedGene === row.gene;
                   const hasAnno = annotationData && annotationData[row.gene];
@@ -406,36 +406,36 @@ export default function Home() {
                     <tr
                       key={row.gene}
                       onClick={() => setSelectedGene(row.gene)}
-                      className={`cursor-pointer transition hover:bg-slate-800/50 ${
-                        isSelected ? 'bg-cyan-500/10 border-l-2 border-cyan-400' : ''
+                      className={`cursor-pointer transition hover:bg-slate-50 ${
+                        isSelected ? 'bg-slate-100/80 font-semibold border-l-4 border-slate-900' : ''
                       }`}
                     >
-                      <td className="p-3.5 font-bold text-white flex items-center space-x-2">
+                      <td className="p-3.5 font-bold text-slate-900 flex items-center space-x-2">
                         <span>{row.gene}</span>
                         {row.isPtsd && (
-                          <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30 rounded">
+                          <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 rounded">
                             PTSD
                           </span>
                         )}
                       </td>
-                      <td className="p-3.5 font-mono text-slate-300">{row.chr}</td>
-                      <td className="p-3.5 text-slate-300">{row.totalProbes}</td>
-                      <td className="p-3.5 font-mono text-cyan-400 font-semibold">
+                      <td className="p-3.5 font-mono text-slate-600">{row.chr}</td>
+                      <td className="p-3.5 text-slate-600">{row.totalProbes}</td>
+                      <td className="p-3.5 font-mono text-slate-900 font-bold">
                         {row.fdr < 1e-15 ? '< 1e-15' : row.fdr.toExponential(2)}
                       </td>
-                      <td className="p-3.5 font-mono font-medium">
-                        <span className={row.deltaBeta > 0 ? 'text-emerald-400' : 'text-cyan-400'}>
+                      <td className="p-3.5 font-mono font-bold">
+                        <span className={row.deltaBeta > 0 ? 'text-red-600' : 'text-blue-600'}>
                           {row.deltaBeta > 0 ? `+${row.deltaBeta.toFixed(4)}` : row.deltaBeta.toFixed(4)}
                         </span>
                       </td>
                       <td className="p-3.5">
                         <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                             row.direction === 'Hypermethylated'
-                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                              ? 'bg-red-50 text-red-700 border border-red-200'
                               : row.direction === 'Hypomethylated'
-                              ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                              : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                              ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                              : 'bg-amber-50 text-amber-700 border border-amber-200'
                           }`}
                         >
                           {row.direction}
@@ -449,13 +449,13 @@ export default function Home() {
                               setSelectedGene(row.gene);
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
-                            className="flex items-center gap-1 ml-auto px-2.5 py-1 text-[11px] font-semibold rounded-md bg-amber-400/10 text-amber-300 border border-amber-400/30 hover:bg-amber-400/20 transition"
+                            className="flex items-center gap-1 ml-auto px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 text-slate-800 border border-slate-300 hover:bg-slate-200 transition"
                           >
-                            <BookOpen className="w-3 h-3" />
+                            <BookOpen className="w-3 h-3 text-slate-700" />
                             Annotated
                           </button>
                         ) : (
-                          <span className="text-slate-600 text-[11px]">—</span>
+                          <span className="text-slate-400 text-[11px]">—</span>
                         )}
                       </td>
                     </tr>
@@ -465,25 +465,25 @@ export default function Home() {
             </table>
           </div>
 
-          <div className="p-4 border-t border-slate-800 flex items-center justify-between bg-slate-900/80 text-xs">
-            <span className="text-slate-400">
+          <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50/50 text-xs">
+            <span className="text-slate-500 font-medium">
               {paginatedData.length} of {filteredData.length} records
             </span>
             <div className="flex items-center space-x-2">
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-700 transition"
+                className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition shadow-xs"
               >
                 Previous
               </button>
-              <span className="text-slate-300 font-semibold px-2">
+              <span className="text-slate-800 font-bold px-2">
                 {currentPage} / {totalPages}
               </span>
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-700 transition"
+                className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition shadow-xs"
               >
                 Next
               </button>
