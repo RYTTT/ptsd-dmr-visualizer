@@ -231,6 +231,17 @@ export default function Home() {
           setActiveTab={(tab) => {
             setActiveTab(tab);
             setCurrentPage(1);
+            // Auto-select the first gene in the new tab
+            if (masterData) {
+              if (tab === 'cross') {
+                const first = masterData.crossSubtype[0]?.gene;
+                if (first) setSelectedGene(first);
+              } else {
+                const uList = masterData.uniqueSubtypes[tab as keyof typeof masterData.uniqueSubtypes];
+                const first = uList?.[0]?.gene;
+                if (first) setSelectedGene(first);
+              }
+            }
           }}
           crossCount={crossCount}
           crossPtsdCount={crossPtsdCount}
