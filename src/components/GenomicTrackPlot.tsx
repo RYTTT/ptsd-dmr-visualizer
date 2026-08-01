@@ -8,16 +8,16 @@ interface GenomicTrackProps {
 }
 
 const SUBTYPES = [
-  { key: 'SSS', label: 'SSS (Severe Stress)', color: '#dc2626' },
-  { key: 'ADS', label: 'ADS (Depressive)', color: '#2563eb' },
-  { key: 'ICF', label: 'ICF (Cognitive)', color: '#7c3aed' },
-  { key: 'ISS', label: 'ISS (Intermediate)', color: '#059669' },
+  { key: 'SSS', label: 'SSS — Severe Stress Subtype', color: '#b91c1c', bg: '#fef2f2' },
+  { key: 'ADS', label: 'ADS — Affective/Depressive Subtype', color: '#1d4ed8', bg: '#eff6ff' },
+  { key: 'ICF', label: 'ICF — Cognitive Function Subtype', color: '#6d28d9', bg: '#f5f3ff' },
+  { key: 'ISS', label: 'ISS — Intermediate Stress Subtype', color: '#047857', bg: '#ecfdf5' },
 ] as const;
 
 const HYPER_COLOR = '#dc2626';
 const HYPO_COLOR = '#2563eb';
-const ISLAND_COLOR = 'rgba(250, 204, 21, 0.22)';
-const ISLAND_BORDER = 'rgba(202, 138, 4, 0.6)';
+const ISLAND_FILL = 'rgba(253, 224, 71, 0.18)';
+const ISLAND_STROKE = 'rgba(161, 98, 7, 0.55)';
 
 interface TooltipData {
   x: number;
@@ -32,19 +32,20 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const [dimensions, setDimensions] = useState({ width: 900, height: 0 });
 
-  const panelHeight = 130;
-  const topMargin = 60;
-  const bottomMargin = 65;
-  const leftMargin = 72;
-  const rightMargin = 30;
-  const panelGap = 14;
+  // ---- ENLARGED DIMENSIONS ----
+  const panelHeight = 180;
+  const topMargin = 50;
+  const bottomMargin = 75;
+  const leftMargin = 80;
+  const rightMargin = 24;
+  const panelGap = 20;
   const totalHeight = topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + bottomMargin;
 
   const { minPos, maxPos, posRange } = useMemo(() => {
     const positions = geneData.probes.map((p) => p.pos);
     const min = Math.min(...positions);
     const max = Math.max(...positions);
-    const pad = Math.max((max - min) * 0.05, 100);
+    const pad = Math.max((max - min) * 0.06, 200);
     return { minPos: min - pad, maxPos: max + pad, posRange: max - min + 2 * pad };
   }, [geneData]);
 
@@ -60,7 +61,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         }
       }
     }
-    return Math.min(maxVal * 1.15, 30);
+    return Math.min(Math.ceil(maxVal * 1.15), 32);
   }, [geneData]);
 
   useEffect(() => {
@@ -85,12 +86,15 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
 
   const valToY = useCallback(
     (val: number, panelTop: number) => {
-      const plotAreaHeight = panelHeight - 30;
-      return panelTop + 20 + plotAreaHeight - (val / maxNegLogP) * plotAreaHeight;
+      const areaTop = panelTop + 28;
+      const areaBot = panelTop + panelHeight - 8;
+      const areaH = areaBot - areaTop;
+      return areaBot - (val / maxNegLogP) * areaH;
     },
     [maxNegLogP]
   );
 
+  // ---- MAIN DRAW ----
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -109,104 +113,130 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.fillRect(0, 0, dimensions.width, totalHeight);
 
     // Title
-    ctx.fillStyle = '#111827';
-    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(
-      `${geneData.gene} — Probe-Level Methylation Significance Across PTSD Subtypes`,
+      `${geneData.gene} — CpG Probe-Level Methylation Significance`,
       dimensions.width / 2,
-      22
+      24
     );
-    ctx.font = '11px Inter, system-ui, sans-serif';
-    ctx.fillStyle = '#6b7280';
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = '#64748b';
     ctx.fillText(
-      `${geneData.chr} | ${geneData.totalProbes} CpG Probes | Genomic Position ${minPos.toLocaleString()}–${maxPos.toLocaleString()}`,
+      `Chr ${geneData.chr} | ${geneData.totalProbes} CpG Probes | Range: ${minPos.toLocaleString()} – ${maxPos.toLocaleString()} bp`,
       dimensions.width / 2,
-      40
+      42
     );
 
+    // ---- Draw each subtype panel ----
     SUBTYPES.forEach((sub, idx) => {
       const panelTop = topMargin + idx * (panelHeight + panelGap);
-      const plotAreaTop = panelTop + 20;
-      const plotAreaBottom = panelTop + panelHeight - 10;
-      const plotAreaHeight = plotAreaBottom - plotAreaTop;
+      const areaTop = panelTop + 28;
+      const areaBot = panelTop + panelHeight - 8;
+      const areaH = areaBot - areaTop;
 
-      // Panel background — very faint gray
-      ctx.fillStyle = '#f9fafb';
-      ctx.fillRect(leftMargin - 5, panelTop, plotWidth + 10, panelHeight);
+      // Panel background with subtle tint
+      ctx.fillStyle = sub.bg;
+      ctx.fillRect(leftMargin - 2, panelTop, plotWidth + 4, panelHeight);
+
+      // Panel border
       ctx.strokeStyle = '#d1d5db';
-      ctx.lineWidth = 0.8;
-      ctx.strokeRect(leftMargin - 5, panelTop, plotWidth + 10, panelHeight);
+      ctx.lineWidth = 1;
+      ctx.strokeRect(leftMargin - 2, panelTop, plotWidth + 4, panelHeight);
 
-      // Subtype label strip
+      // Colored left accent bar
       ctx.fillStyle = sub.color;
-      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.fillRect(leftMargin - 2, panelTop, 4, panelHeight);
+
+      // Subtype label
+      ctx.fillStyle = sub.color;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(sub.label, leftMargin, panelTop + 14);
+      ctx.fillText(sub.label, leftMargin + 8, panelTop + 18);
 
-      // CpG Island shading
+      // ---- CpG Island shading ----
       for (const island of geneData.cpgIslands) {
-        const x1 = posToX(island.start);
-        const x2 = posToX(island.end);
-        const clippedX1 = Math.max(x1, leftMargin);
-        const clippedX2 = Math.min(x2, leftMargin + plotWidth);
-        if (clippedX2 > clippedX1) {
-          ctx.fillStyle = ISLAND_COLOR;
-          ctx.fillRect(clippedX1, plotAreaTop, clippedX2 - clippedX1, plotAreaHeight);
-          ctx.strokeStyle = ISLAND_BORDER;
-          ctx.lineWidth = 1;
-          ctx.setLineDash([4, 3]);
-          ctx.strokeRect(clippedX1, plotAreaTop, clippedX2 - clippedX1, plotAreaHeight);
+        const x1 = Math.max(posToX(island.start), leftMargin);
+        const x2 = Math.min(posToX(island.end), leftMargin + plotWidth);
+        if (x2 > x1) {
+          ctx.fillStyle = ISLAND_FILL;
+          ctx.fillRect(x1, areaTop, x2 - x1, areaH);
+          ctx.strokeStyle = ISLAND_STROKE;
+          ctx.lineWidth = 1.2;
+          ctx.setLineDash([6, 4]);
+          ctx.strokeRect(x1, areaTop, x2 - x1, areaH);
           ctx.setLineDash([]);
 
+          // Label on first panel only
           if (idx === 0) {
-            ctx.fillStyle = '#a16207';
-            ctx.font = 'bold 9px Inter, system-ui, sans-serif';
+            ctx.fillStyle = '#92400e';
+            ctx.font = 'bold 10px Inter, system-ui, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('CpG Island', (clippedX1 + clippedX2) / 2, plotAreaTop - 3);
+            ctx.fillText('CpG Island', (x1 + x2) / 2, areaTop - 4);
           }
         }
       }
 
-      // Y-axis gridlines
-      const yTicks = [0, 1.301, 2, 3, 5, 10, 15, 20, 25].filter((v) => v <= maxNegLogP);
-      ctx.font = '9px Inter, system-ui, sans-serif';
-      ctx.textAlign = 'right';
-      for (const tick of yTicks) {
+      // ---- Y-axis grid and tick labels ----
+      const tickValues = [0, 1.301, 2, 3, 5, 8, 10, 15, 20, 25, 30].filter((v) => v <= maxNegLogP);
+      for (const tick of tickValues) {
         const y = valToY(tick, panelTop);
-        if (y >= plotAreaTop && y <= plotAreaBottom) {
-          if (tick === 1.301) {
-            // p = 0.05 line
-            ctx.strokeStyle = '#ef4444';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([5, 3]);
-          } else if (tick === 2) {
-            // p = 0.01 line
-            ctx.strokeStyle = '#991b1b';
-            ctx.lineWidth = 0.8;
-            ctx.setLineDash([3, 3]);
-          } else {
-            ctx.strokeStyle = '#e5e7eb';
-            ctx.lineWidth = 0.5;
-            ctx.setLineDash([2, 3]);
-          }
-          ctx.beginPath();
-          ctx.moveTo(leftMargin, y);
-          ctx.lineTo(leftMargin + plotWidth, y);
-          ctx.stroke();
-          ctx.setLineDash([]);
+        if (y < areaTop - 1 || y > areaBot + 1) continue;
 
-          ctx.fillStyle = tick === 1.301 ? '#ef4444' : tick === 2 ? '#991b1b' : '#9ca3af';
-          const label = tick === 1.301 ? 'p=.05' : tick === 2 ? 'p=.01' : tick.toFixed(0);
-          ctx.fillText(label, leftMargin - 8, y + 3);
+        // Grid line
+        if (tick === 1.301) {
+          ctx.strokeStyle = '#ef4444';
+          ctx.lineWidth = 1.2;
+          ctx.setLineDash([6, 4]);
+        } else if (tick === 2) {
+          ctx.strokeStyle = '#b91c1c';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([4, 4]);
+        } else if (tick === 0) {
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([]);
+        } else {
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 0.6;
+          ctx.setLineDash([3, 4]);
+        }
+        ctx.beginPath();
+        ctx.moveTo(leftMargin, y);
+        ctx.lineTo(leftMargin + plotWidth, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Tick label
+        ctx.font = '10px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'right';
+        if (tick === 1.301) {
+          ctx.fillStyle = '#ef4444';
+          ctx.font = 'bold 10px Inter, system-ui, sans-serif';
+          ctx.fillText('p=.05', leftMargin - 10, y + 4);
+        } else if (tick === 2) {
+          ctx.fillStyle = '#b91c1c';
+          ctx.font = 'bold 10px Inter, system-ui, sans-serif';
+          ctx.fillText('p=.01', leftMargin - 10, y + 4);
+        } else if (tick > 0) {
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillText(tick.toFixed(0), leftMargin - 10, y + 4);
         }
       }
 
-      // Lollipop stems and heads
+      // ---- Lollipop stems and heads ----
       const pKey = `${sub.key}_P` as keyof ProbeEntry;
       const lfcKey = `${sub.key}_logFC` as keyof ProbeEntry;
 
-      for (const probe of geneData.probes) {
+      // Sort by significance so the most significant probes render on top
+      const sortedProbes = [...geneData.probes].sort((a, b) => {
+        const pa = (a[pKey] as number | null) ?? 1;
+        const pb = (b[pKey] as number | null) ?? 1;
+        return pb - pa; // least significant first, most significant on top
+      });
+
+      for (const probe of sortedProbes) {
         const pVal = probe[pKey] as number | null;
         const logFC = probe[lfcKey] as number | null;
         if (!pVal || pVal <= 0) continue;
@@ -215,112 +245,147 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         const x = posToX(probe.pos);
         const yBase = valToY(0, panelTop);
         const yTop = valToY(Math.min(nlp, maxNegLogP), panelTop);
-        const dotColor = logFC && logFC > 0 ? HYPER_COLOR : HYPO_COLOR;
+        const isHyper = logFC && logFC > 0;
+        const dotColor = isHyper ? HYPER_COLOR : HYPO_COLOR;
+        const isSig05 = nlp > 1.301;
+        const isSig01 = nlp > 2;
 
-        // Stem
+        // Stem — thicker and more visible
         ctx.strokeStyle = dotColor;
-        ctx.lineWidth = 1.3;
-        ctx.globalAlpha = 0.45;
+        ctx.lineWidth = isSig05 ? 2 : 1.2;
+        ctx.globalAlpha = isSig05 ? 0.65 : 0.3;
         ctx.beginPath();
         ctx.moveTo(x, yBase);
         ctx.lineTo(x, yTop);
         ctx.stroke();
         ctx.globalAlpha = 1;
 
-        // Head
-        const isSig = nlp > -Math.log10(0.05);
-        const radius = isSig ? 4 : 2.5;
+        // Head — larger dots
+        let radius: number;
+        if (isSig01) {
+          radius = 5.5;
+        } else if (isSig05) {
+          radius = 4;
+        } else {
+          radius = 2.5;
+        }
+
         ctx.beginPath();
         ctx.arc(x, yTop, radius, 0, Math.PI * 2);
         ctx.fillStyle = dotColor;
         ctx.fill();
-        if (nlp > -Math.log10(0.01)) {
-          ctx.strokeStyle = '#000000';
-          ctx.lineWidth = 0.6;
+
+        // White border on significant probes
+        if (isSig05) {
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.5;
           ctx.stroke();
+          // Dark outline
+          ctx.strokeStyle = dotColor;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+
+        // Diamond marker for p < 0.001
+        if (nlp > 3) {
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(x, yTop, 2, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
     });
 
-    // X-axis
-    const xAxisY = topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + 10;
-    ctx.strokeStyle = '#6b7280';
-    ctx.lineWidth = 1;
+    // ---- X-axis ----
+    const xAxisY = topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + 14;
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1.2;
     ctx.beginPath();
     ctx.moveTo(leftMargin, xAxisY);
     ctx.lineTo(leftMargin + plotWidth, xAxisY);
     ctx.stroke();
 
-    const nTicks = 8;
+    // X-axis ticks
+    const nTicks = Math.min(8, Math.floor(plotWidth / 80));
     ctx.font = '10px Inter, system-ui, sans-serif';
-    ctx.fillStyle = '#374151';
+    ctx.fillStyle = '#475569';
     ctx.textAlign = 'center';
     for (let i = 0; i <= nTicks; i++) {
       const pos = minPos + (posRange * i) / nTicks;
       const x = posToX(pos);
       ctx.beginPath();
       ctx.moveTo(x, xAxisY);
-      ctx.lineTo(x, xAxisY + 5);
+      ctx.lineTo(x, xAxisY + 6);
       ctx.stroke();
-      ctx.fillText(Math.round(pos).toLocaleString(), x, xAxisY + 18);
+      ctx.fillText(Math.round(pos).toLocaleString(), x, xAxisY + 20);
     }
 
-    ctx.fillStyle = '#374151';
-    ctx.font = '11px Inter, system-ui, sans-serif';
-    ctx.fillText('Genomic Position (bp)', dimensions.width / 2, xAxisY + 35);
+    // X-axis label
+    ctx.fillStyle = '#334155';
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Genomic Position (bp)', dimensions.width / 2, xAxisY + 38);
 
-    // Y-axis label
+    // Y-axis label (rotated)
     ctx.save();
-    ctx.translate(14, topMargin + (SUBTYPES.length * (panelHeight + panelGap)) / 2);
+    ctx.translate(18, topMargin + (SUBTYPES.length * (panelHeight + panelGap)) / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillStyle = '#374151';
-    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = '#334155';
+    ctx.font = '12px Inter, system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('-log₁₀(P-value)', 0, 0);
+    ctx.fillText('−log₁₀(P-value)', 0, 0);
     ctx.restore();
 
-    // Legend
-    const legendY = xAxisY + 48;
+    // ---- Legend (at bottom) ----
+    const legendY = xAxisY + 55;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+
     const legendItems = [
-      { color: HYPER_COLOR, label: 'Hypermethylated (logFC > 0)' },
-      { color: HYPO_COLOR, label: 'Hypomethylated (logFC < 0)' },
-      { color: 'transparent', border: ISLAND_BORDER, bgColor: ISLAND_COLOR, label: 'CpG Island' },
-      { color: '#ef4444', label: 'p = 0.05', isDash: true },
-      { color: '#991b1b', label: 'p = 0.01', isDash: true },
+      { type: 'dot', color: HYPER_COLOR, label: 'Hypermethylated (logFC > 0)' },
+      { type: 'dot', color: HYPO_COLOR, label: 'Hypomethylated (logFC < 0)' },
+      { type: 'island', label: 'CpG Island Region' },
+      { type: 'dash', color: '#ef4444', label: 'p = 0.05' },
+      { type: 'dash', color: '#b91c1c', label: 'p = 0.01' },
     ];
-    let legendX = dimensions.width / 2 - 340;
-    ctx.font = '10px Inter, system-ui, sans-serif';
+
+    let lx = dimensions.width / 2 - 320;
     for (const item of legendItems) {
-      if (item.bgColor) {
-        ctx.fillStyle = item.bgColor;
-        ctx.fillRect(legendX, legendY - 5, 16, 10);
-        ctx.strokeStyle = item.border!;
-        ctx.setLineDash([3, 2]);
-        ctx.strokeRect(legendX, legendY - 5, 16, 10);
-        ctx.setLineDash([]);
-      } else if (item.isDash) {
-        ctx.strokeStyle = item.color;
-        ctx.lineWidth = 1.2;
-        ctx.setLineDash([5, 3]);
+      if (item.type === 'dot') {
         ctx.beginPath();
-        ctx.moveTo(legendX, legendY);
-        ctx.lineTo(legendX + 16, legendY);
+        ctx.arc(lx + 6, legendY, 5, 0, Math.PI * 2);
+        ctx.fillStyle = item.color!;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.strokeStyle = item.color!;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      } else if (item.type === 'island') {
+        ctx.fillStyle = ISLAND_FILL;
+        ctx.fillRect(lx, legendY - 6, 18, 12);
+        ctx.strokeStyle = ISLAND_STROKE;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 3]);
+        ctx.strokeRect(lx, legendY - 6, 18, 12);
+        ctx.setLineDash([]);
+      } else if (item.type === 'dash') {
+        ctx.strokeStyle = item.color!;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(lx, legendY);
+        ctx.lineTo(lx + 18, legendY);
         ctx.stroke();
         ctx.setLineDash([]);
-      } else {
-        ctx.beginPath();
-        ctx.arc(legendX + 7, legendY, 4, 0, Math.PI * 2);
-        ctx.fillStyle = item.color;
-        ctx.fill();
       }
-      ctx.fillStyle = '#374151';
+      ctx.fillStyle = '#334155';
       ctx.textAlign = 'left';
-      ctx.fillText(item.label, legendX + 22, legendY + 4);
-      legendX += ctx.measureText(item.label).width + 44;
+      ctx.fillText(item.label, lx + 24, legendY + 4);
+      lx += ctx.measureText(item.label).width + 46;
     }
   }, [geneData, dimensions, minPos, maxPos, posRange, maxNegLogP, posToX, valToY]);
 
-  // Tooltip on hover
+  // ---- Tooltip on hover ----
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
       const canvas = canvasRef.current;
@@ -330,7 +395,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       const my = e.clientY - rect.top;
 
       let found: TooltipData | null = null;
-      const hitRadius = 8;
+      const hitRadius = 10;
 
       for (let idx = 0; idx < SUBTYPES.length; idx++) {
         const sub = SUBTYPES[idx];
@@ -361,50 +426,54 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: totalHeight }}
-        className="rounded-lg cursor-crosshair border border-gray-200 shadow-sm"
+        className="rounded-lg cursor-crosshair border border-slate-200 shadow-sm"
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setTooltip(null)}
       />
 
       {tooltip && (
         <div
-          className="absolute z-50 pointer-events-none bg-white border border-gray-300 rounded-lg p-3 shadow-xl text-xs space-y-1 max-w-[280px]"
+          className="absolute z-50 pointer-events-none bg-white border border-slate-300 rounded-xl p-3.5 shadow-xl text-xs space-y-1.5 max-w-[300px]"
           style={{
-            left: Math.min(tooltip.x + 12, dimensions.width - 290),
-            top: tooltip.y - 10,
+            left: Math.min(tooltip.x + 14, dimensions.width - 310),
+            top: Math.max(tooltip.y - 60, 0),
           }}
         >
-          <div className="flex items-center justify-between gap-3">
-            <span className="font-bold text-gray-900 text-sm">{tooltip.probe.probe}</span>
+          <div className="flex items-center justify-between gap-3 pb-1.5 border-b border-slate-100">
+            <span className="font-extrabold text-slate-900 text-sm tracking-tight">{tooltip.probe.probe}</span>
             <span
-              className="px-1.5 py-0.5 text-[10px] font-bold rounded"
+              className="px-2 py-0.5 text-[10px] font-bold rounded-full"
               style={{
                 backgroundColor:
-                  SUBTYPES.find((s) => s.key === tooltip.subtype)?.color + '1a',
+                  SUBTYPES.find((s) => s.key === tooltip.subtype)?.color + '18',
                 color: SUBTYPES.find((s) => s.key === tooltip.subtype)?.color,
               }}
             >
               {tooltip.subtype}
             </span>
           </div>
-          <div className="text-gray-500">
-            Position: <span className="text-gray-900 font-mono">{tooltip.probe.pos.toLocaleString()}</span>
-          </div>
-          <div className="text-gray-500">
-            Feature: <span className="text-gray-700">{tooltip.probe.feature || 'N/A'}</span>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+            <div>
+              <span className="text-slate-400">Position</span>
+              <div className="font-mono font-bold text-slate-800">{tooltip.probe.pos.toLocaleString()}</div>
+            </div>
+            <div>
+              <span className="text-slate-400">Feature</span>
+              <div className="font-semibold text-slate-700">{tooltip.probe.feature || 'Intergenic'}</div>
+            </div>
           </div>
           {tooltip.probe.cpgIsland && (
-            <div className="text-gray-500">
-              CpG Island: <span className="text-amber-700 text-[10px]">{tooltip.probe.cpgIsland}</span>
+            <div className="text-[11px] text-amber-800 bg-amber-50 px-2 py-1 rounded border border-amber-200 font-medium">
+              CpG Island: {tooltip.probe.cpgIsland}
             </div>
           )}
-          <div className="border-t border-gray-200 pt-1 mt-1 grid grid-cols-3 gap-x-3 text-[11px]">
+          <div className="border-t border-slate-100 pt-1.5 grid grid-cols-3 gap-x-3 text-[11px]">
             <div>
-              <span className="text-gray-400">logFC</span>
-              <div className="font-mono font-semibold">
+              <span className="text-slate-400 block mb-0.5">logFC</span>
+              <div className="font-mono font-bold">
                 {(() => {
                   const v = tooltip.probe[`${tooltip.subtype}_logFC` as keyof ProbeEntry] as number | null;
-                  if (v == null) return 'N/A';
+                  if (v == null) return <span className="text-slate-300">—</span>;
                   return (
                     <span className={v > 0 ? 'text-red-600' : 'text-blue-600'}>
                       {v > 0 ? '+' : ''}{v.toFixed(4)}
@@ -414,20 +483,20 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
               </div>
             </div>
             <div>
-              <span className="text-gray-400">P-value</span>
-              <div className="font-mono font-semibold text-gray-900">
+              <span className="text-slate-400 block mb-0.5">P-value</span>
+              <div className="font-mono font-bold text-slate-900">
                 {(() => {
                   const v = tooltip.probe[`${tooltip.subtype}_P` as keyof ProbeEntry] as number | null;
-                  return v != null ? (v < 1e-10 ? v.toExponential(1) : v.toExponential(2)) : 'N/A';
+                  return v != null ? (v < 1e-10 ? v.toExponential(1) : v.toExponential(2)) : '—';
                 })()}
               </div>
             </div>
             <div>
-              <span className="text-gray-400">FDR</span>
-              <div className="font-mono font-semibold text-gray-900">
+              <span className="text-slate-400 block mb-0.5">FDR</span>
+              <div className="font-mono font-bold text-slate-900">
                 {(() => {
                   const v = tooltip.probe[`${tooltip.subtype}_FDR` as keyof ProbeEntry] as number | null;
-                  return v != null ? (v < 1e-10 ? v.toExponential(1) : v.toExponential(2)) : 'N/A';
+                  return v != null ? (v < 1e-10 ? v.toExponential(1) : v.toExponential(2)) : '—';
                 })()}
               </div>
             </div>
