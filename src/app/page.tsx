@@ -173,9 +173,32 @@ export default function Home() {
 
   // ---- Selected gene details ----
   const selectedCrossItem = useMemo(() => {
-    if (!masterData) return null;
-    if (!selectedGene) return masterData.crossSubtype[0] || null;
-    return masterData.crossSubtype.find((d) => d.gene === selectedGene) || null;
+    if (!masterData || !selectedGene) return null;
+    const found = masterData.crossSubtype.find((d) => d.gene === selectedGene);
+    if (found) return found;
+
+    // Search in uniqueSubtypes if not a cross-subtype gene
+    for (const sub of ['SSS', 'ADS', 'ICF', 'ISS'] as const) {
+      const item = masterData.uniqueSubtypes[sub].find((d) => d.gene === selectedGene);
+      if (item) {
+        return {
+          gene: item.gene,
+          chr: item.chr,
+          totalProbes: item.totalProbes,
+          isPtsd: item.isPtsd,
+          crossP: item.fdr,
+          crossFdr: item.fdr,
+          nSubtypesSig: 1,
+          subtypes: {
+            SSS: sub === 'SSS' ? { deltaBeta: item.deltaBeta, fdr: item.fdr, direction: item.direction } : { deltaBeta: 0, fdr: 1, direction: 'N/A' },
+            ADS: sub === 'ADS' ? { deltaBeta: item.deltaBeta, fdr: item.fdr, direction: item.direction } : { deltaBeta: 0, fdr: 1, direction: 'N/A' },
+            ICF: sub === 'ICF' ? { deltaBeta: item.deltaBeta, fdr: item.fdr, direction: item.direction } : { deltaBeta: 0, fdr: 1, direction: 'N/A' },
+            ISS: sub === 'ISS' ? { deltaBeta: item.deltaBeta, fdr: item.fdr, direction: item.direction } : { deltaBeta: 0, fdr: 1, direction: 'N/A' },
+          },
+        };
+      }
+    }
+    return null;
   }, [masterData, selectedGene]);
 
   // selectedTrackData is now managed by the fetchProbeData useEffect above

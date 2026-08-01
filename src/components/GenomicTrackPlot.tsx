@@ -69,15 +69,20 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     if (!container) return;
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        setDimensions({ width: entry.contentRect.width, height: totalHeight });
+        if (entry.contentRect.width > 0) {
+          setDimensions({ width: entry.contentRect.width, height: totalHeight });
+        }
       }
     });
     observer.observe(container);
-    setDimensions({ width: container.clientWidth, height: totalHeight });
+    if (container.clientWidth > 0) {
+      setDimensions({ width: container.clientWidth, height: totalHeight });
+    }
     return () => observer.disconnect();
   }, [totalHeight]);
 
-  const plotWidth = dimensions.width - leftMargin - rightMargin;
+  const effectiveWidth = Math.max(dimensions.width, 700);
+  const plotWidth = Math.max(effectiveWidth - leftMargin - rightMargin, 200);
 
   const posToX = useCallback(
     (pos: number) => leftMargin + ((pos - minPos) / posRange) * plotWidth,
@@ -99,9 +104,9 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = dimensions.width * dpr;
+    canvas.width = effectiveWidth * dpr;
     canvas.height = totalHeight * dpr;
-    canvas.style.width = `${dimensions.width}px`;
+    canvas.style.width = `${effectiveWidth}px`;
     canvas.style.height = `${totalHeight}px`;
 
     const ctx = canvas.getContext('2d');
@@ -110,7 +115,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
 
     // White background
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, dimensions.width, totalHeight);
+    ctx.fillRect(0, 0, effectiveWidth, totalHeight);
 
     // Title
     ctx.fillStyle = '#0f172a';
@@ -118,14 +123,14 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.textAlign = 'center';
     ctx.fillText(
       `${geneData.gene} — CpG Probe-Level Methylation Significance`,
-      dimensions.width / 2,
+      effectiveWidth / 2,
       24
     );
     ctx.font = '12px Inter, system-ui, sans-serif';
     ctx.fillStyle = '#64748b';
     ctx.fillText(
       `Chr ${geneData.chr} | ${geneData.totalProbes} CpG Probes | Range: ${minPos.toLocaleString()} – ${maxPos.toLocaleString()} bp`,
-      dimensions.width / 2,
+      effectiveWidth / 2,
       42
     );
 
@@ -323,7 +328,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     // X-axis label
     ctx.fillStyle = '#334155';
     ctx.font = '12px Inter, system-ui, sans-serif';
-    ctx.fillText('Genomic Position (bp)', dimensions.width / 2, xAxisY + 38);
+    ctx.fillText('Genomic Position (bp)', effectiveWidth / 2, xAxisY + 38);
 
     // Y-axis label (rotated)
     ctx.save();
@@ -347,7 +352,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       { type: 'dash', color: '#b91c1c', label: 'p = 0.01' },
     ];
 
-    let lx = dimensions.width / 2 - 320;
+    let lx = effectiveWidth / 2 - 320;
     for (const item of legendItems) {
       if (item.type === 'dot') {
         ctx.beginPath();
