@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { MetricsOverview } from '@/components/MetricsOverview';
 import { DmrVolcanoPlot } from '@/components/DmrVolcanoPlot';
 import { SubtypeComparisonChart } from '@/components/SubtypeComparisonChart';
-import { GeneInspectorModal } from '@/components/GeneInspectorModal';
-import dmrDataRaw from '@/data/dmrData.json';
-import { MasterDMRData, CrossSubtypeDMR } from '@/types/dmr';
+import { GenomicTrackPlot } from '@/components/GenomicTrackPlot';
+import { MasterDMRData } from '@/types/dmr';
+import { ProbeDataMap } from '@/types/probe';
 import {
   Search,
   Filter,
@@ -16,39 +16,60 @@ import {
   ArrowUpDown,
   CheckCircle2,
   Dna,
+  Loader2,
+  MapPin,
 } from 'lucide-react';
 
-const masterData = dmrDataRaw as MasterDMRData;
-
 export default function Home() {
+  // ---- Data loading state ----
+  const [masterData, setMasterData] = useState<MasterDMRData | null>(null);
+  const [probeData, setProbeData] = useState<ProbeDataMap | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/data/dmrData.json').then((r) => r.json()),
+      fetch('/data/probeData.json').then((r) => r.json()),
+    ]).then(([dmr, probes]) => {
+      setMasterData(dmr as MasterDMRData);
+      setProbeData(probes as ProbeDataMap);
+      setLoading(false);
+    });
+  }, []);
+
+  // ---- UI state ----
   const [activeTab, setActiveTab] = useState<string>('cross');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [ptsdOnly, setPtsdOnly] = useState<boolean>(false);
   const [directionFilter, setDirectionFilter] = useState<string>('All');
-  const [selectedGene, setSelectedGene] = useState<string | null>('HTR2A');
+  const [selectedGene, setSelectedGene] = useState<string | null>('AHRR');
   const [sortField, setSortField] = useState<string>('fdr');
   const [sortAsc, setSortAsc] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [showTrack, setShowTrack] = useState<boolean>(true);
   const pageSize = 20;
 
-  // Counts for summary metrics
-  const crossCount = masterData.crossSubtype.length;
-  const crossPtsdCount = masterData.crossSubtype.filter((d) => d.isPtsd).length;
+  // ---- Derived metrics ----
+  const crossCount = masterData?.crossSubtype.length ?? 0;
+  const crossPtsdCount = masterData?.crossSubtype.filter((d) => d.isPtsd).length ?? 0;
+  const sssCount = masterData?.uniqueSubtypes.SSS.length ?? 0;
+  const sssPtsdCount = masterData?.uniqueSubtypes.SSS.filter((d) => d.isPtsd).length ?? 0;
+  const adsCount = masterData?.uniqueSubtypes.ADS.length ?? 0;
+  const adsPtsdCount = masterData?.uniqueSubtypes.ADS.filter((d) => d.isPtsd).length ?? 0;
+  const icfCount = masterData?.uniqueSubtypes.ICF.length ?? 0;
+  const icfPtsdCount = masterData?.uniqueSubtypes.ICF.filter((d) => d.isPtsd).length ?? 0;
+  const issCount = masterData?.uniqueSubtypes.ISS.length ?? 0;
+  const issPtsdCount = masterData?.uniqueSubtypes.ISS.filter((d) => d.isPtsd).length ?? 0;
 
-  const sssCount = masterData.uniqueSubtypes.SSS.length;
-  const sssPtsdCount = masterData.uniqueSubtypes.SSS.filter((d) => d.isPtsd).length;
+  // ---- Available genes for the genomic track selector ----
+  const trackGeneList = useMemo(() => {
+    if (!probeData) return [];
+    return Object.keys(probeData).sort();
+  }, [probeData]);
 
-  const adsCount = masterData.uniqueSubtypes.ADS.length;
-  const adsPtsdCount = masterData.uniqueSubtypes.ADS.filter((d) => d.isPtsd).length;
-
-  const icfCount = masterData.uniqueSubtypes.ICF.length;
-  const icfPtsdCount = masterData.uniqueSubtypes.ICF.filter((d) => d.isPtsd).length;
-
-  const issCount = masterData.uniqueSubtypes.ISS.length;
-  const issPtsdCount = masterData.uniqueSubtypes.ISS.filter((d) => d.isPtsd).length;
-
-  // Filtered dataset according to tab, search, ptsd toggle, direction
+  // ---- Filtered dataset ----
   const filteredData = useMemo(() => {
+    if (!masterData) return [];
     let list: any[] = [];
     if (activeTab === 'cross') {
       list = masterData.crossSubtype.map((item) => ({
@@ -57,13 +78,14 @@ export default function Home() {
         totalProbes: item.totalProbes,
         isPtsd: item.isPtsd,
         fdr: item.crossFdr,
-        deltaBeta: item.subtypes.SSS.deltaBeta, // Representative SSS deltaBeta
+        deltaBeta: item.subtypes.SSS.deltaBeta,
         direction: item.subtypes.SSS.direction,
         negLogFdr: -Math.log10(Math.max(item.crossFdr, 1e-30)),
         rawItem: item,
       }));
     } else {
-      const uList = masterData.uniqueSubtypes[activeTab as keyof typeof masterData.uniqueSubtypes] || [];
+      const uList =
+        masterData.uniqueSubtypes[activeTab as keyof typeof masterData.uniqueSubtypes] || [];
       list = uList.map((item) => ({
         gene: item.gene,
         chr: item.chr,
@@ -77,74 +99,76 @@ export default function Home() {
       }));
     }
 
-    // Apply Search
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter(
         (d) => d.gene.toLowerCase().includes(q) || d.chr.toLowerCase().includes(q)
       );
     }
+    if (ptsdOnly) list = list.filter((d) => d.isPtsd);
+    if (directionFilter !== 'All') list = list.filter((d) => d.direction === directionFilter);
 
-    // Apply PTSD filter
-    if (ptsdOnly) {
-      list = list.filter((d) => d.isPtsd);
-    }
-
-    // Apply Direction filter
-    if (directionFilter !== 'All') {
-      list = list.filter((d) => d.direction === directionFilter);
-    }
-
-    // Apply Sort
     list.sort((a, b) => {
-      let valA = a[sortField as keyof typeof a];
-      let valB = b[sortField as keyof typeof b];
+      const valA = a[sortField as keyof typeof a];
+      const valB = b[sortField as keyof typeof b];
       if (typeof valA === 'string') {
-        return sortAsc ? (valA as string).localeCompare(valB as string) : (valB as string).localeCompare(valA as string);
+        return sortAsc
+          ? (valA as string).localeCompare(valB as string)
+          : (valB as string).localeCompare(valA as string);
       }
       return sortAsc ? (valA as number) - (valB as number) : (valB as number) - (valA as number);
     });
-
     return list;
-  }, [activeTab, searchQuery, ptsdOnly, directionFilter, sortField, sortAsc]);
+  }, [masterData, activeTab, searchQuery, ptsdOnly, directionFilter, sortField, sortAsc]);
 
-  // Selected gene for comparison chart
+  // ---- Selected gene for comparison chart ----
   const selectedCrossItem = useMemo(() => {
+    if (!masterData) return null;
     if (!selectedGene) return masterData.crossSubtype[0] || null;
-    const found = masterData.crossSubtype.find((d) => d.gene === selectedGene);
-    if (found) return found;
-    // Fallback if gene is not in cross dataset
-    return masterData.crossSubtype[0] || null;
-  }, [selectedGene]);
+    return masterData.crossSubtype.find((d) => d.gene === selectedGene) || null;
+  }, [masterData, selectedGene]);
 
-  // Pagination
+  // ---- Selected gene for genomic track ----
+  const selectedTrackData = useMemo(() => {
+    if (!probeData || !selectedGene) return null;
+    return probeData[selectedGene] || null;
+  }, [probeData, selectedGene]);
+
+  // ---- Pagination ----
   const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     return filteredData.slice(start, start + pageSize);
-  }, [filteredData, currentPage, pageSize]);
+  }, [filteredData, currentPage]);
 
-  // CSV Export
+  // ---- CSV Export ----
   const handleExportCSV = () => {
     const headers = ['Gene', 'Chr', 'TotalProbes', 'PTSD_Related', 'FDR', 'DeltaBeta', 'Direction'];
-    const rows = filteredData.map((d) => [
-      d.gene,
-      d.chr,
-      d.totalProbes,
-      d.isPtsd ? 'YES' : 'NO',
-      d.fdr,
-      d.deltaBeta,
-      d.direction,
+    const rows = filteredData.map((d: any) => [
+      d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', d.fdr, d.deltaBeta, d.direction,
     ]);
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      [headers.join(','), ...rows.map((e: any) => e.join(','))].join('\n');
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
+    link.setAttribute('href', encodeURI(csvContent));
     link.setAttribute('download', `DMR_List_${activeTab}_filtered.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
+
+  // ---- Loading screen ----
+  if (loading || !masterData) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 text-cyan-400 animate-spin" />
+          <span className="text-slate-300 text-sm">Loading DMR datasets...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-white pb-12">
@@ -172,12 +196,11 @@ export default function Home() {
 
         {/* Controls & Filter Bar */}
         <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mb-6 backdrop-blur-md flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-          {/* Search Input */}
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
             <input
               type="text"
-              placeholder="Search by gene symbol or chromosome (e.g. HTR2A, AHRR, ZBTB16, chr13)..."
+              placeholder="Search gene or chromosome (e.g. HTR2A, AHRR, chr13)..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -187,9 +210,7 @@ export default function Home() {
             />
           </div>
 
-          {/* Filter Toggles & Dropdowns */}
           <div className="flex flex-wrap items-center gap-3 text-xs">
-            {/* PTSD Toggle Button */}
             <button
               onClick={() => {
                 setPtsdOnly(!ptsdOnly);
@@ -202,14 +223,12 @@ export default function Home() {
               }`}
             >
               <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
-              <span>PTSD Targets Only</span>
+              <span>PTSD Only</span>
               {ptsdOnly && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />}
             </button>
 
-            {/* Direction Filter */}
             <div className="flex items-center space-x-1.5 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg">
               <Filter className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-slate-400">Direction:</span>
               <select
                 value={directionFilter}
                 onChange={(e) => {
@@ -219,19 +238,18 @@ export default function Home() {
                 className="bg-transparent text-white focus:outline-none cursor-pointer font-medium"
               >
                 <option value="All" className="bg-slate-900">All Directions</option>
-                <option value="Hypermethylated" className="bg-slate-900">Hypermethylated</option>
-                <option value="Hypomethylated" className="bg-slate-900">Hypomethylated</option>
+                <option value="Hypermethylated" className="bg-slate-900">Hyper</option>
+                <option value="Hypomethylated" className="bg-slate-900">Hypo</option>
                 <option value="Mixed" className="bg-slate-900">Mixed</option>
               </select>
             </div>
 
-            {/* Export Button */}
             <button
               onClick={handleExportCSV}
               className="flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition font-semibold"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Export CSV</span>
+              <span>CSV</span>
             </button>
           </div>
         </div>
@@ -243,21 +261,77 @@ export default function Home() {
             onSelectGene={(g) => setSelectedGene(g)}
             selectedGene={selectedGene}
           />
-
           <SubtypeComparisonChart geneData={selectedCrossItem} />
         </div>
 
-        {/* Data Table Container */}
+        {/* ===== Genomic Track Section ===== */}
+        <div className="mb-6">
+          <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 backdrop-blur-md">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <MapPin className="w-5 h-5 text-cyan-400" />
+                <div>
+                  <h3 className="text-sm font-bold text-white">
+                    Probe-Level Genomic Track
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    CpG-resolution lollipop plot with CpG Island annotation — select gene below
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <select
+                  value={selectedGene || ''}
+                  onChange={(e) => setSelectedGene(e.target.value || null)}
+                  className="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 min-w-[160px]"
+                >
+                  <option value="" className="bg-slate-900">-- Select Gene --</option>
+                  {trackGeneList.map((g) => (
+                    <option key={g} value={g} className="bg-slate-900">
+                      {g}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => setShowTrack(!showTrack)}
+                  className={`px-3 py-1.5 text-xs rounded-lg border transition font-semibold ${
+                    showTrack
+                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30'
+                      : 'bg-slate-950 text-slate-400 border-slate-800'
+                  }`}
+                >
+                  {showTrack ? 'Hide Track' : 'Show Track'}
+                </button>
+              </div>
+            </div>
+
+            {showTrack && selectedTrackData && (
+              <GenomicTrackPlot geneData={selectedTrackData} />
+            )}
+            {showTrack && selectedGene && !selectedTrackData && (
+              <div className="text-center py-10 text-slate-500 text-sm">
+                No probe-level data available for <strong>{selectedGene}</strong>. Select a PTSD-related gene from the dropdown.
+              </div>
+            )}
+            {showTrack && !selectedGene && (
+              <div className="text-center py-10 text-slate-500 text-sm">
+                Select a gene to view its genomic track.
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Data Table */}
         <div className="bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden backdrop-blur-md shadow-xl">
           <div className="p-4 border-b border-slate-800 flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Dna className="w-4 h-4 text-cyan-400" />
               <h3 className="text-sm font-bold text-white">
-                DMR Results Registry ({filteredData.length} genes found)
+                DMR Registry ({filteredData.length} genes)
               </h3>
             </div>
             <span className="text-xs text-slate-400">
-              Showing page {currentPage} of {totalPages}
+              Page {currentPage} / {totalPages}
             </span>
           </div>
 
@@ -269,7 +343,7 @@ export default function Home() {
                     className="p-3.5 cursor-pointer hover:text-white"
                     onClick={() => {
                       setSortField('gene');
-                      setSortAsc(!sortAsc);
+                      setSortAsc(sortField === 'gene' ? !sortAsc : true);
                     }}
                   >
                     <div className="flex items-center space-x-1">
@@ -278,16 +352,16 @@ export default function Home() {
                     </div>
                   </th>
                   <th className="p-3.5">Chr</th>
-                  <th className="p-3.5">Total CpGs</th>
+                  <th className="p-3.5">CpGs</th>
                   <th
                     className="p-3.5 cursor-pointer hover:text-white"
                     onClick={() => {
                       setSortField('fdr');
-                      setSortAsc(!sortAsc);
+                      setSortAsc(sortField === 'fdr' ? !sortAsc : true);
                     }}
                   >
                     <div className="flex items-center space-x-1">
-                      <span>FDR P-Value</span>
+                      <span>FDR</span>
                       <ArrowUpDown className="w-3 h-3 text-slate-500" />
                     </div>
                   </th>
@@ -295,21 +369,21 @@ export default function Home() {
                     className="p-3.5 cursor-pointer hover:text-white"
                     onClick={() => {
                       setSortField('deltaBeta');
-                      setSortAsc(!sortAsc);
+                      setSortAsc(sortField === 'deltaBeta' ? !sortAsc : true);
                     }}
                   >
                     <div className="flex items-center space-x-1">
-                      <span>Top-3 Avg Δβ</span>
+                      <span>Δβ</span>
                       <ArrowUpDown className="w-3 h-3 text-slate-500" />
                     </div>
                   </th>
-                  <th className="p-3.5">Methylation State</th>
-                  <th className="p-3.5 text-right">Action</th>
+                  <th className="p-3.5">Direction</th>
+                  <th className="p-3.5 text-right">Track</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-slate-800/60 bg-slate-900/40">
-                {paginatedData.map((row) => {
+                {paginatedData.map((row: any) => {
                   const isSelected = selectedGene === row.gene;
                   return (
                     <tr
@@ -323,31 +397,20 @@ export default function Home() {
                         <span>{row.gene}</span>
                         {row.isPtsd && (
                           <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30 rounded">
-                            PTSD Target
+                            PTSD
                           </span>
                         )}
                       </td>
-
                       <td className="p-3.5 font-mono text-slate-300">{row.chr}</td>
-
                       <td className="p-3.5 text-slate-300">{row.totalProbes}</td>
-
                       <td className="p-3.5 font-mono text-cyan-400 font-semibold">
                         {row.fdr < 1e-15 ? '< 1e-15' : row.fdr.toExponential(2)}
                       </td>
-
                       <td className="p-3.5 font-mono font-medium">
-                        <span
-                          className={
-                            row.deltaBeta > 0
-                              ? 'text-emerald-400'
-                              : 'text-cyan-400'
-                          }
-                        >
+                        <span className={row.deltaBeta > 0 ? 'text-emerald-400' : 'text-cyan-400'}>
                           {row.deltaBeta > 0 ? `+${row.deltaBeta.toFixed(4)}` : row.deltaBeta.toFixed(4)}
                         </span>
                       </td>
-
                       <td className="p-3.5">
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
@@ -361,17 +424,22 @@ export default function Home() {
                           {row.direction}
                         </span>
                       </td>
-
                       <td className="p-3.5 text-right">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedGene(row.gene);
-                          }}
-                          className="px-2.5 py-1 text-[11px] font-semibold rounded-md bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition"
-                        >
-                          Inspect
-                        </button>
+                        {probeData && probeData[row.gene] ? (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedGene(row.gene);
+                              setShowTrack(true);
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className="px-2.5 py-1 text-[11px] font-semibold rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition"
+                          >
+                            View Track
+                          </button>
+                        ) : (
+                          <span className="text-slate-600 text-[11px]">—</span>
+                        )}
                       </td>
                     </tr>
                   );
@@ -380,12 +448,10 @@ export default function Home() {
             </table>
           </div>
 
-          {/* Pagination Controls */}
           <div className="p-4 border-t border-slate-800 flex items-center justify-between bg-slate-900/80 text-xs">
             <span className="text-slate-400">
-              Showing {paginatedData.length} of {filteredData.length} records
+              {paginatedData.length} of {filteredData.length} records
             </span>
-
             <div className="flex items-center space-x-2">
               <button
                 disabled={currentPage === 1}
@@ -408,14 +474,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-
-      {/* Gene Inspector Drawer / Modal */}
-      <GeneInspectorModal
-        gene={selectedGene}
-        onClose={() => setSelectedGene(null)}
-        crossData={masterData.crossSubtype}
-        uniqueDataMap={masterData.uniqueSubtypes}
-      />
     </div>
   );
 }
