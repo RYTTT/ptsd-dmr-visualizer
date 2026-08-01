@@ -1,0 +1,1 @@
+{"gene":"RRAGB","chr":"X","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23156356","pos":55743977,"feature":"TSS200","cpgIsland":"","SSS_logFC":0.119,"SSS_P":0.0271,"SSS_FDR":0.4202,"ADS_logFC":0.5909,"ADS_P":0.0031,"ADS_FDR":0.3656,"ICF_logFC":0.1856,"ICF_P":0.2536,"ICF_FDR":0.7667,"ISS_logFC":0.0744,"ISS_P":0.438,"ISS_FDR":0.786}]}

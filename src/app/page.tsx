@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { MetricsOverview } from '@/components/MetricsOverview';
 import { DmrVolcanoPlot } from '@/components/DmrVolcanoPlot';
@@ -8,7 +8,7 @@ import { SubtypeComparisonChart } from '@/components/SubtypeComparisonChart';
 import { GenomicTrackPlot } from '@/components/GenomicTrackPlot';
 import { GeneAnnotationCard } from '@/components/GeneAnnotationCard';
 import { MasterDMRData } from '@/types/dmr';
-import { ProbeDataMap } from '@/types/probe';
+import { GeneProbeData } from '@/types/probe';
 import { GeneAnnotationMap } from '@/types/annotation';
 import {
   Search,
@@ -26,22 +26,13 @@ import {
 export default function Home() {
   // ---- Data loading state ----
   const [masterData, setMasterData] = useState<MasterDMRData | null>(null);
-  const [probeData, setProbeData] = useState<ProbeDataMap | null>(null);
   const [annotationData, setAnnotationData] = useState<GeneAnnotationMap | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    Promise.all([
-      fetch('/data/dmrData.json').then((r) => r.json()),
-      fetch('/data/probeData.json').then((r) => r.json()),
-      fetch('/data/geneAnnotations.json').then((r) => r.json()),
-    ]).then(([dmr, probes, annos]) => {
-      setMasterData(dmr as MasterDMRData);
-      setProbeData(probes as ProbeDataMap);
-      setAnnotationData(annos as GeneAnnotationMap);
-      setLoading(false);
-    });
-  }, []);
+  // Per-gene probe data: cached on demand
+  const [selectedTrackData, setSelectedTrackData] = useState<GeneProbeData | null>(null);
+  const [trackLoading, setTrackLoading] = useState(false);
+  const probeCache = useRef<Record<string, GeneProbeData | null>>({});
 
   // ---- UI state ----
   const [activeTab, setActiveTab] = useState<string>('cross');
@@ -55,6 +46,54 @@ export default function Home() {
   const [showTrack, setShowTrack] = useState<boolean>(true);
   const pageSize = 15;
 
+  useEffect(() => {
+    Promise.all([
+      fetch('/data/dmrData.json').then((r) => r.json()),
+      fetch('/data/geneAnnotations.json').then((r) => r.json()),
+    ]).then(([dmr, annos]) => {
+      setMasterData(dmr as MasterDMRData);
+      setAnnotationData(annos as GeneAnnotationMap);
+      setLoading(false);
+    });
+  }, []);
+
+  // Fetch probe data on demand when selectedGene changes
+  const fetchProbeData = useCallback(async (gene: string) => {
+    // Check cache first
+    if (gene in probeCache.current) {
+      setSelectedTrackData(probeCache.current[gene]);
+      return;
+    }
+    setTrackLoading(true);
+    setSelectedTrackData(null);
+    try {
+      const res = await fetch(`/data/probes/${encodeURIComponent(gene)}.json`);
+      if (res.ok) {
+        const data = await res.json() as GeneProbeData;
+        probeCache.current[gene] = data;
+        setSelectedTrackData(data);
+      } else {
+        probeCache.current[gene] = null;
+        setSelectedTrackData(null);
+      }
+    } catch {
+      probeCache.current[gene] = null;
+      setSelectedTrackData(null);
+    } finally {
+      setTrackLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedGene) {
+      fetchProbeData(selectedGene);
+    } else {
+      setSelectedTrackData(null);
+    }
+  }, [selectedGene, fetchProbeData]);
+
+
+
   // ---- Derived metrics ----
   const crossCount = masterData?.crossSubtype.length ?? 0;
   const crossPtsdCount = masterData?.crossSubtype.filter((d) => d.isPtsd).length ?? 0;
@@ -67,11 +106,16 @@ export default function Home() {
   const issCount = masterData?.uniqueSubtypes.ISS.length ?? 0;
   const issPtsdCount = masterData?.uniqueSubtypes.ISS.filter((d) => d.isPtsd).length ?? 0;
 
-  // ---- Available genes for selector ----
+  // ---- Available genes for selector (all DMR genes) ----
   const trackGeneList = useMemo(() => {
-    if (!probeData) return [];
-    return Object.keys(probeData).sort();
-  }, [probeData]);
+    if (!masterData) return [];
+    const genes = new Set<string>();
+    masterData.crossSubtype.forEach((d) => genes.add(d.gene));
+    for (const sub of ['SSS', 'ADS', 'ICF', 'ISS'] as const) {
+      masterData.uniqueSubtypes[sub].forEach((d) => genes.add(d.gene));
+    }
+    return Array.from(genes).sort();
+  }, [masterData]);
 
   // ---- Filtered dataset ----
   const filteredData = useMemo(() => {
@@ -134,10 +178,7 @@ export default function Home() {
     return masterData.crossSubtype.find((d) => d.gene === selectedGene) || null;
   }, [masterData, selectedGene]);
 
-  const selectedTrackData = useMemo(() => {
-    if (!probeData || !selectedGene) return null;
-    return probeData[selectedGene] || null;
-  }, [probeData, selectedGene]);
+  // selectedTrackData is now managed by the fetchProbeData useEffect above
 
   const selectedAnnotation = useMemo(() => {
     if (!annotationData || !selectedGene) return null;
@@ -422,11 +463,16 @@ export default function Home() {
                 </div>
               </div>
 
-              {selectedTrackData ? (
+              {trackLoading ? (
+                <div className="text-center py-8 flex flex-col items-center gap-2">
+                  <Loader2 className="w-5 h-5 text-slate-500 animate-spin" />
+                  <span className="text-slate-400 text-xs">Loading probe data for <strong>{selectedGene}</strong>...</span>
+                </div>
+              ) : selectedTrackData ? (
                 <GenomicTrackPlot geneData={selectedTrackData} />
               ) : selectedGene ? (
                 <div className="text-center py-8 text-slate-400 text-xs">
-                  No probe-level track data loaded for <strong>{selectedGene}</strong>.
+                  No probe-level track data available for <strong>{selectedGene}</strong>.
                 </div>
               ) : (
                 <div className="text-center py-8 text-slate-400 text-xs">

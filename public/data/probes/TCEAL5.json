@@ -1,0 +1,1 @@
+{"gene":"TCEAL5","chr":"X","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04077363","pos":102531881,"feature":"TSS200","cpgIsland":"","SSS_logFC":0.057,"SSS_P":0.0056,"SSS_FDR":0.3028,"ADS_logFC":0.413,"ADS_P":0.027,"ADS_FDR":0.5431,"ICF_logFC":0.2989,"ICF_P":0.0129,"ICF_FDR":0.4852,"ISS_logFC":0.2097,"ISS_P":0.0172,"ISS_FDR":0.4744}]}

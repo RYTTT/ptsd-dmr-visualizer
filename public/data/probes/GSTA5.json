@@ -1,0 +1,1 @@
+{"gene":"GSTA5","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15178040","pos":52711494,"feature":"TSS1500","cpgIsland":"","SSS_logFC":-0.0172,"SSS_P":0.004,"SSS_FDR":0.2808,"ADS_logFC":-0.1049,"ADS_P":0.3147,"ADS_FDR":0.7754,"ICF_logFC":0.0168,"ICF_P":0.4087,"ICF_FDR":0.8389,"ISS_logFC":-0.0034,"ISS_P":0.8599,"ISS_FDR":0.9513}]}

@@ -1,0 +1,1 @@
+{"gene":"FGF5","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23973123","pos":81207949,"feature":"3'UTR","cpgIsland":"","SSS_logFC":-0.0975,"SSS_P":0.003,"SSS_FDR":0.2603,"ADS_logFC":-0.2164,"ADS_P":0.056,"ADS_FDR":0.5964,"ICF_logFC":-0.1898,"ICF_P":0.0712,"ICF_FDR":0.6234,"ISS_logFC":-0.2127,"ISS_P":0.0094,"ISS_FDR":0.4391}]}
