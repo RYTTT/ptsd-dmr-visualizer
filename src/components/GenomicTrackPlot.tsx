@@ -168,12 +168,12 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           ctx.strokeRect(x1, areaTop, x2 - x1, areaH);
           ctx.setLineDash([]);
 
-          // Label on first panel only
+          // Label on first panel only — positioned above panel border
           if (idx === 0) {
             ctx.fillStyle = '#92400e';
             ctx.font = 'bold 10px Inter, system-ui, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('CpG Island', (x1 + x2) / 2, areaTop - 4);
+            ctx.fillText('CpG Island', (x1 + x2) / 2, panelTop - 6);
           }
         }
       }
