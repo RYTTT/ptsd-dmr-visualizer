@@ -46,11 +46,17 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({
         <div className="bg-white border border-slate-300 p-3 rounded-lg shadow-lg max-w-xs z-50 text-xs space-y-1">
           <div className="flex items-center justify-between gap-2 mb-1 border-b border-slate-100 pb-1">
             <span className="font-bold text-slate-900 text-sm">{item.gene}</span>
-            {item.isPtsd && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 rounded">
-                PTSD Target
-              </span>
-            )}
+            <span
+              className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${
+                item.direction === 'Hypermethylated'
+                  ? 'bg-red-50 text-red-700 border border-red-200'
+                  : item.direction === 'Hypomethylated'
+                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                  : 'bg-amber-50 text-amber-700 border border-amber-200'
+              }`}
+            >
+              {item.direction}
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="text-slate-500">Chromosome:</span>
@@ -70,11 +76,9 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({
           </div>
           <div className="flex justify-between">
             <span className="text-slate-500">FDR P-value:</span>
-            <span className="font-mono text-slate-800">{item.fdr < 1e-15 ? '< 1e-15' : item.fdr.toExponential(2)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-slate-500">Direction:</span>
-            <span className="font-semibold text-slate-700">{item.direction}</span>
+            <span className="font-mono text-slate-800">
+              {item.fdr < 1e-15 ? '< 1e-15' : item.fdr.toExponential(2)}
+            </span>
           </div>
         </div>
       );
@@ -99,15 +103,15 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({
         <div className="flex items-center space-x-3 text-xs">
           <div className="flex items-center space-x-1">
             <span className="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span>
-            <span className="text-slate-600 font-medium">Hyper</span>
+            <span className="text-slate-600 font-medium">Hypermethylated</span>
           </div>
           <div className="flex items-center space-x-1">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block"></span>
-            <span className="text-slate-600 font-medium">Hypo</span>
+            <span className="text-slate-600 font-medium">Hypomethylated</span>
           </div>
           <div className="flex items-center space-x-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block ring-2 ring-amber-300"></span>
-            <span className="text-slate-800 font-bold">PTSD</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-600 inline-block"></span>
+            <span className="text-slate-600 font-medium">Mixed</span>
           </div>
         </div>
       </div>
@@ -164,15 +168,14 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({
                 const isSelected = selectedGene === entry.gene;
                 let fillColor = entry.deltaBeta > 0 ? '#dc2626' : '#2563eb';
                 if (entry.direction === 'Mixed') fillColor = '#d97706';
-                if (entry.isPtsd) fillColor = '#f59e0b';
 
                 return (
                   <Cell
                     key={`cell-${index}`}
                     fill={fillColor}
-                    stroke={isSelected ? '#0f172a' : entry.isPtsd ? '#b45309' : 'none'}
-                    strokeWidth={isSelected ? 2.5 : entry.isPtsd ? 1.2 : 0}
-                    opacity={isSelected ? 1 : 0.85}
+                    stroke={isSelected ? '#0f172a' : 'none'}
+                    strokeWidth={isSelected ? 2.5 : 0}
+                    opacity={isSelected ? 1 : 0.8}
                   />
                 );
               })}
