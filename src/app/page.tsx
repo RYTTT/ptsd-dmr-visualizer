@@ -6,8 +6,10 @@ import { MetricsOverview } from '@/components/MetricsOverview';
 import { DmrVolcanoPlot } from '@/components/DmrVolcanoPlot';
 import { SubtypeComparisonChart } from '@/components/SubtypeComparisonChart';
 import { GenomicTrackPlot } from '@/components/GenomicTrackPlot';
+import { GeneAnnotationCard } from '@/components/GeneAnnotationCard';
 import { MasterDMRData } from '@/types/dmr';
 import { ProbeDataMap } from '@/types/probe';
+import { GeneAnnotationMap } from '@/types/annotation';
 import {
   Search,
   Filter,
@@ -18,21 +20,25 @@ import {
   Dna,
   Loader2,
   MapPin,
+  BookOpen,
 } from 'lucide-react';
 
 export default function Home() {
   // ---- Data loading state ----
   const [masterData, setMasterData] = useState<MasterDMRData | null>(null);
   const [probeData, setProbeData] = useState<ProbeDataMap | null>(null);
+  const [annotationData, setAnnotationData] = useState<GeneAnnotationMap | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       fetch('/data/dmrData.json').then((r) => r.json()),
       fetch('/data/probeData.json').then((r) => r.json()),
-    ]).then(([dmr, probes]) => {
+      fetch('/data/geneAnnotations.json').then((r) => r.json()),
+    ]).then(([dmr, probes, annos]) => {
       setMasterData(dmr as MasterDMRData);
       setProbeData(probes as ProbeDataMap);
+      setAnnotationData(annos as GeneAnnotationMap);
       setLoading(false);
     });
   }, []);
@@ -61,7 +67,7 @@ export default function Home() {
   const issCount = masterData?.uniqueSubtypes.ISS.length ?? 0;
   const issPtsdCount = masterData?.uniqueSubtypes.ISS.filter((d) => d.isPtsd).length ?? 0;
 
-  // ---- Available genes for the genomic track selector ----
+  // ---- Available genes for selector ----
   const trackGeneList = useMemo(() => {
     if (!probeData) return [];
     return Object.keys(probeData).sort();
@@ -121,18 +127,22 @@ export default function Home() {
     return list;
   }, [masterData, activeTab, searchQuery, ptsdOnly, directionFilter, sortField, sortAsc]);
 
-  // ---- Selected gene for comparison chart ----
+  // ---- Selected gene details ----
   const selectedCrossItem = useMemo(() => {
     if (!masterData) return null;
     if (!selectedGene) return masterData.crossSubtype[0] || null;
     return masterData.crossSubtype.find((d) => d.gene === selectedGene) || null;
   }, [masterData, selectedGene]);
 
-  // ---- Selected gene for genomic track ----
   const selectedTrackData = useMemo(() => {
     if (!probeData || !selectedGene) return null;
     return probeData[selectedGene] || null;
   }, [probeData, selectedGene]);
+
+  const selectedAnnotation = useMemo(() => {
+    if (!annotationData || !selectedGene) return null;
+    return annotationData[selectedGene] || null;
+  }, [annotationData, selectedGene]);
 
   // ---- Pagination ----
   const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
@@ -158,13 +168,12 @@ export default function Home() {
     document.body.removeChild(link);
   };
 
-  // ---- Loading screen ----
   if (loading || !masterData) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-10 h-10 text-cyan-400 animate-spin" />
-          <span className="text-slate-300 text-sm">Loading DMR datasets...</span>
+          <span className="text-slate-300 text-sm">Loading DMR & Annotation datasets...</span>
         </div>
       </div>
     );
@@ -200,7 +209,7 @@ export default function Home() {
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
             <input
               type="text"
-              placeholder="Search gene or chromosome (e.g. HTR2A, AHRR, chr13)..."
+              placeholder="Search gene or chromosome (e.g. HTR2A, AHRR, ZBTB16, chr13)..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -254,6 +263,13 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Selected Gene Literature & Biological Annotation Card */}
+        {selectedGene && (
+          <div className="mb-6">
+            <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} />
+          </div>
+        )}
+
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <DmrVolcanoPlot
@@ -272,10 +288,10 @@ export default function Home() {
                 <MapPin className="w-5 h-5 text-cyan-400" />
                 <div>
                   <h3 className="text-sm font-bold text-white">
-                    Probe-Level Genomic Track
+                    Probe-Level Genomic Track (Scientific Publication View)
                   </h3>
                   <p className="text-xs text-slate-400">
-                    CpG-resolution lollipop plot with CpG Island annotation — select gene below
+                    CpG-resolution lollipop track with CpG Island annotation & p-value thresholds (White Background)
                   </p>
                 </div>
               </div>
@@ -310,7 +326,7 @@ export default function Home() {
             )}
             {showTrack && selectedGene && !selectedTrackData && (
               <div className="text-center py-10 text-slate-500 text-sm">
-                No probe-level data available for <strong>{selectedGene}</strong>. Select a PTSD-related gene from the dropdown.
+                No probe-level data available for <strong>{selectedGene}</strong>. Select an annotated PTSD gene.
               </div>
             )}
             {showTrack && !selectedGene && (
@@ -378,13 +394,14 @@ export default function Home() {
                     </div>
                   </th>
                   <th className="p-3.5">Direction</th>
-                  <th className="p-3.5 text-right">Track</th>
+                  <th className="p-3.5 text-right">Annotations</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-slate-800/60 bg-slate-900/40">
                 {paginatedData.map((row: any) => {
                   const isSelected = selectedGene === row.gene;
+                  const hasAnno = annotationData && annotationData[row.gene];
                   return (
                     <tr
                       key={row.gene}
@@ -425,17 +442,17 @@ export default function Home() {
                         </span>
                       </td>
                       <td className="p-3.5 text-right">
-                        {probeData && probeData[row.gene] ? (
+                        {hasAnno ? (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedGene(row.gene);
-                              setShowTrack(true);
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
-                            className="px-2.5 py-1 text-[11px] font-semibold rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition"
+                            className="flex items-center gap-1 ml-auto px-2.5 py-1 text-[11px] font-semibold rounded-md bg-amber-400/10 text-amber-300 border border-amber-400/30 hover:bg-amber-400/20 transition"
                           >
-                            View Track
+                            <BookOpen className="w-3 h-3" />
+                            Annotated
                           </button>
                         ) : (
                           <span className="text-slate-600 text-[11px]">—</span>

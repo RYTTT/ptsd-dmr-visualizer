@@ -1,0 +1,799 @@
+{
+  "AHRR": {
+    "fullName": "Aryl-Hydrocarbon Receptor Repressor",
+    "category": "Detoxification & Epigenetic Aging",
+    "summary": "Represses AHR-mediated transcription of xenobiotic enzymes. AHRR hypomethylation (cg05575921) is a primary EWAS hallmark of tobacco smoke exposure, systemic inflammation, and accelerated epigenetic aging.",
+    "psychDisorders": [
+      "Substance Use Disorder (Tobacco)",
+      "PTSD",
+      "Major Depressive Disorder",
+      "Cognitive Decline"
+    ],
+    "references": [
+      {
+        "citation": "Monick et al., Am J Med Genet B 2012",
+        "pmid": "22915570",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/22915570/"
+      },
+      {
+        "citation": "Logue et al., Mol Psychiatry 2015",
+        "pmid": "25987158",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/25987158/"
+      }
+    ]
+  },
+  "ZBTB16": {
+    "fullName": "Zinc Finger and BTB Domain Containing 16 (PLZF)",
+    "category": "Glucocorticoid Signaling / Transcription Factor",
+    "summary": "Transcriptional repressor directly downstream of glucocorticoid receptor (NR3C1) activation. Regulates immune cell development, neural progenitor differentiation, and stress-induced metabolic adaptation.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Bipolar Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Lekman et al., Epigenomics 2018",
+        "pmid": "29377708",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/29377708/"
+      },
+      {
+        "citation": "Yang et al., Biol Psychiatry 2021",
+        "pmid": "33423719",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/33423719/"
+      }
+    ]
+  },
+  "HTR2A": {
+    "fullName": "5-Hydroxytryptamine Receptor 2A",
+    "category": "Serotoninergic System / Neurotransmission",
+    "summary": "Encodes the G-protein coupled serotonin 2A receptor, highly expressed in prefrontal cortex. Key mediator of mood, cognition, hallucination, anxiety, and fear extinction learning.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Schizophrenia",
+      "Suicidal Behavior",
+      "Anxiety Disorders"
+    ],
+    "references": [
+      {
+        "citation": "Polessskaya et al., J Psychopharmacol 2006",
+        "pmid": "16717329",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/16717329/"
+      },
+      {
+        "citation": "Gass\u00f3 et al., Pharmacogenomics J 2014",
+        "pmid": "24614457",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/24614457/"
+      }
+    ]
+  },
+  "FKBP5": {
+    "fullName": "FK506 Binding Protein 5",
+    "category": "HPA Axis / Glucocorticoid Receptor Co-chaperone",
+    "summary": "Acts as an ultra-short negative feedback regulator of the glucocorticoid receptor (GR). Childhood trauma-dependent FKBP5 demethylation impairs GR sensitivity and leads to chronic HPA axis dysregulation.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Childhood Trauma",
+      "Anxiety Disorders"
+    ],
+    "references": [
+      {
+        "citation": "Binder et al., JAMA 2004",
+        "pmid": "15585764",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/15585764/"
+      },
+      {
+        "citation": "Klengel et al., Nat Neurosci 2013",
+        "pmid": "23202135",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/23202135/"
+      }
+    ]
+  },
+  "NR3C1": {
+    "fullName": "Nuclear Receptor Subfamily 3 Group C Member 1 (Glucocorticoid Receptor)",
+    "category": "HPA Axis / Steroid Hormone Receptor",
+    "summary": "Encodes the primary glucocorticoid receptor (GR), mediating stress hormone response, immune suppression, and brain synaptic plasticity. Promoter exon 1F methylation is a classic epigenetic marker of stress exposure.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Early Life Trauma",
+      "Burnout Syndrome"
+    ],
+    "references": [
+      {
+        "citation": "McGowan et al., Nat Neurosci 2009",
+        "pmid": "19234457",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/19234457/"
+      },
+      {
+        "citation": "Yehuda et al., Biol Psychiatry 2015",
+        "pmid": "25442581",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/25442581/"
+      }
+    ]
+  },
+  "BDNF": {
+    "fullName": "Brain Derived Neurotrophic Factor",
+    "category": "Neuroplasticity & Synaptogenesis",
+    "summary": "Promotes neuronal survival, synaptic plasticity, hippocampal neurogenesis, and fear conditioning memory consolidation. Methylation changes impair activity-dependent BDNF expression.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Schizophrenia",
+      "Bipolar Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Roth et al., Biol Psychiatry 2009",
+        "pmid": "19103439",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/19103439/"
+      },
+      {
+        "citation": "Duman et al., Nat Med 2012",
+        "pmid": "22955998",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/22955998/"
+      }
+    ]
+  },
+  "SDK1": {
+    "fullName": "Sidekick Cell Adhesion Molecule 1",
+    "category": "Synaptic Adhesion & Neural Circuit Assembly",
+    "summary": "Transmembrane cell adhesion molecule guiding synaptic specificity and dendritic arborization. Identified as a genome-wide significant risk locus in large-scale PTSD GWAS meta-analyses.",
+    "psychDisorders": [
+      "PTSD (GWAS Hit)",
+      "Bipolar Disorder",
+      "Schizophrenia"
+    ],
+    "references": [
+      {
+        "citation": "Nievergelt et al., Nat Genet 2019",
+        "pmid": "31604906",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31604906/"
+      },
+      {
+        "citation": "Stein et al., Am J Psychiatry 2021",
+        "pmid": "33971769",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/33971769/"
+      }
+    ]
+  },
+  "CRH": {
+    "fullName": "Corticotropin Releasing Hormone",
+    "category": "HPA Axis Neuropeptide",
+    "summary": "The master hypothalamic neurohormone driving stress-induced pituitary ACTH release and cortisol secretion. Hyper-secretion of CRH in central amygdala mediates fear and hyperarousal.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Panic Disorder",
+      "Generalized Anxiety Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Ressler et al., Nature 2011",
+        "pmid": "21350485",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/21350485/"
+      },
+      {
+        "citation": "Bremner et al., Am J Psychiatry 1997",
+        "pmid": "9215444",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/9215444/"
+      }
+    ]
+  },
+  "SGK1": {
+    "fullName": "Serum/Glucocorticoid Regulated Kinase 1",
+    "category": "Glucocorticoid Signaling / Ion Channel Regulation",
+    "summary": "Serine/threonine kinase rapidly transcribed by glucocorticoids. Regulates hippocampal dendritic spine density, glutamate receptor trafficking, and cellular survival in response to stress.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Stress Vulnerability"
+    ],
+    "references": [
+      {
+        "citation": "Anacker et al., Proc Natl Acad Sci 2013",
+        "pmid": "23690595",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/23690595/"
+      },
+      {
+        "citation": "Licznerski et al., Biol Psychiatry 2015",
+        "pmid": "25936856",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/25936856/"
+      }
+    ]
+  },
+  "GAD1": {
+    "fullName": "Glutamate Decarboxylase 1 (GAD67)",
+    "category": "GABAergic System / Inhibitory Neurotransmission",
+    "summary": "Catalyzes the rate-limiting conversion of glutamate to GABA. Deficits in GABAergic cortical inhibition are central to stress-induced hyperexcitability and trauma memory extinction deficits.",
+    "psychDisorders": [
+      "PTSD",
+      "Schizophrenia",
+      "Major Depressive Disorder",
+      "Bipolar Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Akbarian et al., Arch Gen Psychiatry 1995",
+        "pmid": "7872849",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/7872849/"
+      },
+      {
+        "citation": "Gavin et al., Neuropsychopharmacology 2012",
+        "pmid": "22692562",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/22692562/"
+      }
+    ]
+  },
+  "COMT": {
+    "fullName": "Catechol-O-Methyltransferase",
+    "category": "Dopaminergic Catabolism",
+    "summary": "Degrades catecholamines including dopamine, epinephrine, and norepinephrine in prefrontal cortex. The functional Val158Met polymorphism regulates executive function, stress resilience, and fear processing.",
+    "psychDisorders": [
+      "PTSD",
+      "Schizophrenia",
+      "Panic Disorder",
+      "Obsessive-Compulsive Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Kolassa et al., J Clin Psychopharmacol 2010",
+        "pmid": "20473065",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/20473065/"
+      },
+      {
+        "citation": "Egan et al., Proc Natl Acad Sci 2001",
+        "pmid": "11381111",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/11381111/"
+      }
+    ]
+  },
+  "MAOA": {
+    "fullName": "Monoamine Oxidase A",
+    "category": "Monoaminergic Catabolism",
+    "summary": "Degrades serotonin, norepinephrine, and dopamine in neural tissue. Epigenetic promoter methylation interacts with early life maltreatment to influence aggression, impulsive violence, and mood disorders.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Antisocial Behavior"
+    ],
+    "references": [
+      {
+        "citation": "Caspi et al., Science 2002",
+        "pmid": "12161658",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/12161658/"
+      },
+      {
+        "citation": "Ziegler et al., Int J Neuropsychopharmacol 2016",
+        "pmid": "26685244",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26685244/"
+      }
+    ]
+  },
+  "ADAP1": {
+    "fullName": "ArfGAP With Dual PH Domains 1 (CENTA1)",
+    "category": "GTPase Activating Protein / Phosphoinositide Signaling",
+    "summary": "GTPase-activating protein for ARF6, participating in dendritic spine morphogenesis, endocytosis, and intracellular vesicular transport in central neurons. Top cross-subtype DMR in meta-analysis.",
+    "psychDisorders": [
+      "PTSD",
+      "Neurodevelopmental Disorders",
+      "Schizophrenia"
+    ],
+    "references": [
+      {
+        "citation": "Venkateswarlu et al., J Biol Chem 2004",
+        "pmid": "15159392",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/15159392/"
+      },
+      {
+        "citation": "Gao et al., Nat Neurosci 2010",
+        "pmid": "20512134",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/20512134/"
+      }
+    ]
+  },
+  "DRD4": {
+    "fullName": "Dopamine Receptor D4",
+    "category": "Dopaminergic Neurotransmission",
+    "summary": "G-protein coupled receptor for dopamine, abundant in limbic system and prefrontal cortex. Regulates attention, reward processing, novelty seeking, and emotional reactivity.",
+    "psychDisorders": [
+      "PTSD",
+      "ADHD",
+      "Substance Use Disorder",
+      "Major Depressive Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Bakermans-Kranenburg et al., Mol Psychiatry 2011",
+        "pmid": "21403673",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/21403673/"
+      }
+    ]
+  },
+  "FAAH": {
+    "fullName": "Fatty Acid Amide Hydrolase",
+    "category": "Endocannabinoid System",
+    "summary": "Primary degrading enzyme for anandamide (AEA). Inhibition or genetic variant (C385A) elevates brain endocannabinoid tone, enhancing fear extinction memory and stress resilience.",
+    "psychDisorders": [
+      "PTSD",
+      "Anxiety Disorders",
+      "Substance Use Disorder",
+      "Chronic Pain"
+    ],
+    "references": [
+      {
+        "citation": "Dincheva et al., Nat Commun 2015",
+        "pmid": "25743840",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/25743840/"
+      },
+      {
+        "citation": "Mayo et al., Biol Psychiatry 2020",
+        "pmid": "31924346",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31924346/"
+      }
+    ]
+  },
+  "HTR3A": {
+    "fullName": "5-Hydroxytryptamine Receptor 3A",
+    "category": "Serotoninergic System / Ionotropic Channel",
+    "summary": "Ligand-gated ion channel mediating rapid excitatory serotonin responses. Strongly expressed in amygdala and prefrontal cortex GABA interneurons, modulating anxiety and stress reactivity.",
+    "psychDisorders": [
+      "PTSD",
+      "Irritable Bowel Syndrome",
+      "Major Depressive Disorder",
+      "Alcoholism"
+    ],
+    "references": [
+      {
+        "citation": "Hammer et al., Mol Psychiatry 2012",
+        "pmid": "21844874",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/21844874/"
+      }
+    ]
+  },
+  "NR3C2": {
+    "fullName": "Nuclear Receptor Subfamily 3 Group C Member 2 (Mineralocorticoid Receptor)",
+    "category": "HPA Axis / Steroid Hormone Receptor",
+    "summary": "High-affinity steroid receptor for cortisol/aldosterone. Regulates baseline basal HPA axis tone, spatial memory, and early appraisal of stress stimuli.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Cognitive Decline"
+    ],
+    "references": [
+      {
+        "citation": "Vogel et al., Psychoneuroendocrinology 2016",
+        "pmid": "26966847",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26966847/"
+      }
+    ]
+  },
+  "ARC": {
+    "fullName": "Activity Regulated Cytoskeleton Associated Protein",
+    "category": "Immediate Early Gene / Synaptic Plasticity",
+    "summary": "Immediate early gene essential for long-term potentiation (LTP), AMPA receptor trafficking, and consolidation of trauma memory tracings in amygdala and hippocampus.",
+    "psychDisorders": [
+      "PTSD",
+      "Schizophrenia",
+      "Memory Consolidation Deficits"
+    ],
+    "references": [
+      {
+        "citation": "Ploski et al., J Neurosci 2008",
+        "pmid": "19109503",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/19109503/"
+      }
+    ]
+  },
+  "NPY1R": {
+    "fullName": "Neuropeptide Y Receptor Y1",
+    "category": "Neuropeptide Y System / Anxiolytic Signaling",
+    "summary": "G-protein coupled receptor mediating anxiolytic and stress-resilient actions of Neuropeptide Y (NPY) in amygdala. NPY-Y1R signaling counteracts CRH-driven stress hyperarousal.",
+    "psychDisorders": [
+      "PTSD",
+      "Anxiety Disorders",
+      "Alcohol Use Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Rasmusson et al., Neuropsychopharmacology 2010",
+        "pmid": "20505663",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/20505663/"
+      }
+    ]
+  },
+  "NPY2R": {
+    "fullName": "Neuropeptide Y Receptor Y2",
+    "category": "Neuropeptide Y System / Presynaptic Autoreceptor",
+    "summary": "Presynaptic autoreceptor regulating feedback inhibition of NPY and GABA release in arcuate nucleus and amygdala.",
+    "psychDisorders": [
+      "PTSD",
+      "Substance Use Disorder",
+      "Panic Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Tasan et al., Br J Pharmacol 2016",
+        "pmid": "26661073",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26661073/"
+      }
+    ]
+  },
+  "OPRM1": {
+    "fullName": "Opioid Receptor Mu 1",
+    "category": "Endogenous Opioid System",
+    "summary": "Primary target for endogenous beta-endorphin and opioid analgesics. Regulates social attachment, emotional pain processing, stress-induced analgesia, and addiction vulnerability.",
+    "psychDisorders": [
+      "PTSD",
+      "Opioid Use Disorder",
+      "Borderline Personality Disorder",
+      "Major Depressive Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Draisci et al., Anesthesiology 1996",
+        "pmid": "8959921",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/8959921/"
+      }
+    ]
+  },
+  "ADCYAP1R1": {
+    "fullName": "ADCYAP1 Receptor Type I (PAC1 Receptor)",
+    "category": "PACAP Signaling / Stress Response",
+    "summary": "Receptor for pituitary adenylate cyclase-activating polypeptide (PACAP). Identified as a female-specific PTSD risk biomarker mediating fear conditioning and HPA activation.",
+    "psychDisorders": [
+      "PTSD (GWAS Hit)",
+      "Anxiety Disorders",
+      "Migraine"
+    ],
+    "references": [
+      {
+        "citation": "Ressler et al., Nature 2011",
+        "pmid": "21350485",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/21350485/"
+      }
+    ]
+  },
+  "AVPR1A": {
+    "fullName": "Arginine Vasopressin Receptor 1A",
+    "category": "Neuropeptide Signaling / Social Cognition",
+    "summary": "Mediates vasopressin actions on social bonding, territorial aggression, HPA axis potentiating, and stress-induced vasoconstriction.",
+    "psychDisorders": [
+      "PTSD",
+      "Autism Spectrum Disorder",
+      "Interpersonal Violence"
+    ],
+    "references": [
+      {
+        "citation": "Walum et al., Proc Natl Acad Sci 2008",
+        "pmid": "18765804",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/18765804/"
+      }
+    ]
+  },
+  "PRKCE": {
+    "fullName": "Protein Kinase C Epsilon",
+    "category": "Intracellular Signaling Kinase",
+    "summary": "Calcium-independent kinase modulating GABA-A receptor sensitivity, neurosteroid biosynthesis, and stress-induced hyperalgesia.",
+    "psychDisorders": [
+      "PTSD",
+      "Alcohol Use Disorder",
+      "Chronic Neuropathic Pain"
+    ],
+    "references": [
+      {
+        "citation": "Hodge et al., Nat Neurosci 1999",
+        "pmid": "10526340",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/10526340/"
+      }
+    ]
+  },
+  "NGF": {
+    "fullName": "Nerve Growth Factor",
+    "category": "Neurotrophin Signaling",
+    "summary": "Essential neurotrophic factor driving sympathetic neuron maintenance, basal forebrain cholinergic integrity, and stress-induced neurogenic inflammation.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Cognitive Decline"
+    ],
+    "references": [
+      {
+        "citation": "Alleva et al., Neuroendocrinol Lett 2002",
+        "pmid": "12080315",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/12080315/"
+      }
+    ]
+  },
+  "DNMT3B": {
+    "fullName": "DNA Methyltransferase 3 Beta",
+    "category": "De Novo Epigenetic Methylation",
+    "summary": "Primary de novo DNA methyltransferase establishing novel epigenetic methylation patterns in response to environmental trauma, stress, and pharmacological intervention.",
+    "psychDisorders": [
+      "PTSD",
+      "Epigenetic Aging",
+      "Major Depressive Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Oliveira et al., Proc Natl Acad Sci 2012",
+        "pmid": "22869733",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/22869733/"
+      }
+    ]
+  },
+  "ANKRD55": {
+    "fullName": "Ankyrin Repeat Domain 55",
+    "category": "Immune & Inflammatory Regulation",
+    "summary": "Immune-related loci identified in large-scale EWAS and GWAS of autoimmune diseases and PTSD symptom clusters.",
+    "psychDisorders": [
+      "PTSD (EWAS Hit)",
+      "Multiple Sclerosis",
+      "Autoimmune Inflammation"
+    ],
+    "references": [
+      {
+        "citation": "Mehta et al., Am J Psychiatry 2019",
+        "pmid": "31252988",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31252988/"
+      }
+    ]
+  },
+  "HDAC2": {
+    "fullName": "Histone Deacetylase 2",
+    "category": "Epigenetic Chromatin Remodeling",
+    "summary": "Negative regulator of hippocampal spine formation and synaptic plasticity. HDAC2 overexpression impairs trauma extinction and memory recall.",
+    "psychDisorders": [
+      "PTSD",
+      "Alzheimer's Disease",
+      "Major Depressive Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Guan et al., Nature 2009",
+        "pmid": "19421191",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/19421191/"
+      }
+    ]
+  },
+  "CREB1": {
+    "fullName": "cAMP Responsive Element Binding Protein 1",
+    "category": "Transcription Factor / Memory Consolidation",
+    "summary": "Central transcription factor driving BDNF expression, long-term memory formation, and neuroplasticity downstream of cAMP/PKA cascades.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Cognitive Dysfunction"
+    ],
+    "references": [
+      {
+        "citation": "Blendy et al., Nat Rev Neurosci 2006",
+        "pmid": "16429124",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/16429124/"
+      }
+    ]
+  },
+  "HTR2C": {
+    "fullName": "5-Hydroxytryptamine Receptor 2C",
+    "category": "Serotoninergic System",
+    "summary": "Serotonin 2C receptor regulating HPA axis activation, appetite, anxiety, and impulsive behavior. RNA editing and methylation tune receptor sensitivity.",
+    "psychDisorders": [
+      "PTSD",
+      "Anxiety Disorders",
+      "Eating Disorders",
+      "Major Depressive Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Iwamoto et al., Hum Mol Genet 2009",
+        "pmid": "19106209",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/19106209/"
+      }
+    ]
+  },
+  "DRD5": {
+    "fullName": "Dopamine Receptor D5",
+    "category": "Dopaminergic System",
+    "summary": "D1-like dopamine receptor subtype coupled to Gs, highly expressed in hippocampus and dentate gyrus. Regulates synaptic potentiation and spatial fear memory.",
+    "psychDisorders": [
+      "PTSD",
+      "ADHD",
+      "Schizophrenia"
+    ],
+    "references": [
+      {
+        "citation": "Holmes et al., Neuropsychopharmacology 2004",
+        "pmid": "14749714",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/14749714/"
+      }
+    ]
+  },
+  "NRXN1": {
+    "fullName": "Neurexin 1",
+    "category": "Synaptic Cell Adhesion",
+    "summary": "Presynaptic cell adhesion molecule organizing synaptic terminal assembly and neurotransmitter release alignment across synaptic clefts.",
+    "psychDisorders": [
+      "PTSD",
+      "Schizophrenia",
+      "Autism Spectrum Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Rujescu et al., Hum Mol Genet 2009",
+        "pmid": "18990748",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/18990748/"
+      }
+    ]
+  },
+  "SHANK2": {
+    "fullName": "SH3 And Multiple Ankyrin Repeat Domains 2",
+    "category": "Postsynaptic Density Scaffolding",
+    "summary": "Master postsynaptic density scaffold protein anchoring glutamate receptors (NMDA/AMPA) to actin cytoskeleton in dendritic spines.",
+    "psychDisorders": [
+      "PTSD",
+      "Autism Spectrum Disorder",
+      "Schizophrenia"
+    ],
+    "references": [
+      {
+        "citation": "Berkel et al., Nat Genet 2010",
+        "pmid": "20473310",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/20473310/"
+      }
+    ]
+  },
+  "CREB5": {
+    "fullName": "cAMP Responsive Element Binding Protein 5",
+    "category": "Transcription Factor",
+    "summary": "BZIP transcription factor family member regulating cAMP-dependent gene transcription in neural progenitor cells and stress pathways.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Kim et al., Mol Brain 2018",
+        "pmid": "30157904",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/30157904/"
+      }
+    ]
+  },
+  "MAD1L1": {
+    "fullName": "MAD1 Mitotic Arrest Deficient Like 1",
+    "category": "Cell Cycle & PTSD GWAS Risk Locus",
+    "summary": "Cell cycle checkpoint protein identified as a prominent genome-wide significant risk locus for PTSD and schizophrenia in multi-ethnic GWAS cohorts.",
+    "psychDisorders": [
+      "PTSD (GWAS Hit)",
+      "Schizophrenia",
+      "Bipolar Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Nievergelt et al., Nat Genet 2019",
+        "pmid": "31604906",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31604906/"
+      }
+    ]
+  },
+  "PARK2": {
+    "fullName": "Parkin RBR E3 Ubiquitin Protein Ligase (PRKN)",
+    "category": "Mitochondrial Integrity & Ubiquitin Pathway",
+    "summary": "E3 ubiquitin ligase crucial for mitochondrial quality control (mitophagy) and oxidative stress management in neurons.",
+    "psychDisorders": [
+      "PTSD (GWAS Hit)",
+      "Parkinson's Disease",
+      "Major Depressive Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Logue et al., Biol Psychiatry 2018",
+        "pmid": "29126487",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/29126487/"
+      }
+    ]
+  },
+  "CYP1B1": {
+    "fullName": "Cytochrome P450 Family 1 Subfamily B Member 1",
+    "category": "Xenobiotic & Steroid Metabolism",
+    "summary": "Dioxin-inducible cytochrome P450 enzyme metabolizing polycyclic aromatic hydrocarbons and estrogen compounds downstream of AHR signaling.",
+    "psychDisorders": [
+      "PTSD",
+      "Substance Abuse",
+      "Oxidative Stress Disorders"
+    ],
+    "references": [
+      {
+        "citation": "Nebert et al., Hum Genomics 2013",
+        "pmid": "23452427",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/23452427/"
+      }
+    ]
+  },
+  "RORA": {
+    "fullName": "RAR Related Orphan Receptor A",
+    "category": "Circadian Clock & Neuroprotection",
+    "summary": "Nuclear hormone receptor regulating circadian clock oscillation (BMAL1 activation), neuroprotection against oxidative stress, and Purkinje cell survival.",
+    "psychDisorders": [
+      "PTSD (GWAS Hit)",
+      "Autism Spectrum Disorder",
+      "Major Depressive Disorder"
+    ],
+    "references": [
+      {
+        "citation": "Sarachana et al., PLoS ONE 2011",
+        "pmid": "21359227",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/21359227/"
+      }
+    ]
+  },
+  "CREBBP": {
+    "fullName": "CREB Binding Protein (CBP)",
+    "category": "Histone Acetyltransferase / Coactivator",
+    "summary": "Essential histone acetyltransferase (HAT) acting as a transcriptional coactivator for CREB, GR, and NF-kB during memory consolidation.",
+    "psychDisorders": [
+      "PTSD",
+      "Rubinstein-Taybi Syndrome",
+      "Cognitive Memory Deficits"
+    ],
+    "references": [
+      {
+        "citation": "Korzus et al., Neuron 2004",
+        "pmid": "15182721",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/15182721/"
+      }
+    ]
+  },
+  "NLGN1": {
+    "fullName": "Neuroligin 1",
+    "category": "Postsynaptic Cell Adhesion",
+    "summary": "Excitatory postsynaptic adhesion molecule binding presynaptic neurexins to specify glutamatergic synapse formation and LTP.",
+    "psychDisorders": [
+      "PTSD",
+      "Autism Spectrum Disorder",
+      "Alzheimer's Disease"
+    ],
+    "references": [
+      {
+        "citation": "Chih et al., Science 2005",
+        "pmid": "15731453",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/15731453/"
+      }
+    ]
+  },
+  "NTF3": {
+    "fullName": "Neurotrophin 3",
+    "category": "Neurotrophic Factor",
+    "summary": "Neurotrophic factor promoting visceral sensory neuron survival, locus coeruleus noradrenergic differentiation, and synaptic plastic strengthening.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Anxiety Disorders"
+    ],
+    "references": [
+      {
+        "citation": "Maisonpierre et al., Genomics 1991",
+        "pmid": "1849479",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/1849479/"
+      }
+    ]
+  },
+  "TSC22D3": {
+    "fullName": "TSC22 Domain Family Member 3 (GILZ)",
+    "category": "Glucocorticoid Induced Anti-inflammatory",
+    "summary": "Glucocorticoid-induced leucine zipper (GILZ) suppressing NF-kB transcription and pro-inflammatory cytokine production during stress.",
+    "psychDisorders": [
+      "PTSD",
+      "Major Depressive Disorder",
+      "Chronic Inflammatory Disorders"
+    ],
+    "references": [
+      {
+        "citation": "Ayroldi et al., Blood 2001",
+        "pmid": "11139485",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/11139485/"
+      }
+    ]
+  }
+}
