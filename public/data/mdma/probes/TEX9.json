@@ -1,0 +1,1 @@
+{"gene":"TEX9","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02345327","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.655226,"Ketamine_P":0.0024195613318401,"Ketamine_FDR":0.375177269379856,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

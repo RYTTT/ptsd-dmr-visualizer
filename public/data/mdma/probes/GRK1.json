@@ -1,0 +1,1 @@
+{"gene":"GRK1","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21386586","pos":114321641,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.455677,"Ketamine_P":0.0012037747110592,"Ketamine_FDR":0.334348402585258,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

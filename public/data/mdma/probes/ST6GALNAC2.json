@@ -1,0 +1,1 @@
+{"gene":"ST6GALNAC2","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18916055","pos":74562048,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.781822,"Ketamine_P":0.0007199672843165,"Ketamine_FDR":0.309731621587765,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

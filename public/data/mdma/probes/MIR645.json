@@ -1,0 +1,1 @@
+{"gene":"MIR645","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09082617","pos":49201869,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.523653,"Ketamine_P":0.0019758242476208,"Ketamine_FDR":0.362452482029724,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

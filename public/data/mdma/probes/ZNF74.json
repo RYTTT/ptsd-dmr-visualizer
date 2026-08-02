@@ -1,0 +1,1 @@
+{"gene":"ZNF74","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03831756","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.40263,"MDMA_P":0.0041268241764927,"MDMA_FDR":0.0530848272680246,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

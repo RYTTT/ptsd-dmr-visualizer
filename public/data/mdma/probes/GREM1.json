@@ -1,0 +1,1 @@
+{"gene":"GREM1","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13103179","pos":33025272,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-0.935304,"MDMA_P":0.0034672181741937,"MDMA_FDR":0.0484568667808981,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

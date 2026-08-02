@@ -1,0 +1,1 @@
+{"gene":"CTNNB1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20901560","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.642685,"Ketamine_P":0.0023094856467368,"Ketamine_FDR":0.372653697879071,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

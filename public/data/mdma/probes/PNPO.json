@@ -1,0 +1,1 @@
+{"gene":"PNPO","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22996004","pos":46018654,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.702728,"MDMA_P":3.44866550294719e-05,"MDMA_FDR":0.0046846766492081,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

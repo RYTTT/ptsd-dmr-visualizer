@@ -1,0 +1,1 @@
+{"gene":"FSHB","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13280803","pos":30255943,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.446917,"MDMA_P":0.0004379958325159,"MDMA_FDR":0.016738202654918,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

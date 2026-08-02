@@ -1,0 +1,1 @@
+{"gene":"GULP1","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09563893","pos":189434064,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.234175,"CPT_P":0.0035941458121176,"CPT_FDR":0.198735726308521}]}

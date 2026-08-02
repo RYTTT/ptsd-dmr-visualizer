@@ -1,0 +1,1 @@
+{"gene":"CA1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18384385","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.755413,"MDMA_P":0.0004844876015989,"MDMA_FDR":0.0175740528576377,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"TMC1","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14184524","pos":75449747,"feature":"Body","cpgIsland":"","MDMA_logFC":0.842542,"MDMA_P":0.0006497546628497,"MDMA_FDR":0.0203752412540742,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"DGCR10","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20096409","pos":19009485,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.936383,"MDMA_P":7.42384522730243e-05,"MDMA_FDR":0.0068823297906346,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

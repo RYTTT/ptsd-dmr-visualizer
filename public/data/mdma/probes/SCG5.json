@@ -1,0 +1,1 @@
+{"gene":"SCG5","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11397301","pos":32933661,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.346782,"Ketamine_P":0.0048555830969722,"Ketamine_FDR":0.415863129864705,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

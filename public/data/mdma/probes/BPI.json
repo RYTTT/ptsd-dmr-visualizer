@@ -1,0 +1,1 @@
+{"gene":"BPI","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04787138","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.549452,"Ketamine_P":0.0033773793831377,"Ketamine_FDR":0.394581665551808,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

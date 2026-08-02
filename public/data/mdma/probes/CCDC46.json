@@ -1,0 +1,1 @@
+{"gene":"CCDC46","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07283582","pos":63770753,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.077017,"CPT_P":0.0035050113030502,"CPT_FDR":0.198201538055584}]}

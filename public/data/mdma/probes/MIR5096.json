@@ -1,0 +1,1 @@
+{"gene":"MIR5096","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00061368","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.852958,"MDMA_P":0.0030861297310884,"MDMA_FDR":0.0455329351095379,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

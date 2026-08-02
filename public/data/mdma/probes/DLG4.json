@@ -1,0 +1,1 @@
+{"gene":"DLG4","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15014684","pos":7093301,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.099647,"CPT_P":0.0008672787250698,"CPT_FDR":0.180208132689327}]}

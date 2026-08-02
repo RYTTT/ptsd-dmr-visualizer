@@ -1,0 +1,1 @@
+{"gene":"ZNRF3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16892729","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.856134,"MDMA_P":0.0032282450812874,"MDMA_FDR":0.0466549106880607,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

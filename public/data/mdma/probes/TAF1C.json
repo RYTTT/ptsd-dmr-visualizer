@@ -1,0 +1,1 @@
+{"gene":"TAF1C","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22411500","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.430552,"MDMA_P":0.0037740075433196,"MDMA_FDR":0.0506796381002911,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

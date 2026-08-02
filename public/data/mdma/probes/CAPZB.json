@@ -1,0 +1,1 @@
+{"gene":"CAPZB","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01832549","pos":19774989,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.507569,"Ketamine_P":0.0033056891186554,"Ketamine_FDR":0.393396942763217,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"MGA","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17051178","pos":41963816,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.965093,"MDMA_P":0.000137323610807,"MDMA_FDR":0.0093723014100178,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"PI15","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00128482","pos":75737456,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.705279,"MDMA_P":0.0017978180051778,"MDMA_FDR":0.0342686990760276,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

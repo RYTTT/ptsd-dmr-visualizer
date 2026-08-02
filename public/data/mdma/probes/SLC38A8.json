@@ -1,0 +1,1 @@
+{"gene":"SLC38A8","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14720455","pos":84075772,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.41673,"MDMA_P":0.0014724528352109,"MDMA_FDR":0.0309468075602593,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

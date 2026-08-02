@@ -1,0 +1,1 @@
+{"gene":"IPO9","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15555463","pos":201851880,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.547331,"Ketamine_P":0.0024753517475251,"Ketamine_FDR":0.376174080366065,"CPT_logFC":1.12487,"CPT_P":0.0018619183571995,"CPT_FDR":0.184988071807884}]}

@@ -1,0 +1,1 @@
+{"gene":"ANO9","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27420135","pos":425289,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.04637,"MDMA_P":0.0004771876121973,"MDMA_FDR":0.0174458983746916,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.161564,"CPT_P":0.0038864127090227,"CPT_FDR":0.200886248241791}]}

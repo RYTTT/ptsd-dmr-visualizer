@@ -1,0 +1,1 @@
+{"gene":"LIPE-AS1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10329764","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.61479,"MDMA_P":0.0032084154436175,"MDMA_FDR":0.0465045276980022,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

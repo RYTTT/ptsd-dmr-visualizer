@@ -1,0 +1,1 @@
+{"gene":"UGT3A1","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19897071","pos":35991382,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.486609,"Ketamine_P":0.0031239128056677,"Ketamine_FDR":0.391733214242723,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

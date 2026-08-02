@@ -1,0 +1,1 @@
+{"gene":"ASB1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01596936","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.963596,"CPT_P":0.0089261149826046,"CPT_FDR":0.235476465928341}]}

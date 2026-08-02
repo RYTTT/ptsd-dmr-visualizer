@@ -1,0 +1,1 @@
+{"gene":"HTR1D","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08872493","pos":23521417,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.333533,"CPT_P":0.0003599497005966,"CPT_FDR":0.176561132189866}]}

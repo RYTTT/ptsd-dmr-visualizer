@@ -1,0 +1,1 @@
+{"gene":"C6orf174","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19477921","pos":127805476,"feature":"Body","cpgIsland":"","MDMA_logFC":1.127001,"MDMA_P":0.0005518974240136,"MDMA_FDR":0.0187706546565926,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

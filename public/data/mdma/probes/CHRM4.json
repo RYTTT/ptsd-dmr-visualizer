@@ -1,0 +1,1 @@
+{"gene":"CHRM4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16939682","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.633438,"MDMA_P":4.15012066182222e-06,"MDMA_FDR":0.0017320532059124,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

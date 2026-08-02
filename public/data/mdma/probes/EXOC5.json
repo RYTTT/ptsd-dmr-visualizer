@@ -1,0 +1,1 @@
+{"gene":"EXOC5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08384843","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.272104,"CPT_P":0.003935117614037,"CPT_FDR":0.201109562205078}]}

@@ -1,0 +1,1 @@
+{"gene":"VSIG2","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24942416","pos":124621829,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.50772,"CPT_P":0.0002092218859148,"CPT_FDR":0.176561132189866}]}

@@ -1,0 +1,1 @@
+{"gene":"VWCE","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02843293","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.788804,"MDMA_P":0.0005251031808697,"MDMA_FDR":0.0183305342155978,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"ARPP-21","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09866743","pos":35706038,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.821889,"CPT_P":0.0028866361841377,"CPT_FDR":0.192991286488683}]}

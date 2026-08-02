@@ -1,0 +1,1 @@
+{"gene":"REV3L","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02928110","pos":111703149,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.1346,"CPT_P":0.0012602483051857,"CPT_FDR":0.181763811368561}]}

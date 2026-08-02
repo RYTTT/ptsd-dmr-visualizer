@@ -1,0 +1,1 @@
+{"gene":"MKRN3","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11100640","pos":23810861,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.553687,"CPT_P":0.0031584516916763,"CPT_FDR":0.194910700244185}]}

@@ -1,0 +1,1 @@
+{"gene":"C2orf48","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04156357","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.05288,"MDMA_P":0.0009082371369358,"MDMA_FDR":0.0241760284946768,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

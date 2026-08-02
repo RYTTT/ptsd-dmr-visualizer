@@ -1,0 +1,1 @@
+{"gene":"S100A10","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05368119","pos":151958685,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.218956,"CPT_P":0.0004135952339967,"CPT_FDR":0.176561132189866}]}

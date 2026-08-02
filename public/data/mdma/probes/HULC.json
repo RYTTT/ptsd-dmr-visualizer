@@ -1,0 +1,1 @@
+{"gene":"HULC","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21204600","pos":8651682,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.044383,"MDMA_P":0.0018249653783785,"MDMA_FDR":0.0345422621344557,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

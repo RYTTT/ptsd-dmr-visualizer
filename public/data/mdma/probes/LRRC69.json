@@ -1,0 +1,1 @@
+{"gene":"LRRC69","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27620524","pos":92114654,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.063142,"CPT_P":0.0009549350173157,"CPT_FDR":0.180927894018411}]}

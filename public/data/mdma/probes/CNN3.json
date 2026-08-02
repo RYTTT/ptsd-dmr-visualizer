@@ -1,0 +1,1 @@
+{"gene":"CNN3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01045913","pos":95379662,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.148434,"MDMA_P":3.34009924145074e-05,"MDMA_FDR":0.0046257034098152,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

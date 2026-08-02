@@ -1,0 +1,1 @@
+{"gene":"GLB1L3","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13316257","pos":134189147,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.413224,"CPT_P":0.002108324805974,"CPT_FDR":0.188013466898252}]}

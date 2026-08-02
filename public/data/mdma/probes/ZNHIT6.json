@@ -1,0 +1,1 @@
+{"gene":"ZNHIT6","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22152438","pos":86120442,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.236992,"CPT_P":0.0035356163327195,"CPT_FDR":0.198359317070428}]}

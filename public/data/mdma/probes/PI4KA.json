@@ -1,0 +1,1 @@
+{"gene":"PI4KA","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25750018","pos":21141659,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.797735,"MDMA_P":4.0162378838192e-05,"MDMA_FDR":0.0050594260502899,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

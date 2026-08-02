@@ -1,0 +1,1 @@
+{"gene":"MS4A1","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07618110","pos":60225240,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.825321,"MDMA_P":0.0053850064676117,"MDMA_FDR":0.0613311391432554,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

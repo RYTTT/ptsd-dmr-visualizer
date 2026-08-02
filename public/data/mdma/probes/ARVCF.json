@@ -1,0 +1,1 @@
+{"gene":"ARVCF","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13823643","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.516413,"MDMA_P":0.0005367691163734,"MDMA_FDR":0.0185438179733604,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

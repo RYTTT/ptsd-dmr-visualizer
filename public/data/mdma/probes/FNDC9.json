@@ -1,0 +1,1 @@
+{"gene":"FNDC9","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01891077","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.905179,"CPT_P":0.0011787041397209,"CPT_FDR":0.180981316151499}]}

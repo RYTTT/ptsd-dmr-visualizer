@@ -1,0 +1,1 @@
+{"gene":"CPA5","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17376631","pos":129984051,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.097057,"CPT_P":0.0062784581448798,"CPT_FDR":0.219135155542424}]}

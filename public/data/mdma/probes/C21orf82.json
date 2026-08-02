@@ -1,0 +1,1 @@
+{"gene":"C21orf82","chr":"21","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06787912","pos":35553467,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.048266,"CPT_P":0.0096479517008061,"CPT_FDR":0.239308493074586}]}

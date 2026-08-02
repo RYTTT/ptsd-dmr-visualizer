@@ -1,0 +1,1 @@
+{"gene":"FADS3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00758925","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.850457,"MDMA_P":0.0026669701789232,"MDMA_FDR":0.042082759687589,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

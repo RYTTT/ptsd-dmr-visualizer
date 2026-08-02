@@ -1,0 +1,1 @@
+{"gene":"GTPBP4","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09085653","pos":1042113,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.529683,"CPT_P":0.0003755766693452,"CPT_FDR":0.176561132189866}]}

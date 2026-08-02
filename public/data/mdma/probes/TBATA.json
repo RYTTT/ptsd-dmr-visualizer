@@ -1,0 +1,1 @@
+{"gene":"TBATA","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07781668","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.881144,"MDMA_P":7.21579639097102e-05,"MDMA_FDR":0.0067905651878156,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

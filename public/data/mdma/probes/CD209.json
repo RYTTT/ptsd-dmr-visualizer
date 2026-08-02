@@ -1,0 +1,1 @@
+{"gene":"CD209","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06122489","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.643377,"Ketamine_P":0.0024186443259978,"Ketamine_FDR":0.375130122532708,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

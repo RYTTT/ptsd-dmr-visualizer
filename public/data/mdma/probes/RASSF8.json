@@ -1,0 +1,1 @@
+{"gene":"RASSF8","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06927331","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.685142,"Ketamine_P":0.0026922952942159,"Ketamine_FDR":0.381712569060352,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"PHF21B","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15213135","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.648568,"MDMA_P":0.0020347069840131,"MDMA_FDR":0.036496300683951,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

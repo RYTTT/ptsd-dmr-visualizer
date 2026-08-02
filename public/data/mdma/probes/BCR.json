@@ -1,0 +1,1 @@
+{"gene":"BCR","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16987451","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.440234,"MDMA_P":0.0023274631013406,"MDMA_FDR":0.0391684175627748,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

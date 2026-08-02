@@ -1,0 +1,1 @@
+{"gene":"GUSB","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11987759","pos":65425863,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-1.356856,"MDMA_P":0.0010170853871379,"MDMA_FDR":0.0256208525951559,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

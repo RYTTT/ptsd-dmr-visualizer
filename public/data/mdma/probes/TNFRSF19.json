@@ -1,0 +1,1 @@
+{"gene":"TNFRSF19","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14791799","pos":24227716,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.831097,"MDMA_P":0.0021937236386387,"MDMA_FDR":0.0379726749825561,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"SCML4","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02836135","pos":108052093,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.249817,"Ketamine_P":0.0096038085717888,"Ketamine_FDR":0.456417109757431,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

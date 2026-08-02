@@ -1,0 +1,1 @@
+{"gene":"C14orf135","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01074676","pos":60601069,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.160672,"CPT_P":0.0033857678757371,"CPT_FDR":0.196874004872092}]}

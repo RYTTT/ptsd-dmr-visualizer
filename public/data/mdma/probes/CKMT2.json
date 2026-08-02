@@ -1,0 +1,1 @@
+{"gene":"CKMT2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11608521","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.612737,"CPT_P":0.0001386242088606,"CPT_FDR":0.176561132189866}]}

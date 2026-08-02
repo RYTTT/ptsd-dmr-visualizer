@@ -1,0 +1,1 @@
+{"gene":"MIR379","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20562547","pos":101487983,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.286491,"MDMA_P":6.08476012873276e-05,"MDMA_FDR":0.00622603188659,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"SNTA1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14608486","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.03632,"MDMA_P":0.0023175299791419,"MDMA_FDR":0.0390874041426754,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.248716,"CPT_P":0.0002745474029647,"CPT_FDR":0.176561132189866}]}

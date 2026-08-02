@@ -1,0 +1,1 @@
+{"gene":"RGS20","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05628160","pos":54785374,"feature":"Body","cpgIsland":"","MDMA_logFC":0.949038,"MDMA_P":0.0002186316224985,"MDMA_FDR":0.0118089910572787,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

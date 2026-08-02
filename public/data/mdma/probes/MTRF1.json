@@ -1,0 +1,1 @@
+{"gene":"MTRF1","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26215849","pos":41837663,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.684017,"CPT_P":0.0078013514057869,"CPT_FDR":0.229072190313989}]}

@@ -1,0 +1,1 @@
+{"gene":"CARD6","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01784614","pos":40841298,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.660398,"CPT_P":0.0038326184207689,"CPT_FDR":0.200225264823243}]}

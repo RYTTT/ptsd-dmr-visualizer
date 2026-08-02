@@ -1,0 +1,1 @@
+{"gene":"HS3ST3A1","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01242676","pos":13413600,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.380763,"Ketamine_P":0.00501506828616,"Ketamine_FDR":0.417575710622178,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

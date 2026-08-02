@@ -1,0 +1,1 @@
+{"gene":"GAL3ST2","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03775350","pos":242735514,"feature":"Body","cpgIsland":"","MDMA_logFC":1.052408,"MDMA_P":1.37562920343333e-05,"MDMA_FDR":0.0030017086805805,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

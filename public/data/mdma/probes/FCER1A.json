@@ -1,0 +1,1 @@
+{"gene":"FCER1A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03129764","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.010381,"MDMA_P":0.0001320037401755,"MDMA_FDR":0.0092139528929413,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

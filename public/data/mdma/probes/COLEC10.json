@@ -1,0 +1,1 @@
+{"gene":"COLEC10","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27041096","pos":120079173,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.012959,"CPT_P":0.0083923263849766,"CPT_FDR":0.232415618277366}]}

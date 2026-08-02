@@ -1,0 +1,1 @@
+{"gene":"ST7","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13609710","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.88225,"MDMA_P":0.0001790472515056,"MDMA_FDR":0.010689666918438,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

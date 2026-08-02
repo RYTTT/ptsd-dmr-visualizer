@@ -1,0 +1,1 @@
+{"gene":"SH2D7","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08761618","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.816898,"MDMA_P":0.0003520140680252,"MDMA_FDR":0.0149709001400306,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

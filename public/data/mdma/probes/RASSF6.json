@@ -1,0 +1,1 @@
+{"gene":"RASSF6","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04026044","pos":74452103,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.121598,"CPT_P":0.003214702904051,"CPT_FDR":0.195443358256554}]}

@@ -1,0 +1,1 @@
+{"gene":"C10orf18","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15704219","pos":5735135,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.905712,"CPT_P":0.002864444626685,"CPT_FDR":0.192900617600539}]}

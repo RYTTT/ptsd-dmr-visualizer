@@ -1,0 +1,1 @@
+{"gene":"MIS18BP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02000823","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.982286,"MDMA_P":0.0041911847625691,"MDMA_FDR":0.0535488784761097,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.104722,"CPT_P":0.0014444057745254,"CPT_FDR":0.183316397866362}]}

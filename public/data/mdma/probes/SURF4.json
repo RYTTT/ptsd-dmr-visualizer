@@ -1,0 +1,1 @@
+{"gene":"SURF4","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14055887","pos":136236665,"feature":"Body","cpgIsland":"","MDMA_logFC":0.577039,"MDMA_P":0.0010131804327362,"MDMA_FDR":0.0255636828887539,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"C22orf31","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27046163","pos":29456365,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.435515,"Ketamine_P":0.0041941395164575,"Ketamine_FDR":0.407510342213157,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

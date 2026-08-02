@@ -1,0 +1,1 @@
+{"gene":"GOLGA1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27050858","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.077073,"CPT_P":0.0027247145105814,"CPT_FDR":0.191513952744011}]}

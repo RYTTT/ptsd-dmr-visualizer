@@ -1,0 +1,1 @@
+{"gene":"ATXN2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04928729","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.166813,"MDMA_P":0.0019962708382477,"MDMA_FDR":0.0361296575583556,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

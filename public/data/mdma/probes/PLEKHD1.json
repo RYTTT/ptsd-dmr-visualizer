@@ -1,0 +1,1 @@
+{"gene":"PLEKHD1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20438689","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.561076,"MDMA_P":0.0020301955213272,"MDMA_FDR":0.0364514392998702,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

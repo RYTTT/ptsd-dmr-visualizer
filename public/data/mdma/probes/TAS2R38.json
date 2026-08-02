@@ -1,0 +1,1 @@
+{"gene":"TAS2R38","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11744116","pos":141673582,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.831786,"MDMA_P":0.0024568880070946,"MDMA_FDR":0.0403327446295422,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

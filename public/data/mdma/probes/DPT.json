@@ -1,0 +1,1 @@
+{"gene":"DPT","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22012476","pos":168664941,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.495917,"MDMA_P":0.0032490128664125,"MDMA_FDR":0.0468224168756245,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

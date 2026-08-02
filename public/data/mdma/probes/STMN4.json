@@ -1,0 +1,1 @@
+{"gene":"STMN4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15450949","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.542999,"MDMA_P":0.0054825427854984,"MDMA_FDR":0.0619528260918673,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

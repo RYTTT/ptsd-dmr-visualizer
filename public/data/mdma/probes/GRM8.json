@@ -1,0 +1,1 @@
+{"gene":"GRM8","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06759901","pos":126446757,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.605094,"MDMA_P":0.0007123041843949,"MDMA_FDR":0.0213306771401384,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

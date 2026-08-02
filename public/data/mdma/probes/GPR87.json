@@ -1,0 +1,1 @@
+{"gene":"GPR87","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19926250","pos":151034474,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.937635,"CPT_P":0.0025563206154579,"CPT_FDR":0.190527778064421}]}

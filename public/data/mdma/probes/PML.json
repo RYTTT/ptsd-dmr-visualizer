@@ -1,0 +1,1 @@
+{"gene":"PML","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19991537","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.159495,"MDMA_P":2.95029505061425e-05,"MDMA_FDR":0.0043458993873656,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

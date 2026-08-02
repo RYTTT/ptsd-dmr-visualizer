@@ -1,0 +1,1 @@
+{"gene":"S100Z","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05067125","pos":76146148,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":1.591368,"MDMA_P":5.16519999990531e-07,"MDMA_FDR":0.000645907271883,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

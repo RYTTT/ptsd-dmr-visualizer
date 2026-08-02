@@ -1,0 +1,1 @@
+{"gene":"SNORD111","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01695579","pos":70571479,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.256083,"MDMA_P":8.71514790631492e-05,"MDMA_FDR":0.0074666133615862,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

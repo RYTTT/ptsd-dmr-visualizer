@@ -1,0 +1,1 @@
+{"gene":"GFM2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20393335","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.952724,"MDMA_P":0.0001669381340727,"MDMA_FDR":0.0103258945642639,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

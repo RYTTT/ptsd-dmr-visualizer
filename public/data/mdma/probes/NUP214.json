@@ -1,0 +1,1 @@
+{"gene":"NUP214","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14548264","pos":134109022,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.566184,"MDMA_P":0.0006768281531656,"MDMA_FDR":0.0207883031415998,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

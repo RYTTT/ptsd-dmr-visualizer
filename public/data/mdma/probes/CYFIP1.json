@@ -1,0 +1,1 @@
+{"gene":"CYFIP1","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21211873","pos":22960638,"feature":"Body","cpgIsland":"","MDMA_logFC":0.498127,"MDMA_P":0.0034978543844269,"MDMA_FDR":0.0486984129529383,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"IL36RN","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24483411","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.549234,"MDMA_P":7.78094882187146e-06,"MDMA_FDR":0.002310987863927,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

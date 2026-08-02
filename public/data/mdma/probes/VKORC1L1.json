@@ -1,0 +1,1 @@
+{"gene":"VKORC1L1","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23090159","pos":65419194,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.725434,"Ketamine_P":0.000109021091567,"Ketamine_FDR":0.227460971641021,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

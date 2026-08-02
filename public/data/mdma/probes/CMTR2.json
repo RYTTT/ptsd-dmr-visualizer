@@ -1,0 +1,1 @@
+{"gene":"CMTR2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01980714","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.946905,"CPT_P":0.0051586864600752,"CPT_FDR":0.211212376482107}]}

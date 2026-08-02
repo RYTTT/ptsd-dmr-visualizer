@@ -1,0 +1,1 @@
+{"gene":"RPL32P3","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22178096","pos":129118538,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.886149,"MDMA_P":3.42546452321823e-06,"MDMA_FDR":0.0015887795318779,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

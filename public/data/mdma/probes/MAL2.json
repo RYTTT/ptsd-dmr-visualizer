@@ -1,0 +1,1 @@
+{"gene":"MAL2","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00940941","pos":120257063,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.657924,"CPT_P":0.0092564349936254,"CPT_FDR":0.237391145411701}]}

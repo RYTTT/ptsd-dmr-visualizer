@@ -1,0 +1,1 @@
+{"gene":"LRRC55","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09667650","pos":56956373,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.777311,"MDMA_P":0.0026662162832303,"MDMA_FDR":0.0420777446577916,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"CDC42EP4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05550603","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.399674,"Ketamine_P":0.0019778968107832,"Ketamine_FDR":0.362452482029724,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

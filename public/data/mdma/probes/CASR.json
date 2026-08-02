@@ -1,0 +1,1 @@
+{"gene":"CASR","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14436379","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.006573,"MDMA_P":0.0005353271175655,"MDMA_FDR":0.0185145929749596,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

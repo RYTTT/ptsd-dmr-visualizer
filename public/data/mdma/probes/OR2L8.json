@@ -1,0 +1,1 @@
+{"gene":"OR2L8","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18857759","pos":248110661,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.853484,"MDMA_P":0.0002670208314345,"MDMA_FDR":0.0130019185556554,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

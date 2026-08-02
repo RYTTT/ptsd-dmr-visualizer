@@ -1,0 +1,1 @@
+{"gene":"C17orf85","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04338621","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.189085,"MDMA_P":0.0011961999646728,"MDMA_FDR":0.0278200363490664,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.571564,"CPT_P":0.0001620513480791,"CPT_FDR":0.176561132189866}]}

@@ -1,0 +1,1 @@
+{"gene":"SSH2","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25240363","pos":27990001,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.276495,"CPT_P":0.0004853990201539,"CPT_FDR":0.176561132189866}]}

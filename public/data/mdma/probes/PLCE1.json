@@ -1,0 +1,1 @@
+{"gene":"PLCE1","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25132510","pos":95847600,"feature":"Body","cpgIsland":"","MDMA_logFC":0.539361,"MDMA_P":0.0011729702073194,"MDMA_FDR":0.0275529454079991,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

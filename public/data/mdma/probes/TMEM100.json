@@ -1,0 +1,1 @@
+{"gene":"TMEM100","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18040354","pos":53800484,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.177444,"CPT_P":0.000506855899445,"CPT_FDR":0.176561132189866}]}

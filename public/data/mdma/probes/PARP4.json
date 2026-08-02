@@ -1,0 +1,1 @@
+{"gene":"PARP4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26431787","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.730179,"Ketamine_P":0.0021444050777253,"Ketamine_FDR":0.367428326141924,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

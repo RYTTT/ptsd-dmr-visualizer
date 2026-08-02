@@ -1,0 +1,1 @@
+{"gene":"STK17B","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15362619","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.483935,"Ketamine_P":4.6689643296893e-05,"Ketamine_FDR":0.187281014196187,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

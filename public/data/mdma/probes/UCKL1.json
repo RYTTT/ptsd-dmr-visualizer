@@ -1,0 +1,1 @@
+{"gene":"UCKL1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11392297","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.699674,"MDMA_P":0.0012062428120371,"MDMA_FDR":0.0279389091828029,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

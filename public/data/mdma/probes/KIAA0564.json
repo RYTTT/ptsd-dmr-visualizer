@@ -1,0 +1,1 @@
+{"gene":"KIAA0564","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05179396","pos":42206323,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.019879,"CPT_P":0.0052656737702153,"CPT_FDR":0.211881593529358}]}

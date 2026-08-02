@@ -1,0 +1,1 @@
+{"gene":"ERVV-2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18434660","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.862789,"MDMA_P":0.0084002551253663,"MDMA_FDR":0.0779315795752925,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

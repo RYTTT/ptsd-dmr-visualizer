@@ -1,0 +1,1 @@
+{"gene":"MMRN2","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19368582","pos":88716646,"feature":"Body","cpgIsland":"","MDMA_logFC":0.576604,"MDMA_P":0.0004833044944501,"MDMA_FDR":0.0175533474962783,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

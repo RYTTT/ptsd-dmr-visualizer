@@ -1,0 +1,1 @@
+{"gene":"CACNG4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09519968","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.68406,"MDMA_P":0.0013589127573504,"MDMA_FDR":0.029702263269735,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

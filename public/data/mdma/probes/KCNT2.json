@@ -1,0 +1,1 @@
+{"gene":"KCNT2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07647459","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.439423,"MDMA_P":0.0041774721609333,"MDMA_FDR":0.0534480375481711,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

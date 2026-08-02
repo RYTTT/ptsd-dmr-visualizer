@@ -1,0 +1,1 @@
+{"gene":"CLRN1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16118414","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.066343,"MDMA_P":0.0009889335560598,"MDMA_FDR":0.0252360400851251,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

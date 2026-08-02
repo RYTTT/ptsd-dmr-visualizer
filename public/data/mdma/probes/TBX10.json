@@ -1,0 +1,1 @@
+{"gene":"TBX10","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05357287","pos":67408159,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":1.165714,"MDMA_P":9.02538638554855e-05,"MDMA_FDR":0.0075845371176412,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

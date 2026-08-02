@@ -1,0 +1,1 @@
+{"gene":"STK33","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20409748","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.255068,"CPT_P":0.0031420570226795,"CPT_FDR":0.194910700244185}]}

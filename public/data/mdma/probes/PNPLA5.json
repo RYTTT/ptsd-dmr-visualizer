@@ -1,0 +1,1 @@
+{"gene":"PNPLA5","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09142166","pos":44276013,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.644082,"MDMA_P":0.0036091643148964,"MDMA_FDR":0.0495559184797115,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

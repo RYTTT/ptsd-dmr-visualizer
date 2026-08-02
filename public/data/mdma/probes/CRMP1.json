@@ -1,0 +1,1 @@
+{"gene":"CRMP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05875617","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.6956,"MDMA_P":0.0027973680240532,"MDMA_FDR":0.0431544463520519,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

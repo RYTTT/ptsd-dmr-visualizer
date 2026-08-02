@@ -1,0 +1,1 @@
+{"gene":"GPX5","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23936402","pos":28499703,"feature":"Body","cpgIsland":"","MDMA_logFC":0.585741,"MDMA_P":0.0061593442498833,"MDMA_FDR":0.0659807149128383,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

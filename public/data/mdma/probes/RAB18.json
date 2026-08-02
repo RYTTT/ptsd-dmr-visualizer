@@ -1,0 +1,1 @@
+{"gene":"RAB18","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08364860","pos":27827130,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.092378,"CPT_P":0.0038715320736683,"CPT_FDR":0.200706924265975}]}

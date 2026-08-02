@@ -1,0 +1,1 @@
+{"gene":"MIR2052HG","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06014707","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.030901,"Ketamine_P":0.0071613157539088,"Ketamine_FDR":0.435979889878909,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

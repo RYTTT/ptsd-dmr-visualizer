@@ -1,0 +1,1 @@
+{"gene":"FLJ35024","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14192935","pos":2571396,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.483275,"Ketamine_P":0.0010489412745879,"Ketamine_FDR":0.329110099246956,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

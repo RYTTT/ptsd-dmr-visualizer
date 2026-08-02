@@ -1,0 +1,1 @@
+{"gene":"CD3G","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13750061","pos":118214845,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.647552,"MDMA_P":0.0075737166145931,"MDMA_FDR":0.0736419049551022,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

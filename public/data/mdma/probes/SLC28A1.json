@@ -1,0 +1,1 @@
+{"gene":"SLC28A1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26811697","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.149755,"MDMA_P":0.0045665686929295,"MDMA_FDR":0.0561241701138065,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.969434,"CPT_P":0.0011602341342353,"CPT_FDR":0.180981316151499}]}

@@ -1,0 +1,1 @@
+{"gene":"SETBP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17258226","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.827634,"CPT_P":0.000147827480655,"CPT_FDR":0.176561132189866}]}

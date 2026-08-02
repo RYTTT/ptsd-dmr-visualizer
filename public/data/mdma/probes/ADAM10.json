@@ -1,0 +1,1 @@
+{"gene":"ADAM10","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02539984","pos":58960059,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.297483,"CPT_P":0.0022169482864128,"CPT_FDR":0.189055185223586}]}

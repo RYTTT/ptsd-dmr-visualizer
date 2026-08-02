@@ -1,0 +1,1 @@
+{"gene":"GLYCAM1","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06113001","pos":55002180,"feature":"Body","cpgIsland":"","MDMA_logFC":0.866247,"MDMA_P":0.0004977921854851,"MDMA_FDR":0.0178257373308746,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

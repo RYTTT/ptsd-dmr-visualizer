@@ -1,0 +1,1 @@
+{"gene":"SAXO1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00257101","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.500931,"MDMA_P":0.0041007181131077,"MDMA_FDR":0.0528933589807944,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

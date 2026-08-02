@@ -1,0 +1,1 @@
+{"gene":"C9orf84","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03824048","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.00341,"MDMA_P":0.0019960818680108,"MDMA_FDR":0.0361291347680854,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

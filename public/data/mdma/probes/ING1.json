@@ -1,0 +1,1 @@
+{"gene":"ING1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08064708","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.943111,"MDMA_P":0.0042074093878809,"MDMA_FDR":0.05367870817147,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.155034,"CPT_P":0.0031469700692013,"CPT_FDR":0.194910700244185}]}

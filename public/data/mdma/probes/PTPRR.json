@@ -1,0 +1,1 @@
+{"gene":"PTPRR","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00793088","pos":71315008,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.556536,"Ketamine_P":0.007160146718647,"Ketamine_FDR":0.435964171364179,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

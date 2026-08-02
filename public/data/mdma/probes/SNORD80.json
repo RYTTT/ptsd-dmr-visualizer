@@ -1,0 +1,1 @@
+{"gene":"SNORD80","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04811411","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.525787,"MDMA_P":0.0075974128582399,"MDMA_FDR":0.073771036926163,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

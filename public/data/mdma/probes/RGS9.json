@@ -1,0 +1,1 @@
+{"gene":"RGS9","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03193166","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.34431,"MDMA_P":0.0024789735514649,"MDMA_FDR":0.0405328334101575,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

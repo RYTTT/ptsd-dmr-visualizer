@@ -1,0 +1,1 @@
+{"gene":"AP3B1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07615109","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.885391,"MDMA_P":0.0063153457803817,"MDMA_FDR":0.0668442471827743,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.152821,"CPT_P":0.0024023529072769,"CPT_FDR":0.18950998036598}]}

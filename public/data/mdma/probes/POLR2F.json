@@ -1,0 +1,1 @@
+{"gene":"POLR2F","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13653088","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.586125,"Ketamine_P":0.0022265007504678,"Ketamine_FDR":0.370318768733611,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"MYO15B","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09913882","pos":73612981,"feature":"Body","cpgIsland":"","MDMA_logFC":0.581856,"MDMA_P":0.006506728031948,"MDMA_FDR":0.067914426370678,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

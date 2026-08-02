@@ -1,0 +1,1 @@
+{"gene":"MYH4","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16052325","pos":10348234,"feature":"Body","cpgIsland":"","MDMA_logFC":0.660508,"MDMA_P":0.0052510328270369,"MDMA_FDR":0.0604602395221352,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

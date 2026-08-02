@@ -1,0 +1,1 @@
+{"gene":"FABP7","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03952543","pos":123101437,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.496169,"Ketamine_P":0.0044297700012295,"Ketamine_FDR":0.410834873492736,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

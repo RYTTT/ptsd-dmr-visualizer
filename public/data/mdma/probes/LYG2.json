@@ -1,0 +1,1 @@
+{"gene":"LYG2","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24749475","pos":99871575,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.041344,"CPT_P":0.0017885002227926,"CPT_FDR":0.184479127985664}]}

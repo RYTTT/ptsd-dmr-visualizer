@@ -1,0 +1,1 @@
+{"gene":"C1orf158","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18839416","pos":12805849,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.477539,"MDMA_P":0.0064265726236969,"MDMA_FDR":0.0674628760805041,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"SPATA19","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18457737","pos":133715076,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.667914,"MDMA_P":0.0053334689849083,"MDMA_FDR":0.0609835553950159,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

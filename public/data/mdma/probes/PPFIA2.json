@@ -1,0 +1,1 @@
+{"gene":"PPFIA2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13838530","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.839775,"MDMA_P":0.0006394638099976,"MDMA_FDR":0.0202112274424823,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"ABAT","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04332619","pos":8806966,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.682468,"Ketamine_P":0.0095118377320026,"Ketamine_FDR":0.455966524805582,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

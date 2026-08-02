@@ -1,0 +1,1 @@
+{"gene":"TSC22D4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09790539","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.468854,"MDMA_P":0.0042173538026716,"MDMA_FDR":0.053740567798095,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

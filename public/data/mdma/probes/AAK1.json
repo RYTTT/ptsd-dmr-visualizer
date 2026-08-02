@@ -1,0 +1,1 @@
+{"gene":"AAK1","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04694389","pos":69857465,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.31173,"MDMA_P":8.28561187445192e-06,"MDMA_FDR":0.0023650773894891,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

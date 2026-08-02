@@ -1,0 +1,1 @@
+{"gene":"NRP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08358427","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.816192,"MDMA_P":0.0072445331476478,"MDMA_FDR":0.0719055895707131,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.252739,"CPT_P":0.0021275238674366,"CPT_FDR":0.188038942443211}]}

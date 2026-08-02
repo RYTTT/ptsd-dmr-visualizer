@@ -1,0 +1,1 @@
+{"gene":"BRI3","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01877450","pos":97915802,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.342531,"MDMA_P":0.0003160136765853,"MDMA_FDR":0.0141543245214912,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

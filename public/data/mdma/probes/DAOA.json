@@ -1,0 +1,1 @@
+{"gene":"DAOA","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25623522","pos":106117086,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.826941,"MDMA_P":0.0046093203708,"MDMA_FDR":0.0564033706767627,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

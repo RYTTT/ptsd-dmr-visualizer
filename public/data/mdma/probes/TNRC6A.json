@@ -1,0 +1,1 @@
+{"gene":"TNRC6A","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09816107","pos":24755901,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.38584,"MDMA_P":1.70525465650884e-05,"MDMA_FDR":0.0033232817178446,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

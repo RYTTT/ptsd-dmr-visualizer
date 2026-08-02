@@ -1,0 +1,1 @@
+{"gene":"RPGRIP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07149017","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.587816,"MDMA_P":0.0096077421841503,"MDMA_FDR":0.0837034374030969,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

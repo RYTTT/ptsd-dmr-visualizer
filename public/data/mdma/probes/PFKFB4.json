@@ -1,0 +1,1 @@
+{"gene":"PFKFB4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00661169","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.562093,"Ketamine_P":0.004041628725931,"Ketamine_FDR":0.405674457524921,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

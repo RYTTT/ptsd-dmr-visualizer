@@ -1,0 +1,1 @@
+{"gene":"COL6A5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07422463","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.224367,"MDMA_P":7.61907933282588e-05,"MDMA_FDR":0.0069730194410189,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

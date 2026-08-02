@@ -1,0 +1,1 @@
+{"gene":"SATB2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16398921","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.119246,"CPT_P":0.0027030216177469,"CPT_FDR":0.191290007159308}]}

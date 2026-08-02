@@ -1,0 +1,1 @@
+{"gene":"C10orf27","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00187299","pos":72545473,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.571239,"MDMA_P":0.0026920518281808,"MDMA_FDR":0.0422816689930218,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

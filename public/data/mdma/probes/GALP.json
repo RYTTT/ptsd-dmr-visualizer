@@ -1,0 +1,1 @@
+{"gene":"GALP","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08043592","pos":56687388,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.335026,"CPT_P":0.0064837523940263,"CPT_FDR":0.220277582827224}]}

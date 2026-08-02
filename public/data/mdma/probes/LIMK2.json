@@ -1,0 +1,1 @@
+{"gene":"LIMK2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01560163","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.142449,"MDMA_P":0.001045915750959,"MDMA_FDR":0.0259861709023392,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"NUTM1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05618517","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.064682,"MDMA_P":0.0039770063080149,"MDMA_FDR":0.0520655481286202,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.264652,"CPT_P":0.0082290026104386,"CPT_FDR":0.23133517772515}]}

@@ -1,0 +1,1 @@
+{"gene":"N4BP2L2","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04156897","pos":33007014,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.393921,"CPT_P":0.0005356145196347,"CPT_FDR":0.17699150703597}]}

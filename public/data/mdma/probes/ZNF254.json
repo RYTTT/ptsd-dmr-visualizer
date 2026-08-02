@@ -1,0 +1,1 @@
+{"gene":"ZNF254","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19092300","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.021231,"MDMA_P":0.0001342402028859,"MDMA_FDR":0.0092779073228672,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

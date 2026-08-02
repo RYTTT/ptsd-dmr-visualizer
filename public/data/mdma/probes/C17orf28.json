@@ -1,0 +1,1 @@
+{"gene":"C17orf28","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21404063","pos":72957135,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.659174,"Ketamine_P":0.0045384949257415,"Ketamine_FDR":0.412014329878462,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

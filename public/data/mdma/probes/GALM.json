@@ -1,0 +1,1 @@
+{"gene":"GALM","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22610399","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.603979,"MDMA_P":0.0045670650558141,"MDMA_FDR":0.0561241701138065,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

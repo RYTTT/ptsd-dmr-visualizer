@@ -1,0 +1,1 @@
+{"gene":"FEZ1","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23012054","pos":125325970,"feature":"Body","cpgIsland":"","MDMA_logFC":0.833461,"MDMA_P":0.0010611453308219,"MDMA_FDR":0.0261981703776938,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

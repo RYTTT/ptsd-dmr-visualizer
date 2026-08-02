@@ -1,0 +1,1 @@
+{"gene":"STK32A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12750016","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.674307,"CPT_P":2.61685065578988e-05,"CPT_FDR":0.176561132189866}]}

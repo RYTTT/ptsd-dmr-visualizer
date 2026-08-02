@@ -1,0 +1,1 @@
+{"gene":"OR4K2","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26786795","pos":20344394,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.568411,"CPT_P":0.003529344614224,"CPT_FDR":0.19835905442757}]}

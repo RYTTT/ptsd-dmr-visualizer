@@ -1,0 +1,1 @@
+{"gene":"LIG4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19435206","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.102746,"MDMA_P":0.0002777871998128,"MDMA_FDR":0.0132591767083458,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

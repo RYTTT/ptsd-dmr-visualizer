@@ -1,0 +1,1 @@
+{"gene":"GNB3","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10623198","pos":6949114,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.433717,"MDMA_P":0.0040811188669503,"MDMA_FDR":0.0527663611148113,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"PBX2","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11103845","pos":32157230,"feature":"Body","cpgIsland":"","MDMA_logFC":1.138661,"MDMA_P":0.0002792255745517,"MDMA_FDR":0.013290007322694,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

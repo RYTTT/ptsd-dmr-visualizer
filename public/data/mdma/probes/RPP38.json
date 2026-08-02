@@ -1,0 +1,1 @@
+{"gene":"RPP38","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00465337","pos":15145341,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.335657,"MDMA_P":8.38263723995497e-05,"MDMA_FDR":0.0073075694761183,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

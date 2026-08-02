@@ -1,0 +1,1 @@
+{"gene":"RAB11A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09662755","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.18751,"MDMA_P":0.0001177381917595,"MDMA_FDR":0.0086451294469313,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

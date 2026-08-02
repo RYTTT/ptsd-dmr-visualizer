@@ -1,0 +1,1 @@
+{"gene":"CDH18","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26250461","pos":19734126,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.632916,"Ketamine_P":0.0001630236448984,"Ketamine_FDR":0.246391586833339,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

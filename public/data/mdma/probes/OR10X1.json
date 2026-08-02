@@ -1,0 +1,1 @@
+{"gene":"OR10X1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04923174","pos":158549277,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.81185,"Ketamine_P":0.0010776058975025,"Ketamine_FDR":0.331618960910135,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

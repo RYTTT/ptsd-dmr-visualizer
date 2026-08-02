@@ -1,0 +1,1 @@
+{"gene":"RYR3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13953446","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.712176,"MDMA_P":0.0042130750716435,"MDMA_FDR":0.0537202541238296,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

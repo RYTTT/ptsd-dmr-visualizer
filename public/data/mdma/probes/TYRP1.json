@@ -1,0 +1,1 @@
+{"gene":"TYRP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09660378","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.960615,"MDMA_P":0.0016507684101175,"MDMA_FDR":0.0328298894647165,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.897372,"CPT_P":0.0039325167379894,"CPT_FDR":0.201109562205078}]}

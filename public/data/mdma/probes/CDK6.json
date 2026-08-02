@@ -1,0 +1,1 @@
+{"gene":"CDK6","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08311343","pos":92324861,"feature":"Body","cpgIsland":"","MDMA_logFC":0.935126,"MDMA_P":0.0007058678278922,"MDMA_FDR":0.0212148327239681,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"ERI3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21148737","pos":44707057,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.824346,"MDMA_P":0.0001879428122153,"MDMA_FDR":0.0109725129646549,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

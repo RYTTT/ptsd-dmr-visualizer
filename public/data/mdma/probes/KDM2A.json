@@ -1,0 +1,1 @@
+{"gene":"KDM2A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13338291","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.134535,"CPT_P":0.0038691153555405,"CPT_FDR":0.200706924265975}]}

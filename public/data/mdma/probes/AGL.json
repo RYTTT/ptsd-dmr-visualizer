@@ -1,0 +1,1 @@
+{"gene":"AGL","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18377446","pos":100335651,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.221326,"CPT_P":0.0015855719850546,"CPT_FDR":0.183637394240422}]}

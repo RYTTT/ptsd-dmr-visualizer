@@ -1,0 +1,1 @@
+{"gene":"IQCG","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25786758","pos":197677044,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":1.087084,"MDMA_P":8.42547783658761e-05,"MDMA_FDR":0.007328538398324,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

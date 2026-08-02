@@ -1,0 +1,1 @@
+{"gene":"CYP4F11","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18449879","pos":16045054,"feature":"1stExon","cpgIsland":"","MDMA_logFC":-1.193768,"MDMA_P":0.0062170881791572,"MDMA_FDR":0.0663219110825036,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"GTF2F2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15269979","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.110393,"MDMA_P":0.0003805153432652,"MDMA_FDR":0.0156061489592888,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.090596,"CPT_P":0.0010750997677605,"CPT_FDR":0.180981316151499}]}

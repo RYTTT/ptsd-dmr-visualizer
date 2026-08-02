@@ -1,0 +1,1 @@
+{"gene":"FMO6P","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25541621","pos":171106864,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.8942,"CPT_P":0.008735371849171,"CPT_FDR":0.2344419519925}]}

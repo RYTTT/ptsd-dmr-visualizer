@@ -1,0 +1,1 @@
+{"gene":"C1orf91","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15726025","pos":32681995,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.345859,"Ketamine_P":0.0088168556632802,"Ketamine_FDR":0.450473844999777,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

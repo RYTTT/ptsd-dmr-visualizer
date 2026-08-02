@@ -1,0 +1,1 @@
+{"gene":"ABCD2","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25116882","pos":40013680,"feature":"1stExon","cpgIsland":"","MDMA_logFC":0.992419,"MDMA_P":0.0019423247575887,"MDMA_FDR":0.035668487905039,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

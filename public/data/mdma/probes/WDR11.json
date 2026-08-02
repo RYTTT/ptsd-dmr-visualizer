@@ -1,0 +1,1 @@
+{"gene":"WDR11","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20246901","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.904995,"MDMA_P":0.0048554822144479,"MDMA_FDR":0.058006711865335,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

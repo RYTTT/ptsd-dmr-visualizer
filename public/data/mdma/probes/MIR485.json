@@ -1,0 +1,1 @@
+{"gene":"MIR485","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21071540","pos":101521694,"feature":"TSS200","cpgIsland":"","MDMA_logFC":1.028589,"MDMA_P":5.9539046665793e-05,"MDMA_FDR":0.0061598817328156,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

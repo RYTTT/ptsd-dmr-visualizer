@@ -1,0 +1,1 @@
+{"gene":"ACVR1C","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16230143","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.804234,"MDMA_P":0.0032930150774214,"MDMA_FDR":0.0471596450848067,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.907323,"CPT_P":0.0018111393201283,"CPT_FDR":0.184479127985664}]}

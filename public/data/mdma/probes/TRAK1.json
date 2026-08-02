@@ -1,0 +1,1 @@
+{"gene":"TRAK1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14094884","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.974683,"CPT_P":0.0036242973910846,"CPT_FDR":0.198944356963254}]}

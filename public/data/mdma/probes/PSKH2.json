@@ -1,0 +1,1 @@
+{"gene":"PSKH2","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09293718","pos":87076603,"feature":"Body","cpgIsland":"","MDMA_logFC":0.910559,"MDMA_P":0.0029261051665599,"MDMA_FDR":0.0442414756354456,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.240983,"CPT_P":0.00482678211859,"CPT_FDR":0.208418121509562}]}

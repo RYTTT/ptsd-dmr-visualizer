@@ -1,0 +1,1 @@
+{"gene":"TIA1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13119546","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.958743,"MDMA_P":0.0070534346368131,"MDMA_FDR":0.0709406008654225,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.43871,"CPT_P":0.0021474639636121,"CPT_FDR":0.188038942443211}]}

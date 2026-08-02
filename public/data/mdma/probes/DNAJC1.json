@@ -1,0 +1,1 @@
+{"gene":"DNAJC1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13589168","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.205293,"MDMA_P":7.04828625318986e-05,"MDMA_FDR":0.0067082836865292,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.428693,"CPT_P":0.00014131993536,"CPT_FDR":0.176561132189866}]}

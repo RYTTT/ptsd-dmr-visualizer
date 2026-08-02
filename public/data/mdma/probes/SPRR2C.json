@@ -1,0 +1,1 @@
+{"gene":"SPRR2C","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07804289","pos":153114690,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.647447,"MDMA_P":0.006036828019106,"MDMA_FDR":0.0652999340593086,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

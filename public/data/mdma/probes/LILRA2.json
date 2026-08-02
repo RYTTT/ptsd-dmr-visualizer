@@ -1,0 +1,1 @@
+{"gene":"LILRA2","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16893868","pos":55084269,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.003348,"CPT_P":0.0007955503327297,"CPT_FDR":0.179603233791005}]}

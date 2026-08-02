@@ -1,0 +1,1 @@
+{"gene":"OR1L3","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08970655","pos":125437326,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.021731,"CPT_P":0.0082659820722883,"CPT_FDR":0.231610925749264}]}

@@ -1,0 +1,1 @@
+{"gene":"C10orf105","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01470340","pos":73498766,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.439839,"Ketamine_P":0.0094109211487221,"Ketamine_FDR":0.455243933087494,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

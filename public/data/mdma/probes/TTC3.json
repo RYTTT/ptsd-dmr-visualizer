@@ -1,0 +1,1 @@
+{"gene":"TTC3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17608044","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.474537,"MDMA_P":9.50034358697976e-06,"MDMA_FDR":0.0025251661589461,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.124994,"CPT_P":0.0038767659091207,"CPT_FDR":0.200793797201472}]}

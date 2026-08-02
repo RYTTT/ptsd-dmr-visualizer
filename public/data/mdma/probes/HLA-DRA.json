@@ -1,0 +1,1 @@
+{"gene":"HLA-DRA","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00528492","pos":32408863,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.892187,"MDMA_P":0.0010671862933099,"MDMA_FDR":0.0262761944847941,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

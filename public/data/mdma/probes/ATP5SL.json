@@ -1,0 +1,1 @@
+{"gene":"ATP5SL","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08629307","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.571758,"MDMA_P":4.65879412475003e-06,"MDMA_FDR":0.0018111661395287,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.132866,"CPT_P":0.0023211715822738,"CPT_FDR":0.18950998036598}]}

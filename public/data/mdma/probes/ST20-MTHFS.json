@@ -1,0 +1,1 @@
+{"gene":"ST20-MTHFS","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03120983","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.412547,"CPT_P":2.54446153091069e-05,"CPT_FDR":0.176561132189866}]}

@@ -1,0 +1,1 @@
+{"gene":"TNFAIP8L3","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01058070","pos":51398144,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":1.056915,"MDMA_P":7.85388268606129e-05,"MDMA_FDR":0.0070588943071236,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

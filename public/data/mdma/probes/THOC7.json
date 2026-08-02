@@ -1,0 +1,1 @@
+{"gene":"THOC7","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22134162","pos":63841271,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.879915,"Ketamine_P":0.0043988693705353,"Ketamine_FDR":0.410259595183675,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

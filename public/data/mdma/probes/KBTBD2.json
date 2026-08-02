@@ -1,0 +1,1 @@
+{"gene":"KBTBD2","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06312848","pos":32919504,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.984531,"CPT_P":0.0087007691393917,"CPT_FDR":0.234394237528155}]}

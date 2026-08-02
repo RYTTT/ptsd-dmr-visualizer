@@ -1,0 +1,1 @@
+{"gene":"C5orf66","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10740944","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.322806,"MDMA_P":0.005159627040357,"MDMA_FDR":0.0598740581138078,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

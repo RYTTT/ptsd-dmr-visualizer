@@ -1,0 +1,1 @@
+{"gene":"KCTD14","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16769152","pos":77734206,"feature":"1stExon","cpgIsland":"","MDMA_logFC":-0.830627,"MDMA_P":0.0005100327502519,"MDMA_FDR":0.0180705936126975,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"FAM55C","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26284390","pos":101546697,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.604841,"Ketamine_P":0.0079296936791265,"Ketamine_FDR":0.444230539858436,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"KCNA2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09217258","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.372822,"Ketamine_P":0.0068257010907216,"Ketamine_FDR":0.431772024903391,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

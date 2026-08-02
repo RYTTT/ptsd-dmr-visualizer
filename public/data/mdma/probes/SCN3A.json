@@ -1,0 +1,1 @@
+{"gene":"SCN3A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10550639","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.037251,"CPT_P":0.0053777789734379,"CPT_FDR":0.213127134282689}]}

@@ -1,0 +1,1 @@
+{"gene":"CSDC2","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25447894","pos":41957443,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":-0.527664,"MDMA_P":0.0019316867497443,"MDMA_FDR":0.035553013435629,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

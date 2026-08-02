@@ -1,0 +1,1 @@
+{"gene":"ATP1B1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26009832","pos":169081894,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.785182,"CPT_P":0.0017438301668062,"CPT_FDR":0.184026436140098}]}

@@ -1,0 +1,1 @@
+{"gene":"ZKSCAN3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09211725","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.161731,"CPT_P":0.008110286893965,"CPT_FDR":0.230639134586327}]}

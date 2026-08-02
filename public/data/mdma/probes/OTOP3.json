@@ -1,0 +1,1 @@
+{"gene":"OTOP3","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23527517","pos":72937794,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.305177,"Ketamine_P":0.0042093161068641,"Ketamine_FDR":0.407636738661158,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

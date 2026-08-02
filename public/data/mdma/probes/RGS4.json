@@ -1,0 +1,1 @@
+{"gene":"RGS4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06536874","pos":163041039,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.065012,"CPT_P":0.0066899635584252,"CPT_FDR":0.221690802198823}]}

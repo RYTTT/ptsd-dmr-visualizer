@@ -1,0 +1,1 @@
+{"gene":"TRPC7","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13751524","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.305862,"MDMA_P":0.0023910130796168,"MDMA_FDR":0.0397751810975937,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

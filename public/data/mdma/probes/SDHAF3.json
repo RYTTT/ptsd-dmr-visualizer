@@ -1,0 +1,1 @@
+{"gene":"SDHAF3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07998571","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.278535,"MDMA_P":2.63092261701055e-05,"MDMA_FDR":0.0040969916555651,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

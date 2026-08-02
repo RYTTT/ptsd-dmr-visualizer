@@ -1,0 +1,1 @@
+{"gene":"CLEC16A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12114602","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.673486,"MDMA_P":0.0067472840232109,"MDMA_FDR":0.0692512472185022,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

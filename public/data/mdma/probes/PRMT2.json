@@ -1,0 +1,1 @@
+{"gene":"PRMT2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21312839","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.101433,"MDMA_P":0.0032902268711646,"MDMA_FDR":0.0471364861631514,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":2.012911,"CPT_P":0.0012702091987864,"CPT_FDR":0.181763811368561}]}

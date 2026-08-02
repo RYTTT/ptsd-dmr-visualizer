@@ -1,0 +1,1 @@
+{"gene":"TRIM14","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04284128","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.591405,"Ketamine_P":8.89110494436269e-05,"Ketamine_FDR":0.216597557507962,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

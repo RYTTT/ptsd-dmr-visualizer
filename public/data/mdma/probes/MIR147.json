@@ -1,0 +1,1 @@
+{"gene":"MIR147","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22576265","pos":123007424,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.702779,"Ketamine_P":0.0012733325527848,"Ketamine_FDR":0.336769735164905,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

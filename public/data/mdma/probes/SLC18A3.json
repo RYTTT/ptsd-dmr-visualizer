@@ -1,0 +1,1 @@
+{"gene":"SLC18A3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06654109","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.369933,"MDMA_P":0.0087146622225656,"MDMA_FDR":0.0794189059325873,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

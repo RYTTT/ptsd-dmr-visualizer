@@ -1,0 +1,1 @@
+{"gene":"MPP5","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10930366","pos":67752711,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.977943,"MDMA_P":0.0062685831130283,"MDMA_FDR":0.0666045668117318,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.46669,"CPT_P":0.0007149892732098,"CPT_FDR":0.179603233791005}]}

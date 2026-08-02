@@ -1,0 +1,1 @@
+{"gene":"MYO18A","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21210041","pos":27443831,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.352067,"MDMA_P":0.0002461986320188,"MDMA_FDR":0.0125300050769684,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

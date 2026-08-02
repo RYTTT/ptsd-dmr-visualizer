@@ -1,0 +1,1 @@
+{"gene":"TMPRSS11E","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26138672","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.436765,"Ketamine_P":0.007103529301853,"Ketamine_FDR":0.435074105185415,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

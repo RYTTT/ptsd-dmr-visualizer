@@ -1,0 +1,1 @@
+{"gene":"POLM","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25692366","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.896891,"MDMA_P":0.000633328906388,"MDMA_FDR":0.0201109570568958,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

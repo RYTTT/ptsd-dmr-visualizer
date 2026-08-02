@@ -1,0 +1,1 @@
+{"gene":"TMEM9B","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24574546","pos":8969269,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.857457,"MDMA_P":9.05658362713396e-05,"MDMA_FDR":0.0075959098601659,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.740582,"CPT_P":0.005077860568902,"CPT_FDR":0.210487099769653}]}

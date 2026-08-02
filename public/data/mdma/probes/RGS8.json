@@ -1,0 +1,1 @@
+{"gene":"RGS8","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22795877","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.390022,"MDMA_P":0.0073563636465483,"MDMA_FDR":0.0725158247096942,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

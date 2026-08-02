@@ -1,0 +1,1 @@
+{"gene":"AP4E1","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00083959","pos":51243589,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.365779,"CPT_P":0.0050698125513718,"CPT_FDR":0.210453196909398}]}

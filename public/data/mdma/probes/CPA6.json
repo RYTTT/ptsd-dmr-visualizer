@@ -1,0 +1,1 @@
+{"gene":"CPA6","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15955772","pos":68511455,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.526874,"CPT_P":0.000558726970816,"CPT_FDR":0.177561224475719}]}

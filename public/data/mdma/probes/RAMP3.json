@@ -1,0 +1,1 @@
+{"gene":"RAMP3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12022266","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.301849,"MDMA_P":0.007961539226923,"MDMA_FDR":0.0756879912568687,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

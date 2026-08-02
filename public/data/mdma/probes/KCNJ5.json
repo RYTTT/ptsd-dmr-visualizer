@@ -1,0 +1,1 @@
+{"gene":"KCNJ5","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25508319","pos":128778506,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.590318,"Ketamine_P":0.0008804425574927,"Ketamine_FDR":0.316485593093745,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

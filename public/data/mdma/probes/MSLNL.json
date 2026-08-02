@@ -1,0 +1,1 @@
+{"gene":"MSLNL","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07950011","pos":825076,"feature":"Body","cpgIsland":"","MDMA_logFC":0.834352,"MDMA_P":0.0013467555196156,"MDMA_FDR":0.029572475917487,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

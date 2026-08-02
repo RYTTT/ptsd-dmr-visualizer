@@ -1,0 +1,1 @@
+{"gene":"MSRA","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17384671","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.597578,"MDMA_P":0.0054790457679721,"MDMA_FDR":0.0619272581007802,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

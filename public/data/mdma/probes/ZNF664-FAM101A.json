@@ -1,0 +1,1 @@
+{"gene":"ZNF664-FAM101A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07000480","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.721031,"MDMA_P":0.0011644493659388,"MDMA_FDR":0.0274527966880287,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

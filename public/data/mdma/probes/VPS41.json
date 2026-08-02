@@ -1,0 +1,1 @@
+{"gene":"VPS41","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07325168","pos":38949140,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.761135,"MDMA_P":0.001614206259343,"MDMA_FDR":0.0324171795489533,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

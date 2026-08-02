@@ -1,0 +1,1 @@
+{"gene":"KIAA0802","chr":"18","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13287668","pos":8718597,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.700636,"MDMA_P":0.0081612310084172,"MDMA_FDR":0.0767189867000049,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.936587,"CPT_P":0.0023598891822094,"CPT_FDR":0.18950998036598}]}

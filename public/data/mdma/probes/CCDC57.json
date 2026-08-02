@@ -1,0 +1,1 @@
+{"gene":"CCDC57","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26093898","pos":80137377,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.221459,"CPT_P":0.0010316590588694,"CPT_FDR":0.180981316151499}]}

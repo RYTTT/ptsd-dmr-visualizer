@@ -1,0 +1,1 @@
+{"gene":"EEF1E1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18479922","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.500107,"MDMA_P":0.0028635803974292,"MDMA_FDR":0.0437365958835352,"Ketamine_logFC":-0.464511,"Ketamine_P":0.0041538643359072,"Ketamine_FDR":0.407296469423807,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

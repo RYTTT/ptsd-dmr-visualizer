@@ -1,0 +1,1 @@
+{"gene":"ABCE1","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01713095","pos":146050127,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.925647,"CPT_P":0.004413025365384,"CPT_FDR":0.204766990464007}]}

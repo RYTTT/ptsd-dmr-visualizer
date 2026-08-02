@@ -1,0 +1,1 @@
+{"gene":"DOCK8","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09185582","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.911616,"MDMA_P":0.0006576647753965,"MDMA_FDR":0.0205009362810939,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.131782,"CPT_P":0.0018217207811815,"CPT_FDR":0.184479127985664}]}

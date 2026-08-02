@@ -1,0 +1,1 @@
+{"gene":"ADCK1","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23405908","pos":78324872,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.868601,"MDMA_P":4.97495097083582e-06,"MDMA_FDR":0.0018714335798133,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

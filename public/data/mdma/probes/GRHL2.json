@@ -1,0 +1,1 @@
+{"gene":"GRHL2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19497809","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.135121,"MDMA_P":1.18165804013808e-05,"MDMA_FDR":0.0027957116726404,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

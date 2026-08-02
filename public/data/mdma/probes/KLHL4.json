@@ -1,0 +1,1 @@
+{"gene":"KLHL4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09763982","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.53108,"Ketamine_P":0.0094573762329097,"Ketamine_FDR":0.455646332497039,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"PDGFRA","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12845923","pos":55139873,"feature":"Body","cpgIsland":"","MDMA_logFC":0.518978,"MDMA_P":0.0043386483994111,"MDMA_FDR":0.0545827064518301,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

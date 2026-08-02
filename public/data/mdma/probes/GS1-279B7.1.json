@@ -1,0 +1,1 @@
+{"gene":"GS1-279B7.1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02143791","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.062961,"MDMA_P":0.0005102397631425,"MDMA_FDR":0.0180743750775581,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

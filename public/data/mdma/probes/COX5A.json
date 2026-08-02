@@ -1,0 +1,1 @@
+{"gene":"COX5A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14922416","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.186789,"CPT_P":0.0066944306932247,"CPT_FDR":0.221765627220782}]}

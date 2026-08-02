@@ -1,0 +1,1 @@
+{"gene":"KIAA0930","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10523381","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.238151,"MDMA_P":0.0045952298541165,"MDMA_FDR":0.0563149277211941,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

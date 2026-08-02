@@ -1,0 +1,1 @@
+{"gene":"FLJ43663","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14761417","pos":130636860,"feature":"Body","cpgIsland":"","MDMA_logFC":1.053783,"MDMA_P":0.0003915401497887,"MDMA_FDR":0.0158157922142769,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"HOOK3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02204844","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.027476,"MDMA_P":0.0013894867030337,"MDMA_FDR":0.0300350483415003,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

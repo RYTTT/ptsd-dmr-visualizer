@@ -1,0 +1,1 @@
+{"gene":"PCBP1-AS1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11610004","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.769939,"Ketamine_P":0.0001737199504257,"Ketamine_FDR":0.247569817743297,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

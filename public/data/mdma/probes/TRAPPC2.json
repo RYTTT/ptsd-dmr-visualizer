@@ -1,0 +1,1 @@
+{"gene":"TRAPPC2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08840366","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.681762,"Ketamine_P":0.00018778466398,"Ketamine_FDR":0.252798256035597,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

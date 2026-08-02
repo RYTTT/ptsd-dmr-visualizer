@@ -1,0 +1,1 @@
+{"gene":"OSBP2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22445934","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.196605,"MDMA_P":4.2698284156251e-06,"MDMA_FDR":0.0017564184080789,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

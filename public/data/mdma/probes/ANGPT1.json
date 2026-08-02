@@ -1,0 +1,1 @@
+{"gene":"ANGPT1","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02130329","pos":108370910,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.336746,"CPT_P":0.0008040531839161,"CPT_FDR":0.179603233791005}]}

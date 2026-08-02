@@ -1,0 +1,1 @@
+{"gene":"NLRP14","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20883730","pos":7052540,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.697153,"MDMA_P":0.0011310507903192,"MDMA_FDR":0.0270491905497518,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

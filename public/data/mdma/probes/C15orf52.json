@@ -1,0 +1,1 @@
+{"gene":"C15orf52","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20317748","pos":40633124,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.307341,"Ketamine_P":0.0032768597641653,"Ketamine_FDR":0.392914520011957,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

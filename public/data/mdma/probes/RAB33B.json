@@ -1,0 +1,1 @@
+{"gene":"RAB33B","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17109140","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.87618,"MDMA_P":0.000960178292894,"MDMA_FDR":0.0248744394272257,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

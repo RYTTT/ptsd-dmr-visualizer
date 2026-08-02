@@ -1,0 +1,1 @@
+{"gene":"HSF1","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02900034","pos":145535640,"feature":"Body","cpgIsland":"","MDMA_logFC":0.560645,"MDMA_P":0.0003906442257199,"MDMA_FDR":0.0157987326249081,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

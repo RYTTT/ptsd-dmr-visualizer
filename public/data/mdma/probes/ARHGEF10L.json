@@ -1,0 +1,1 @@
+{"gene":"ARHGEF10L","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17285883","pos":17896290,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":-0.569042,"MDMA_P":0.0069293358468374,"MDMA_FDR":0.0702481034507515,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.851137,"CPT_P":0.0029056426878814,"CPT_FDR":0.193241162344836}]}

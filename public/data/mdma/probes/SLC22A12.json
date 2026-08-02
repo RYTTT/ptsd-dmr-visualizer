@@ -1,0 +1,1 @@
+{"gene":"SLC22A12","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15850078","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.717383,"Ketamine_P":0.0019956175282296,"Ketamine_FDR":0.363674630129518,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

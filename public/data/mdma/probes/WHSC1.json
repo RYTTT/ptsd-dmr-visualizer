@@ -1,0 +1,1 @@
+{"gene":"WHSC1","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13883590","pos":1952852,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":2.974549,"CPT_P":0.0056916650178571,"CPT_FDR":0.215377510328617}]}

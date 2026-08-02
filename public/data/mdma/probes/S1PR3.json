@@ -1,0 +1,1 @@
+{"gene":"S1PR3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02000211","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.448816,"MDMA_P":0.0015992441757825,"MDMA_FDR":0.0322710174163095,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

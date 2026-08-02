@@ -1,0 +1,1 @@
+{"gene":"CDH10","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01058368","pos":24645487,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.045539,"MDMA_P":0.0003828118020707,"MDMA_FDR":0.0156431841031672,"Ketamine_logFC":-0.876388,"Ketamine_P":0.0031524718339354,"Ketamine_FDR":0.392086012065842,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

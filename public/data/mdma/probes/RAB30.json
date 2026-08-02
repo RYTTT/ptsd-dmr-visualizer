@@ -1,0 +1,1 @@
+{"gene":"RAB30","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19147415","pos":82783685,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":1.578628,"MDMA_P":3.6324052487825403e-09,"MDMA_FDR":3.52712994246742e-05,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

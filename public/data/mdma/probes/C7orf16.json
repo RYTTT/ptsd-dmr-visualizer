@@ -1,0 +1,1 @@
+{"gene":"C7orf16","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01353448","pos":31726912,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.888101,"CPT_P":0.0037747624674827,"CPT_FDR":0.199755985244362}]}

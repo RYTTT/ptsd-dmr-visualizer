@@ -1,0 +1,1 @@
+{"gene":"PLA2R1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22666612","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.892501,"MDMA_P":0.0017695879421642,"MDMA_FDR":0.0339975363291123,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.153276,"CPT_P":0.0089656100133531,"CPT_FDR":0.235681004315902}]}

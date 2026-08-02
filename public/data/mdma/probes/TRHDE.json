@@ -1,0 +1,1 @@
+{"gene":"TRHDE","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15604046","pos":72740698,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.534797,"Ketamine_P":0.0021625931934544,"Ketamine_FDR":0.367852103465808,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

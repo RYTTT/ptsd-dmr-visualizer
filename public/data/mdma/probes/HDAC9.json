@@ -1,0 +1,1 @@
+{"gene":"HDAC9","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25406767","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.111511,"MDMA_P":1.13805108651648e-05,"MDMA_FDR":0.0027438607675875,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

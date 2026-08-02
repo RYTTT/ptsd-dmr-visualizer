@@ -1,0 +1,1 @@
+{"gene":"MEGF8","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11482779","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.965151,"MDMA_P":0.0010855538471195,"MDMA_FDR":0.026483682567455,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.908282,"CPT_P":0.0064395834365931,"CPT_FDR":0.220077440901311}]}

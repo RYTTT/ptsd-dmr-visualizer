@@ -1,0 +1,1 @@
+{"gene":"GUCY1B2","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06048102","pos":51575027,"feature":"Body","cpgIsland":"","MDMA_logFC":0.967236,"MDMA_P":2.92927895387338e-05,"MDMA_FDR":0.0043293421380931,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

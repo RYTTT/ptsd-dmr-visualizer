@@ -1,0 +1,1 @@
+{"gene":"VCAN","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26496628","pos":82864340,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.524052,"Ketamine_P":0.0040781743578686,"Ketamine_FDR":0.405711785587836,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

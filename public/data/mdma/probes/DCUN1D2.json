@@ -1,0 +1,1 @@
+{"gene":"DCUN1D2","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03639396","pos":114114198,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.20443,"CPT_P":0.0001188809467171,"CPT_FDR":0.176561132189866}]}

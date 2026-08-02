@@ -1,0 +1,1 @@
+{"gene":"P4HA2","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05209330","pos":131550942,"feature":"Body","cpgIsland":"","MDMA_logFC":0.405194,"MDMA_P":0.0039802324934354,"MDMA_FDR":0.0520878312471678,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

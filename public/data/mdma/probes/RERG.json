@@ -1,0 +1,1 @@
+{"gene":"RERG","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18839315","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.610668,"MDMA_P":0.007636767514523,"MDMA_FDR":0.0739588077462508,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

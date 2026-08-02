@@ -1,0 +1,1 @@
+{"gene":"OR4K17","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04588710","pos":20585753,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.364871,"CPT_P":0.0074067920317511,"CPT_FDR":0.226612749315274}]}

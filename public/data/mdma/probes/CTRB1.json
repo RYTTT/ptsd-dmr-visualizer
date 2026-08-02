@@ -1,0 +1,1 @@
+{"gene":"CTRB1","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27284034","pos":75252211,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.876153,"MDMA_P":0.0012040814517274,"MDMA_FDR":0.0279106099054732,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

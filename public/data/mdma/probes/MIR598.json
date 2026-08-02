@@ -1,0 +1,1 @@
+{"gene":"MIR598","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04963089","pos":10894228,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.197465,"MDMA_P":0.0006049431276559,"MDMA_FDR":0.0196490162441795,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"YIPF4","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21995710","pos":32514311,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.770243,"CPT_P":0.0020436718704524,"CPT_FDR":0.187377972388993}]}

@@ -1,0 +1,1 @@
+{"gene":"FBF1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07980171","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.95644,"MDMA_P":0.0027450695977704,"MDMA_FDR":0.0427264664292086,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

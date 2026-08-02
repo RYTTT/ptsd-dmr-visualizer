@@ -1,0 +1,1 @@
+{"gene":"MOS","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11716789","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.443405,"MDMA_P":0.0013884516698969,"MDMA_FDR":0.0300258970250263,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

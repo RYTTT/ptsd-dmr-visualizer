@@ -1,0 +1,1 @@
+{"gene":"KCNB1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04909099","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.672382,"MDMA_P":0.0077199895327799,"MDMA_FDR":0.074411233476552,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

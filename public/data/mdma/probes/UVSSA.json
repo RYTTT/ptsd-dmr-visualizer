@@ -1,0 +1,1 @@
+{"gene":"UVSSA","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00780752","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.57626,"MDMA_P":0.0001087891406342,"MDMA_FDR":0.0083245717464242,"Ketamine_logFC":0.373663,"Ketamine_P":0.0070692685991013,"Ketamine_FDR":0.434713753216021,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

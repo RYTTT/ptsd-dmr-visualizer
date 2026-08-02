@@ -1,0 +1,1 @@
+{"gene":"SEPT7-AS1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10008353","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.591605,"Ketamine_P":0.0066782256648307,"Ketamine_FDR":0.430685477262464,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

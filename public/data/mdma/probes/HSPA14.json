@@ -1,0 +1,1 @@
+{"gene":"HSPA14","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15721706","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.745967,"MDMA_P":0.0007548983281822,"MDMA_FDR":0.0220072730334541,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"BAI3","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01618102","pos":69717664,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.84476,"Ketamine_P":0.0051234504099234,"Ketamine_FDR":0.418602297804189,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

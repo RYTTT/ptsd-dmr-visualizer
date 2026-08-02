@@ -1,0 +1,1 @@
+{"gene":"UBAP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02859438","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.755647,"MDMA_P":0.0039560815169509,"MDMA_FDR":0.0519156794779725,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.987684,"CPT_P":0.0031965285071991,"CPT_FDR":0.195137756331324}]}

@@ -1,0 +1,1 @@
+{"gene":"CST7","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26450106","pos":24929607,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":1.504128,"MDMA_P":3.81980468682007e-08,"MDMA_FDR":0.0001483639248652,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

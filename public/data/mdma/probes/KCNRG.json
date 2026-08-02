@@ -1,0 +1,1 @@
+{"gene":"KCNRG","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02894224","pos":50593862,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.917308,"CPT_P":0.007773589649304,"CPT_FDR":0.228969856293574}]}

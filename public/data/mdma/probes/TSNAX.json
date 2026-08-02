@@ -1,0 +1,1 @@
+{"gene":"TSNAX","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02293835","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.082992,"MDMA_P":0.0005499872640279,"MDMA_FDR":0.018748710979173,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.777853,"CPT_P":5.69531801696848e-05,"CPT_FDR":0.176561132189866}]}

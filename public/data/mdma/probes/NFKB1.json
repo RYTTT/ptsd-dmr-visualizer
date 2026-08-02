@@ -1,0 +1,1 @@
+{"gene":"NFKB1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24824075","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.188955,"MDMA_P":0.0006393717988984,"MDMA_FDR":0.0202101041406398,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.110391,"CPT_P":0.0077136456666461,"CPT_FDR":0.228667682305052}]}

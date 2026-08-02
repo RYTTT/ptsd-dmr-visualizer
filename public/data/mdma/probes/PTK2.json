@@ -1,0 +1,1 @@
+{"gene":"PTK2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22262325","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-1.020601,"Ketamine_P":0.0026088706931391,"Ketamine_FDR":0.379716146489594,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

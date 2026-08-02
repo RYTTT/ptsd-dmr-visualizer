@@ -1,0 +1,1 @@
+{"gene":"SEMA3E","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02931650","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.341273,"CPT_P":2.34884651871426e-05,"CPT_FDR":0.176561132189866}]}

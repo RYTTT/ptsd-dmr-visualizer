@@ -1,0 +1,1 @@
+{"gene":"TECPR2","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06819357","pos":102928437,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.372883,"Ketamine_P":0.0029705602417676,"Ketamine_FDR":0.388631959807408,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

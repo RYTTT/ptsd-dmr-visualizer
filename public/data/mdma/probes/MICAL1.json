@@ -1,0 +1,1 @@
+{"gene":"MICAL1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04430024","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.615244,"MDMA_P":0.0053572193510513,"MDMA_FDR":0.0611553741729456,"Ketamine_logFC":0.663198,"Ketamine_P":0.0049795887180649,"Ketamine_FDR":0.417575710622178,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

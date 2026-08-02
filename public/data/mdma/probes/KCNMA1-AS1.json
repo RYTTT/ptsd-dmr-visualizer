@@ -1,0 +1,1 @@
+{"gene":"KCNMA1-AS1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19483581","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.934602,"MDMA_P":0.0007512465827018,"MDMA_FDR":0.0219450206170872,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

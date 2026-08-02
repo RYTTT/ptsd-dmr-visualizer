@@ -1,0 +1,1 @@
+{"gene":"FAM111A","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08653292","pos":58920029,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.483701,"Ketamine_P":0.0065268905605937,"Ketamine_FDR":0.430038182955715,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

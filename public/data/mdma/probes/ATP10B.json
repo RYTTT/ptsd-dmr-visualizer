@@ -1,0 +1,1 @@
+{"gene":"ATP10B","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19548448","pos":160278962,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.310405,"CPT_P":0.0011015176612452,"CPT_FDR":0.180981316151499}]}

@@ -1,0 +1,1 @@
+{"gene":"CNBD2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05687378","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.66328,"MDMA_P":0.0055003983485963,"MDMA_FDR":0.0620776918846669,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

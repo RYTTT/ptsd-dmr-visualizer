@@ -1,0 +1,1 @@
+{"gene":"SPATA5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08812032","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.036394,"MDMA_P":0.0002679722929768,"MDMA_FDR":0.0130265304874349,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

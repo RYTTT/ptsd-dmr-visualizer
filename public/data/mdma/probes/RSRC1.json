@@ -1,0 +1,1 @@
+{"gene":"RSRC1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04852445","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.427145,"Ketamine_P":0.0092183039915736,"Ketamine_FDR":0.45309360888009,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

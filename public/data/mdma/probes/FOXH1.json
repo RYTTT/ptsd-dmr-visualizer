@@ -1,0 +1,1 @@
+{"gene":"FOXH1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03752471","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.733201,"CPT_P":0.005481762511434,"CPT_FDR":0.213928212631687}]}

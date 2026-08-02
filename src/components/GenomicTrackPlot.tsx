@@ -7,12 +7,15 @@ interface GenomicTrackProps {
   geneData: GeneProbeData;
 }
 
-const SUBTYPES = [
-  { key: 'SSS', label: 'SSS — Severe Stress Subtype', color: '#b91c1c', bg: '#fef2f2' },
-  { key: 'ADS', label: 'ADS — Affective/Depressive Subtype', color: '#1d4ed8', bg: '#eff6ff' },
-  { key: 'ICF', label: 'ICF — Cognitive Function Subtype', color: '#6d28d9', bg: '#f5f3ff' },
-  { key: 'ISS', label: 'ISS — Intermediate Stress Subtype', color: '#047857', bg: '#ecfdf5' },
-] as const;
+const SUBTYPE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  SSS: { label: 'SSS — Severe Stress Subtype', color: '#b91c1c', bg: '#fef2f2' },
+  ADS: { label: 'ADS — Affective/Depressive Subtype', color: '#1d4ed8', bg: '#eff6ff' },
+  ICF: { label: 'ICF — Cognitive Function Subtype', color: '#6d28d9', bg: '#f5f3ff' },
+  ISS: { label: 'ISS — Intermediate Stress Subtype', color: '#047857', bg: '#ecfdf5' },
+  MDMA: { label: 'MDMA-AT — Responder vs HC', color: '#7c3aed', bg: '#f5f3ff' },
+  Ketamine: { label: 'Ketamine — Resp vs NonResp', color: '#0891b2', bg: '#ecfeff' },
+  CPT: { label: 'CPT — Resp vs NonResp', color: '#059669', bg: '#ecfdf5' },
+};
 
 const HYPER_COLOR = '#dc2626';
 const HYPO_COLOR = '#2563eb';
@@ -31,6 +34,33 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const [dimensions, setDimensions] = useState({ width: 900, height: 0 });
+
+  // ---- Auto-detect subtypes from probe data ----
+  const SUBTYPES = useMemo(() => {
+    if (!geneData.probes.length) return [];
+    const firstProbe = geneData.probes[0];
+    const keys = Object.keys(firstProbe);
+    const detected = new Set<string>();
+    for (const k of keys) {
+      const m = k.match(/^(.+)_P$/);
+      if (m && m[1] !== 'adj') detected.add(m[1]);
+    }
+    // Maintain a stable ordering
+    const order = ['SSS', 'ADS', 'ICF', 'ISS', 'MDMA', 'Ketamine', 'CPT'];
+    const result: { key: string; label: string; color: string; bg: string }[] = [];
+    for (const k of order) {
+      if (detected.has(k) && SUBTYPE_CONFIG[k]) {
+        result.push({ key: k, ...SUBTYPE_CONFIG[k] });
+      }
+    }
+    // Any remaining detected subtypes not in order
+    for (const k of detected) {
+      if (!order.includes(k) && SUBTYPE_CONFIG[k]) {
+        result.push({ key: k, ...SUBTYPE_CONFIG[k] });
+      }
+    }
+    return result;
+  }, [geneData]);
 
   // ---- ENLARGED DIMENSIONS ----
   const panelHeight = 180;
@@ -388,7 +418,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       ctx.fillText(item.label, lx + 24, legendY + 4);
       lx += ctx.measureText(item.label).width + 46;
     }
-  }, [geneData, dimensions, minPos, maxPos, posRange, maxNegLogP, posToX, valToY]);
+  }, [geneData, dimensions, minPos, maxPos, posRange, maxNegLogP, posToX, valToY, SUBTYPES, effectiveWidth, totalHeight]);
 
   // ---- Tooltip on hover ----
   const handleMouseMove = useCallback(

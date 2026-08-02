@@ -1,0 +1,1 @@
+{"gene":"PARD6G","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02193859","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.715715,"MDMA_P":0.0081601682177145,"MDMA_FDR":0.0767113916440863,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"HOMER1","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16143105","pos":78689278,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.305968,"CPT_P":0.0007381374870323,"CPT_FDR":0.179603233791005}]}

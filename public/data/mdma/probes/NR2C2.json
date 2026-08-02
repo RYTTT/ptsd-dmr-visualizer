@@ -1,0 +1,1 @@
+{"gene":"NR2C2","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19730887","pos":15085146,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.463062,"MDMA_P":0.0025708276827919,"MDMA_FDR":0.0412867917064296,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"BEND7","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12207511","pos":13483416,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.133223,"CPT_P":0.0046833045907053,"CPT_FDR":0.207321419810487}]}

@@ -1,0 +1,1 @@
+{"gene":"IMPA1","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09614956","pos":82570133,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-1.103466,"MDMA_P":5.78692791040033e-05,"MDMA_FDR":0.0060908880430662,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

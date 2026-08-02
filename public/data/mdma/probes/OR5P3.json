@@ -1,0 +1,1 @@
+{"gene":"OR5P3","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25541968","pos":7848142,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.934132,"MDMA_P":0.0001030600133986,"MDMA_FDR":0.0081168310947737,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

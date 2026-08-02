@@ -1,0 +1,1 @@
+{"gene":"SLC12A8","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03509447","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.634542,"CPT_P":0.0093409573884093,"CPT_FDR":0.237843164975058}]}

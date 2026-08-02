@@ -1,0 +1,1 @@
+{"gene":"CXCR5","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01257799","pos":118753476,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.462863,"MDMA_P":0.0035345551673937,"MDMA_FDR":0.0489769958470242,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

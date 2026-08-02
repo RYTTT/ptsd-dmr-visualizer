@@ -1,0 +1,1 @@
+{"gene":"GJB5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07014349","pos":35220521,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.543892,"MDMA_P":0.0014216993174391,"MDMA_FDR":0.0303901101326951,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

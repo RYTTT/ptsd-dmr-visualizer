@@ -1,0 +1,1 @@
+{"gene":"XKR6","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14053654","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.286101,"MDMA_P":5.89752139375284e-05,"MDMA_FDR":0.0061391382914141,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

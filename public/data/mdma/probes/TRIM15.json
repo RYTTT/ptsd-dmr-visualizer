@@ -1,0 +1,1 @@
+{"gene":"TRIM15","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13252226","pos":30135162,"feature":"Body","cpgIsland":"","MDMA_logFC":0.797443,"MDMA_P":0.008057408314825,"MDMA_FDR":0.0761819515843579,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

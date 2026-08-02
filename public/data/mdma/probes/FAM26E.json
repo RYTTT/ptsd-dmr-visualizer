@@ -1,0 +1,1 @@
+{"gene":"FAM26E","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18406700","pos":116833441,"feature":"Body","cpgIsland":"","MDMA_logFC":0.742072,"MDMA_P":0.003091960804996,"MDMA_FDR":0.0455795947289543,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

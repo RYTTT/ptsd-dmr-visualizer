@@ -1,0 +1,1 @@
+{"gene":"LXN","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17977250","pos":158390778,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.279339,"Ketamine_P":0.0045776934383108,"Ketamine_FDR":0.412487924558918,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

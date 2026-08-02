@@ -1,0 +1,1 @@
+{"gene":"ANKRD31","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18520565","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.060298,"MDMA_P":1.06427372390916e-05,"MDMA_FDR":0.0026580953247728,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

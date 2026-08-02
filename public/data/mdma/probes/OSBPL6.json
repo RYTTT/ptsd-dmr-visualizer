@@ -1,0 +1,1 @@
+{"gene":"OSBPL6","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01420564","pos":179076804,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.448422,"MDMA_P":0.0092642136542299,"MDMA_FDR":0.0820818884050319,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

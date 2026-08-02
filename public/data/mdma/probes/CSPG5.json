@@ -1,0 +1,1 @@
+{"gene":"CSPG5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03759549","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.991916,"MDMA_P":0.0001717636459083,"MDMA_FDR":0.0104758423168743,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

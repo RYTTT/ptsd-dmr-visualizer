@@ -1,0 +1,1 @@
+{"gene":"KIAA0907","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09267708","pos":155883625,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.584195,"CPT_P":0.0006934891944489,"CPT_FDR":0.179603233791005}]}

@@ -1,0 +1,1 @@
+{"gene":"STRA6","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00563495","pos":74489089,"feature":"Body","cpgIsland":"","MDMA_logFC":0.383117,"MDMA_P":0.00523628917283,"MDMA_FDR":0.060372719903253,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

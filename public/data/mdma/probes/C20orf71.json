@@ -1,0 +1,1 @@
+{"gene":"C20orf71","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01671881","pos":31804901,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.717746,"MDMA_P":0.0058543610055051,"MDMA_FDR":0.064272295313389,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

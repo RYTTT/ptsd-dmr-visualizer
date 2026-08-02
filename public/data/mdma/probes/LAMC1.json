@@ -1,0 +1,1 @@
+{"gene":"LAMC1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07213264","pos":183113763,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.28569,"CPT_P":0.002187075150183,"CPT_FDR":0.188327046979856}]}

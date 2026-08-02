@@ -1,0 +1,1 @@
+{"gene":"GABRR3","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11726229","pos":97754720,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.127936,"CPT_P":0.0027158117426568,"CPT_FDR":0.191290007159308}]}

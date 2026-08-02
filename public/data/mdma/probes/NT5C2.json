@@ -1,0 +1,1 @@
+{"gene":"NT5C2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21222554","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.43476,"Ketamine_P":0.0032824011194922,"Ketamine_FDR":0.392914520011957,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

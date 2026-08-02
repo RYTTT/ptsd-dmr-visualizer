@@ -1,0 +1,1 @@
+{"gene":"ALG9","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03474251","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.251888,"MDMA_P":0.0002489460527525,"MDMA_FDR":0.0126088397234372,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

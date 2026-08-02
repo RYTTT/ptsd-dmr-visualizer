@@ -1,0 +1,1 @@
+{"gene":"TPD52","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11669824","pos":81020215,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.106336,"MDMA_P":0.0028984753753159,"MDMA_FDR":0.044004349570663,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

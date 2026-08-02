@@ -1,0 +1,1 @@
+{"gene":"BPIL2","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03097190","pos":32854361,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.327717,"Ketamine_P":0.006579177264776,"Ketamine_FDR":0.430089202369226,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

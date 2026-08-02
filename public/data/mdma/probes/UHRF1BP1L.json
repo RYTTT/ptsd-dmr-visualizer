@@ -1,0 +1,1 @@
+{"gene":"UHRF1BP1L","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08805500","pos":100522155,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.314002,"Ketamine_P":0.0085056329307464,"Ketamine_FDR":0.448656240303342,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

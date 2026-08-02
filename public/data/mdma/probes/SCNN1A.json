@@ -1,0 +1,1 @@
+{"gene":"SCNN1A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15144116","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.276402,"Ketamine_P":0.001067083200434,"Ketamine_FDR":0.330098579975655,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"IL24","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16417028","pos":207070825,"feature":"1stExon","cpgIsland":"","MDMA_logFC":0.549163,"MDMA_P":0.0047472407342045,"MDMA_FDR":0.0573167696779955,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

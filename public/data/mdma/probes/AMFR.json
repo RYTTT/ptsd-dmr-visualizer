@@ -1,0 +1,1 @@
+{"gene":"AMFR","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22521947","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.880607,"MDMA_P":0.007888858353546,"MDMA_FDR":0.075306218520679,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.336406,"CPT_P":0.0023476074880557,"CPT_FDR":0.18950998036598}]}

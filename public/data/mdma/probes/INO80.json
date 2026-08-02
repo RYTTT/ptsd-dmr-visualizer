@@ -1,0 +1,1 @@
+{"gene":"INO80","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00470768","pos":41285147,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.489559,"Ketamine_P":0.0047179876622118,"Ketamine_FDR":0.414083571446304,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

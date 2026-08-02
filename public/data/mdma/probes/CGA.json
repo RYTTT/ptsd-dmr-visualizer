@@ -1,0 +1,1 @@
+{"gene":"CGA","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23389079","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.30293,"MDMA_P":1.02565098406184e-05,"MDMA_FDR":0.002611986834119,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

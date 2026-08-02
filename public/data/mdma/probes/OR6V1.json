@@ -1,0 +1,1 @@
+{"gene":"OR6V1","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01262290","pos":142748458,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.088344,"CPT_P":0.002766973548743,"CPT_FDR":0.192092450357535}]}

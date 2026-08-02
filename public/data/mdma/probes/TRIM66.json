@@ -1,0 +1,1 @@
+{"gene":"TRIM66","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15226811","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.089688,"Ketamine_P":0.0018309290732841,"Ketamine_FDR":0.357052655465615,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

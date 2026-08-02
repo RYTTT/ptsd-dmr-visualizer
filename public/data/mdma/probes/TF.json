@@ -1,0 +1,1 @@
+{"gene":"TF","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21585306","pos":133476947,"feature":"Body","cpgIsland":"","MDMA_logFC":0.645937,"MDMA_P":0.0045386835028063,"MDMA_FDR":0.0559660030698238,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

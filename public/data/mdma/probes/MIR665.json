@@ -1,0 +1,1 @@
+{"gene":"MIR665","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00594101","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.677339,"MDMA_P":0.0023540342757781,"MDMA_FDR":0.0394291408363512,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

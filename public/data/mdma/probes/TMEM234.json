@@ -1,0 +1,1 @@
+{"gene":"TMEM234","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19550133","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.923233,"MDMA_P":0.0004123310172712,"MDMA_FDR":0.0162405130305197,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

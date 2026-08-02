@@ -1,0 +1,1 @@
+{"gene":"RFX1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10251535","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.36802,"MDMA_P":0.001921938242923,"MDMA_FDR":0.0354732479712186,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

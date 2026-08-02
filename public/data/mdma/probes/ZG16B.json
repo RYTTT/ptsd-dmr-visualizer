@@ -1,0 +1,1 @@
+{"gene":"ZG16B","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05468917","pos":2882180,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.868491,"MDMA_P":0.0017812871002559,"MDMA_FDR":0.0341090984177533,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

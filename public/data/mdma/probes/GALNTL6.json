@@ -1,0 +1,1 @@
+{"gene":"GALNTL6","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09154034","pos":172846599,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.524205,"Ketamine_P":0.0014819171635631,"Ketamine_FDR":0.344771687228439,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

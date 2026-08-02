@@ -1,0 +1,1 @@
+{"gene":"RENBP","chr":"X","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16772022","pos":153211711,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-1.056391,"Ketamine_P":0.0009408561199161,"Ketamine_FDR":0.320505569232804,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

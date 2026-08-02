@@ -1,0 +1,1 @@
+{"gene":"OR8B12","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25362709","pos":124413728,"feature":"TSS200","cpgIsland":"","MDMA_logFC":-1.009167,"MDMA_P":0.0008667651683751,"MDMA_FDR":0.0235957269311348,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

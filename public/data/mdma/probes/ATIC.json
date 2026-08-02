@@ -1,0 +1,1 @@
+{"gene":"ATIC","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10384075","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.033893,"MDMA_P":0.0013915514344669,"MDMA_FDR":0.0300583797367724,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

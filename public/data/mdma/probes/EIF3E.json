@@ -1,0 +1,1 @@
+{"gene":"EIF3E","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26763380","pos":109233795,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.030168,"MDMA_P":0.0014149365493317,"MDMA_FDR":0.0303089249105665,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

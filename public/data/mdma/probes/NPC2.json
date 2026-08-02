@@ -1,0 +1,1 @@
+{"gene":"NPC2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12168742","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.89386,"MDMA_P":0.0038873491244162,"MDMA_FDR":0.0514985843380127,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.253873,"CPT_P":0.0028971695317537,"CPT_FDR":0.193147908990176}]}

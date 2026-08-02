@@ -1,0 +1,1 @@
+{"gene":"CD38","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20931972","pos":15850232,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.41016,"Ketamine_P":0.0041720594427348,"Ketamine_FDR":0.407345769512948,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

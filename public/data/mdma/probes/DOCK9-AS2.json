@@ -1,0 +1,1 @@
+{"gene":"DOCK9-AS2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07746772","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.024463,"CPT_P":0.0058941893841673,"CPT_FDR":0.216657670443363}]}

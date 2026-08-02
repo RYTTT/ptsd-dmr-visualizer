@@ -1,0 +1,1 @@
+{"gene":"C11orf45","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05566455","pos":128774523,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.902697,"Ketamine_P":0.003728688384603,"Ketamine_FDR":0.40066641639849,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

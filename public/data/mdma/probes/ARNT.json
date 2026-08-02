@@ -1,0 +1,1 @@
+{"gene":"ARNT","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13896879","pos":150785718,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.291901,"Ketamine_P":0.0086495128510473,"Ketamine_FDR":0.449755445401682,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

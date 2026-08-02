@@ -1,0 +1,1 @@
+{"gene":"PDE1B","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20466553","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.074251,"CPT_P":0.0054554802576856,"CPT_FDR":0.21372697558771}]}

@@ -1,0 +1,1 @@
+{"gene":"HM13","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13479077","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.333988,"Ketamine_P":0.0092519654411254,"Ketamine_FDR":0.453460255871479,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

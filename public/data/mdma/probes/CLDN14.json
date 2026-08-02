@@ -1,0 +1,1 @@
+{"gene":"CLDN14","chr":"21","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16865442","pos":37853516,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":-0.8473,"MDMA_P":0.004540725723565,"MDMA_FDR":0.0559732937808352,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

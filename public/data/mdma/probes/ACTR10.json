@@ -1,0 +1,1 @@
+{"gene":"ACTR10","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11123847","pos":58702245,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-1.22152,"MDMA_P":0.0018563906023904,"MDMA_FDR":0.0348633055032132,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.22973,"CPT_P":0.001683713555869,"CPT_FDR":0.183637394240422}]}

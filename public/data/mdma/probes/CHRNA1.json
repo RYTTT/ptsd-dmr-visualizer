@@ -1,0 +1,1 @@
+{"gene":"CHRNA1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09797698","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.938908,"MDMA_P":4.26399660471811e-05,"MDMA_FDR":0.00523694529725,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

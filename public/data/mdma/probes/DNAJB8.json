@@ -1,0 +1,1 @@
+{"gene":"DNAJB8","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03022541","pos":128186859,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.470576,"MDMA_P":0.0004232555009657,"MDMA_FDR":0.0164682306276697,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"PTN","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23787144","pos":137002261,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":-1.266472,"MDMA_P":6.32354546023929e-06,"MDMA_FDR":0.0021021371601177,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"AGTR1","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27260617","pos":148447161,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.873157,"MDMA_P":0.0029928908592531,"MDMA_FDR":0.0447644301231532,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.074264,"CPT_P":0.0043361752139574,"CPT_FDR":0.203869394727936}]}

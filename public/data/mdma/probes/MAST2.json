@@ -1,0 +1,1 @@
+{"gene":"MAST2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16575491","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.737921,"Ketamine_P":0.0022671187050785,"Ketamine_FDR":0.371834393456485,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

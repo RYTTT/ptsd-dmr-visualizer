@@ -1,0 +1,1 @@
+{"gene":"ACTG2","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17176609","pos":74135217,"feature":"Body","cpgIsland":"","MDMA_logFC":0.798856,"MDMA_P":0.0027989885897516,"MDMA_FDR":0.0431622550678155,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

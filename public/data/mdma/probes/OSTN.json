@@ -1,0 +1,1 @@
+{"gene":"OSTN","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10514459","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.549473,"Ketamine_P":0.004344744506298,"Ketamine_FDR":0.409865895516701,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

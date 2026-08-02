@@ -1,0 +1,1 @@
+{"gene":"EPB41","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06861370","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.05059,"MDMA_P":0.0027276367421,"MDMA_FDR":0.0425883571628,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.133861,"CPT_P":0.0016506270668673,"CPT_FDR":0.183637394240422}]}

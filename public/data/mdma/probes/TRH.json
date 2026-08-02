@@ -1,0 +1,1 @@
+{"gene":"TRH","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07849604","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.819775,"Ketamine_P":0.0044630798647156,"Ketamine_FDR":0.411214519718024,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

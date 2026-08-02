@@ -1,0 +1,1 @@
+{"gene":"DPPA3","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01044476","pos":7865756,"feature":"Body","cpgIsland":"","MDMA_logFC":0.639258,"MDMA_P":0.0097227310683192,"MDMA_FDR":0.084266235374103,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

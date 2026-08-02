@@ -1,0 +1,1 @@
+{"gene":"TRABD2A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20804467","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.093364,"MDMA_P":0.0043418186358204,"MDMA_FDR":0.054607755136976,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

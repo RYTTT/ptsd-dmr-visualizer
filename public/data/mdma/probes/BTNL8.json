@@ -1,0 +1,1 @@
+{"gene":"BTNL8","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17826428","pos":180336487,"feature":"Body","cpgIsland":"","MDMA_logFC":0.796083,"MDMA_P":0.009728466723769,"MDMA_FDR":0.0842856111872176,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

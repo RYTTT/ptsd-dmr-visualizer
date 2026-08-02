@@ -1,0 +1,1 @@
+{"gene":"ESRP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14441613","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.799054,"MDMA_P":0.0004656403804191,"MDMA_FDR":0.0172372836416492,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

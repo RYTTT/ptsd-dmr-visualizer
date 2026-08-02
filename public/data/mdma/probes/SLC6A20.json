@@ -1,0 +1,1 @@
+{"gene":"SLC6A20","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01311379","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.357677,"Ketamine_P":0.0093961880902796,"Ketamine_FDR":0.45520267954931,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

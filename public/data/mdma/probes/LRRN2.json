@@ -1,0 +1,1 @@
+{"gene":"LRRN2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12521091","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.674307,"MDMA_P":0.0045002889376852,"MDMA_FDR":0.0556887515044624,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

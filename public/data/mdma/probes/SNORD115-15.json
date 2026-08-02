@@ -1,0 +1,1 @@
+{"gene":"SNORD115-15","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27328211","pos":25464436,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.932257,"CPT_P":0.0003296023820339,"CPT_FDR":0.176561132189866}]}

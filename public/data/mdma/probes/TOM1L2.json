@@ -1,0 +1,1 @@
+{"gene":"TOM1L2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08500179","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.920022,"MDMA_P":0.0067566021543476,"MDMA_FDR":0.0692999777915417,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

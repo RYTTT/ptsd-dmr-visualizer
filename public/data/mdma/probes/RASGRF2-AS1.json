@@ -1,0 +1,1 @@
+{"gene":"RASGRF2-AS1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13176948","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.880028,"MDMA_P":0.0007311401761252,"MDMA_FDR":0.0216390251744645,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"GPR112","chr":"X","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23575644","pos":135424318,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.853459,"Ketamine_P":0.0088513989135123,"Ketamine_FDR":0.450852568326161,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

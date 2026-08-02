@@ -1,0 +1,1 @@
+{"gene":"PLBD1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23844604","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.203101,"MDMA_P":0.001880275758705,"MDMA_FDR":0.0350883956487168,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

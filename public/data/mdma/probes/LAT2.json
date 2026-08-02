@@ -1,0 +1,1 @@
+{"gene":"LAT2","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03375002","pos":73623876,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.936753,"CPT_P":0.00521915639803,"CPT_FDR":0.211630924166332}]}

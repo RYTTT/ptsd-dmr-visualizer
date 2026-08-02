@@ -1,0 +1,1 @@
+{"gene":"TAGLN3","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14770958","pos":111717793,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.946759,"CPT_P":0.0041711875271471,"CPT_FDR":0.203183216582172}]}

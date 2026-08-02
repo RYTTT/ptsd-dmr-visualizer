@@ -1,0 +1,1 @@
+{"gene":"C14orf64","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20908131","pos":98419775,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.127068,"CPT_P":0.0051875657738557,"CPT_FDR":0.21125710707038}]}

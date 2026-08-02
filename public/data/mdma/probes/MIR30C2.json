@@ -1,0 +1,1 @@
+{"gene":"MIR30C2","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15319027","pos":72088126,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.58335,"MDMA_P":0.0001638395396986,"MDMA_FDR":0.0102192791052957,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.443062,"CPT_P":0.0099862802518942,"CPT_FDR":0.241260535773102}]}

@@ -1,0 +1,1 @@
+{"gene":"SLC13A5","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17033684","pos":6588356,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.41704,"MDMA_P":0.0035047798573618,"MDMA_FDR":0.0487508634806824,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

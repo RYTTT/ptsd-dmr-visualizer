@@ -1,0 +1,1 @@
+{"gene":"AMOT","chr":"X","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05288740","pos":112020662,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.469631,"Ketamine_P":0.0023745541610497,"Ketamine_FDR":0.374661004417815,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

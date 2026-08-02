@@ -1,0 +1,1 @@
+{"gene":"SYT8","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27620455","pos":1858194,"feature":"Body","cpgIsland":"","MDMA_logFC":0.592084,"MDMA_P":0.0011133630620709,"MDMA_FDR":0.0268339212305867,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

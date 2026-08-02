@@ -1,0 +1,1 @@
+{"gene":"ATR","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19088717","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.07343,"MDMA_P":0.002129546717849,"MDMA_FDR":0.037375463241017,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

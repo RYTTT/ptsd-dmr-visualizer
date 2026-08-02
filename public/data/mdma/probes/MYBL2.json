@@ -1,0 +1,1 @@
+{"gene":"MYBL2","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15099490","pos":42344913,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.057542,"CPT_P":0.0054163024123725,"CPT_FDR":0.213515894685734}]}

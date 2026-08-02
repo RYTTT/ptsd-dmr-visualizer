@@ -1,0 +1,1 @@
+{"gene":"TEKT1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01910439","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.564132,"MDMA_P":0.0041354984729548,"MDMA_FDR":0.0531453087961125,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

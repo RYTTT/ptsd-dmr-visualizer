@@ -1,0 +1,1 @@
+{"gene":"QSER1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02273141","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.675698,"MDMA_P":0.002375663300582,"MDMA_FDR":0.0396200956711676,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

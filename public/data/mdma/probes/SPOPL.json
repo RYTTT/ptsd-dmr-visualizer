@@ -1,0 +1,1 @@
+{"gene":"SPOPL","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05895342","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.316152,"MDMA_P":1.22858549043207e-05,"MDMA_FDR":0.0028562438861299,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

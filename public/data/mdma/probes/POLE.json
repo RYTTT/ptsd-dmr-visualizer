@@ -1,0 +1,1 @@
+{"gene":"POLE","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01965697","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.61061,"CPT_P":0.0063878853186775,"CPT_FDR":0.219795627135564}]}

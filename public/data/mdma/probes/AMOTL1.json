@@ -1,0 +1,1 @@
+{"gene":"AMOTL1","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12932306","pos":94564754,"feature":"Body","cpgIsland":"","MDMA_logFC":1.201034,"MDMA_P":0.0002946003303238,"MDMA_FDR":0.0136366701111186,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"ASTL","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23100626","pos":96804247,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.713921,"Ketamine_P":0.0008057768341678,"Ketamine_FDR":0.312178475757412,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

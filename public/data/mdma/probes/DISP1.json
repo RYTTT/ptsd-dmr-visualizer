@@ -1,0 +1,1 @@
+{"gene":"DISP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02096552","pos":223168232,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.918746,"MDMA_P":0.0079644751291195,"MDMA_FDR":0.0757063381457165,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.034599,"CPT_P":0.0029738121871516,"CPT_FDR":0.193755416881038}]}

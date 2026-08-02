@@ -1,0 +1,1 @@
+{"gene":"ZSCAN12P1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01354632","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-1.678066,"Ketamine_P":0.0008383098285198,"Ketamine_FDR":0.313525967818879,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"CRP","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25257346","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.184506,"MDMA_P":4.86306542714318e-05,"MDMA_FDR":0.0055989981682318,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

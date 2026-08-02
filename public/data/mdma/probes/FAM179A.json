@@ -1,0 +1,1 @@
+{"gene":"FAM179A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21539397","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.681051,"MDMA_P":0.0033009296249132,"MDMA_FDR":0.0472082582684447,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

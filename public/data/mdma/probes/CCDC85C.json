@@ -1,0 +1,1 @@
+{"gene":"CCDC85C","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19372212","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.404832,"MDMA_P":0.008231649271416,"MDMA_FDR":0.0770884491572021,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"DGCR5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04190450","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.969646,"MDMA_P":0.0003311482530448,"MDMA_FDR":0.014502183307548,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

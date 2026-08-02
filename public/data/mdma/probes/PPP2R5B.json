@@ -1,0 +1,1 @@
+{"gene":"PPP2R5B","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10437839","pos":64701910,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.464043,"Ketamine_P":0.0082575401683524,"Ketamine_FDR":0.446639176658839,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

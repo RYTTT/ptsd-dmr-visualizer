@@ -1,0 +1,1 @@
+{"gene":"VSTM1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07381133","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.316932,"MDMA_P":9.93966170679115e-05,"MDMA_FDR":0.0079689265803756,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

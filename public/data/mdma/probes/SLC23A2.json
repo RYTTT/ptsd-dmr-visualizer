@@ -1,0 +1,1 @@
+{"gene":"SLC23A2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01215538","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.347309,"MDMA_P":0.0003390218488079,"MDMA_FDR":0.0146881189643175,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

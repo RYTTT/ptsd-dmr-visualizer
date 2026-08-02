@@ -1,0 +1,1 @@
+{"gene":"NLK","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16342597","pos":26419687,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.716761,"CPT_P":0.0007224831050245,"CPT_FDR":0.179603233791005}]}

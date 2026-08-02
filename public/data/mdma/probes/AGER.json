@@ -1,0 +1,1 @@
+{"gene":"AGER","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05914981","pos":32152101,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.902155,"MDMA_P":3.45595081061929e-06,"MDMA_FDR":0.0015967686281411,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

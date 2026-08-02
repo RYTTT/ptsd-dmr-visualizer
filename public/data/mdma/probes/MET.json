@@ -1,0 +1,1 @@
+{"gene":"MET","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15650664","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.332416,"Ketamine_P":0.0045177884772504,"Ketamine_FDR":0.412014329878462,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

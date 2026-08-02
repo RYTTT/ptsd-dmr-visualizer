@@ -1,0 +1,1 @@
+{"gene":"C20orf114","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19378216","pos":31870775,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.694923,"CPT_P":0.0019448576682441,"CPT_FDR":0.186076961745766}]}

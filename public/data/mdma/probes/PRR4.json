@@ -1,0 +1,1 @@
+{"gene":"PRR4","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21158075","pos":11306136,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.592637,"Ketamine_P":0.006253109551906,"Ketamine_FDR":0.428207038464811,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

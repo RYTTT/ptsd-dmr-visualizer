@@ -1,0 +1,1 @@
+{"gene":"TRAF6","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04639174","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.63725,"Ketamine_P":0.0015902498731379,"Ketamine_FDR":0.347609228258185,"CPT_logFC":0.92598,"CPT_P":0.0041932117842782,"CPT_FDR":0.203233971872179}]}

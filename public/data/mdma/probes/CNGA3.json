@@ -1,0 +1,1 @@
+{"gene":"CNGA3","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15954792","pos":98986971,"feature":"Body","cpgIsland":"","MDMA_logFC":0.983324,"MDMA_P":5.5303805897803e-05,"MDMA_FDR":0.0059785351786862,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

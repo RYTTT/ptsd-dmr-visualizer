@@ -1,0 +1,1 @@
+{"gene":"MIR770","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03039990","pos":101317622,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.354503,"Ketamine_P":0.0042597662909559,"Ketamine_FDR":0.408823360277558,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

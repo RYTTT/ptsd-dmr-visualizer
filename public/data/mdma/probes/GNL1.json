@@ -1,0 +1,1 @@
+{"gene":"GNL1","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12440187","pos":30510300,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.032079,"CPT_P":0.0054237142123317,"CPT_FDR":0.213584411792886}]}

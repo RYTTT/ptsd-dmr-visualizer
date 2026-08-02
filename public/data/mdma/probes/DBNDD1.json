@@ -1,0 +1,1 @@
+{"gene":"DBNDD1","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08854185","pos":90077956,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.617121,"Ketamine_P":0.0014407182864366,"Ketamine_FDR":0.34270506842796,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

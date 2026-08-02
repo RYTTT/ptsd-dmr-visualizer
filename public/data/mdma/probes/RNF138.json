@@ -1,0 +1,1 @@
+{"gene":"RNF138","chr":"18","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16292851","pos":29710780,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.188157,"CPT_P":0.0052316944537085,"CPT_FDR":0.211722979378185}]}

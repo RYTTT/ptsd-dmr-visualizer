@@ -1,0 +1,1 @@
+{"gene":"KIR3DL1","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08129658","pos":55327217,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.794997,"CPT_P":0.0096666271378312,"CPT_FDR":0.239450393786875}]}

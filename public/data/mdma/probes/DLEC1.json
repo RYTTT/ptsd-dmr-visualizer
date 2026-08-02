@@ -1,0 +1,1 @@
+{"gene":"DLEC1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16150706","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.937069,"MDMA_P":0.0001154147977397,"MDMA_FDR":0.0085655340039764,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

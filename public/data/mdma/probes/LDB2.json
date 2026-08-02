@@ -1,0 +1,1 @@
+{"gene":"LDB2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04913317","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.31586,"MDMA_P":2.28430341627052e-05,"MDMA_FDR":0.0038371134765646,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"C17orf48","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16533245","pos":10612342,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.770407,"MDMA_P":8.02625086992317e-05,"MDMA_FDR":0.0071437785888094,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

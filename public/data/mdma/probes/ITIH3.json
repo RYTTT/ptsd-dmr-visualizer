@@ -1,0 +1,1 @@
+{"gene":"ITIH3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06754698","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.698947,"MDMA_P":0.0011651292627221,"MDMA_FDR":0.0274548489242587,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

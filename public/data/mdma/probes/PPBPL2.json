@@ -1,0 +1,1 @@
+{"gene":"PPBPL2","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03163246","pos":74921023,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.067279,"MDMA_P":0.000199394127562,"MDMA_FDR":0.0112878506390417,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.207086,"CPT_P":0.0009394010880285,"CPT_FDR":0.180758077356385}]}

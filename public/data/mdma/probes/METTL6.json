@@ -1,0 +1,1 @@
+{"gene":"METTL6","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02785691","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.840011,"MDMA_P":0.0047044093830626,"MDMA_FDR":0.0570202362452612,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.362315,"CPT_P":0.002499801087065,"CPT_FDR":0.190252277627646}]}

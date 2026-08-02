@@ -1,0 +1,1 @@
+{"gene":"SPINT3","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17548347","pos":44144225,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.450136,"Ketamine_P":0.0025035505514279,"Ketamine_FDR":0.376257682416341,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

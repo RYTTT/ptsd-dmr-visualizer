@@ -1,0 +1,1 @@
+{"gene":"HMCN1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03221073","pos":186157555,"feature":"Body","cpgIsland":"","MDMA_logFC":1.069603,"MDMA_P":0.0001811267120659,"MDMA_FDR":0.01076551442312,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

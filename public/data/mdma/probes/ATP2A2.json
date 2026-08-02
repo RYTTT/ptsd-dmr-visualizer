@@ -1,0 +1,1 @@
+{"gene":"ATP2A2","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00759707","pos":110788669,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-1.06643,"MDMA_P":0.0039863661566881,"MDMA_FDR":0.0521244951061453,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

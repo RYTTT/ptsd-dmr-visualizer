@@ -1,0 +1,1 @@
+{"gene":"RBM4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20043683","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.575864,"CPT_P":0.0084658633565081,"CPT_FDR":0.232931321358025}]}

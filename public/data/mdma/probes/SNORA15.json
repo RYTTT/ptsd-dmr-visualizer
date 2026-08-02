@@ -1,0 +1,1 @@
+{"gene":"SNORA15","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14995921","pos":56126830,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.140427,"CPT_P":0.0017801013322335,"CPT_FDR":0.184479127985664}]}

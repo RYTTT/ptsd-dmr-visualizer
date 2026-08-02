@@ -1,0 +1,1 @@
+{"gene":"NTRK3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07410037","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.251747,"MDMA_P":0.000519616524194,"MDMA_FDR":0.0182347455125849,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"SIGLEC8","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02427831","pos":51961937,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.420638,"MDMA_P":0.002522676730961,"MDMA_FDR":0.0408976450085583,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"DKFZp451B082","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00923305","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.767148,"Ketamine_P":0.0068086108354178,"Ketamine_FDR":0.431544312364739,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

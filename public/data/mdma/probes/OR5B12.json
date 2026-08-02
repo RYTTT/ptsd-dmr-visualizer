@@ -1,0 +1,1 @@
+{"gene":"OR5B12","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15911165","pos":58208367,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.526321,"Ketamine_P":0.0091090071063433,"Ketamine_FDR":0.45236168296786,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"CTLA4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24452392","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.793791,"MDMA_P":0.0083749244947458,"MDMA_FDR":0.0778028595935352,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

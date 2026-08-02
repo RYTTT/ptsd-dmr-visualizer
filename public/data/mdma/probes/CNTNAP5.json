@@ -1,0 +1,1 @@
+{"gene":"CNTNAP5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06363465","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.466882,"MDMA_P":0.0056120613767865,"MDMA_FDR":0.0627672386625581,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.704094,"CPT_P":0.0027054242384202,"CPT_FDR":0.191290007159308}]}

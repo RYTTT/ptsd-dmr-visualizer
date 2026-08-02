@@ -1,0 +1,1 @@
+{"gene":"TCOF1","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24032269","pos":149756966,"feature":"Body","cpgIsland":"","MDMA_logFC":0.495627,"MDMA_P":0.0010736081195025,"MDMA_FDR":0.0263362957294535,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

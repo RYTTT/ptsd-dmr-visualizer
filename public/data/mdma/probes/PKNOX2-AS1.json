@@ -1,0 +1,1 @@
+{"gene":"PKNOX2-AS1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27288151","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.781432,"MDMA_P":0.0050522854370166,"MDMA_FDR":0.0591849403395972,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

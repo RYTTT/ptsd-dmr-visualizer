@@ -1,0 +1,1 @@
+{"gene":"FFAR4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01737779","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.168718,"MDMA_P":5.38781971699336e-06,"MDMA_FDR":0.0019364822259755,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

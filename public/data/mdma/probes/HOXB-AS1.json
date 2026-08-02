@@ -1,0 +1,1 @@
+{"gene":"HOXB-AS1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04115766","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.615218,"Ketamine_P":0.0078498905931934,"Ketamine_FDR":0.443730980608577,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

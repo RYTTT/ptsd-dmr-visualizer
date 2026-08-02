@@ -1,0 +1,1 @@
+{"gene":"TMEM26-AS1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17424413","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.898833,"MDMA_P":0.0093036706913461,"MDMA_FDR":0.0822754547285899,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

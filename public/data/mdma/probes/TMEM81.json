@@ -1,0 +1,1 @@
+{"gene":"TMEM81","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12927926","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.966932,"MDMA_P":0.004866277715859,"MDMA_FDR":0.0580784259373225,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.223522,"CPT_P":0.0047510221551144,"CPT_FDR":0.207995411194685}]}

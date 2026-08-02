@@ -1,0 +1,1 @@
+{"gene":"NLRC5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24661931","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.587625,"MDMA_P":0.0022616147391677,"MDMA_FDR":0.0385880010886558,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.744337,"CPT_P":0.0034586341326858,"CPT_FDR":0.197548041628723}]}

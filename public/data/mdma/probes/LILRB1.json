@@ -1,0 +1,1 @@
+{"gene":"LILRB1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12388888","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.57859,"MDMA_P":0.0055688574199391,"MDMA_FDR":0.0624883471517065,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

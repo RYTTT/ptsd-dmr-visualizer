@@ -1,0 +1,1 @@
+{"gene":"CGGBP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05207355","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.319655,"MDMA_P":0.0002646980482332,"MDMA_FDR":0.0129484383420751,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"TIMM10B","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09666841","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.747326,"MDMA_P":0.0006837194713052,"MDMA_FDR":0.0208954930214404,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

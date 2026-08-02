@@ -1,0 +1,1 @@
+{"gene":"CD69","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25769852","pos":9914057,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.653759,"MDMA_P":0.000802139395497,"MDMA_FDR":0.0226815453670788,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.754521,"CPT_P":0.0068168988968985,"CPT_FDR":0.222804841986331}]}

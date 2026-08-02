@@ -1,0 +1,1 @@
+{"gene":"KRTAP22-1","chr":"21","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27456885","pos":31972913,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.733245,"MDMA_P":0.0073126543450591,"MDMA_FDR":0.0722731163281069,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

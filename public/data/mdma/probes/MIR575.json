@@ -1,0 +1,1 @@
+{"gene":"MIR575","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09363604","pos":83675306,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.500978,"MDMA_P":0.0032883217052654,"MDMA_FDR":0.0471193317594771,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

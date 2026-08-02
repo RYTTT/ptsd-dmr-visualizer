@@ -1,0 +1,1 @@
+{"gene":"SEC11A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07463455","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.844678,"MDMA_P":0.0039738275081876,"MDMA_FDR":0.0520436725557326,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

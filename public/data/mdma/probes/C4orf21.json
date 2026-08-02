@@ -1,0 +1,1 @@
+{"gene":"C4orf21","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25329296","pos":113486062,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.076707,"CPT_P":0.0004902047826084,"CPT_FDR":0.176561132189866}]}

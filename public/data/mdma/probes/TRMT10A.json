@@ -1,0 +1,1 @@
+{"gene":"TRMT10A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07339044","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.314579,"MDMA_P":5.26265153399221e-05,"MDMA_FDR":0.0058255919656005,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.979969,"CPT_P":0.0050434653376935,"CPT_FDR":0.21021466504487}]}

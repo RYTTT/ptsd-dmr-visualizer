@@ -1,0 +1,1 @@
+{"gene":"HAVCR1","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01551315","pos":156486422,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.722105,"MDMA_P":0.0070938804007289,"MDMA_FDR":0.0711284625402853,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

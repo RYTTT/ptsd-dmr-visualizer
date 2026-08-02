@@ -1,0 +1,1 @@
+{"gene":"HBB","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06233985","pos":5249528,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.255113,"CPT_P":0.000933720630811,"CPT_FDR":0.180735198488966}]}

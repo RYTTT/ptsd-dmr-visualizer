@@ -1,0 +1,1 @@
+{"gene":"TRIM61","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20233582","pos":165899396,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.942629,"MDMA_P":0.0034164751997625,"MDMA_FDR":0.0480712361462189,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

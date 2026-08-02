@@ -1,0 +1,1 @@
+{"gene":"C8orf48","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20282158","pos":13425120,"feature":"1stExon","cpgIsland":"","MDMA_logFC":-0.919876,"MDMA_P":0.0013521435854657,"MDMA_FDR":0.0296253287170184,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

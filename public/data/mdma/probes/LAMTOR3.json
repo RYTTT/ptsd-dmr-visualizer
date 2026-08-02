@@ -1,0 +1,1 @@
+{"gene":"LAMTOR3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17269266","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.08806,"MDMA_P":6.29681636734504e-05,"MDMA_FDR":0.0063291417641987,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

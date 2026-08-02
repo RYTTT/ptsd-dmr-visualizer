@@ -1,0 +1,1 @@
+{"gene":"ETV7","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18728732","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.570668,"MDMA_P":0.002104956632678,"MDMA_FDR":0.0371322417524551,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

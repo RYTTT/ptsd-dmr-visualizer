@@ -1,0 +1,1 @@
+{"gene":"C1orf125","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08037922","pos":179521085,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.143987,"MDMA_P":1.66891762753795e-08,"MDMA_FDR":8.30363758863056e-05,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

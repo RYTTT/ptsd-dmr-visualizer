@@ -1,0 +1,1 @@
+{"gene":"MRPL12","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27241520","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.986777,"Ketamine_P":0.0042063971253615,"Ketamine_FDR":0.407636738661158,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

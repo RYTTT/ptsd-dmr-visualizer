@@ -1,0 +1,1 @@
+{"gene":"TMIGD2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25258276","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.719454,"MDMA_P":0.0037609438989145,"MDMA_FDR":0.0505982949761709,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

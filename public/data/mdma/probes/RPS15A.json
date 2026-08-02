@@ -1,0 +1,1 @@
+{"gene":"RPS15A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22572298","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.844269,"MDMA_P":0.005335027734557,"MDMA_FDR":0.0609877108579321,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

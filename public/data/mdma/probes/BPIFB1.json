@@ -1,0 +1,1 @@
+{"gene":"BPIFB1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27016525","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.85368,"MDMA_P":0.0013532266319164,"MDMA_FDR":0.0296322786490921,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"CCDC176","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16234657","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.509547,"Ketamine_P":8.60202853414321e-05,"Ketamine_FDR":0.216048864709964,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

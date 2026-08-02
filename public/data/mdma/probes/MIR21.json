@@ -1,0 +1,1 @@
+{"gene":"MIR21","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15759721","pos":57918630,"feature":"Body","cpgIsland":"","MDMA_logFC":1.122421,"MDMA_P":5.86913864518366e-06,"MDMA_FDR":0.0020271964473313,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

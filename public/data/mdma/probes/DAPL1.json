@@ -1,0 +1,1 @@
+{"gene":"DAPL1","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23560546","pos":159652019,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.749945,"Ketamine_P":0.003037213979595,"Ketamine_FDR":0.389887847689934,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

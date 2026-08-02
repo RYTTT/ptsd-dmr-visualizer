@@ -1,0 +1,1 @@
+{"gene":"KIAA1324L","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17833065","pos":86595241,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.121275,"CPT_P":0.008690119470481,"CPT_FDR":0.23435735013248}]}

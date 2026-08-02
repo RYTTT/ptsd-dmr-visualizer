@@ -1,0 +1,1 @@
+{"gene":"EIF1AD","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13143994","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.223786,"MDMA_P":2.20880156574552e-06,"MDMA_FDR":0.0012866842345311,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

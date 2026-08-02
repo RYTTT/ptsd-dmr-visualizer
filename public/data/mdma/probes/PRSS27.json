@@ -1,0 +1,1 @@
+{"gene":"PRSS27","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15369377","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.418176,"MDMA_P":0.0024310543774489,"MDMA_FDR":0.0401186946056848,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

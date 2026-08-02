@@ -1,0 +1,1 @@
+{"gene":"DEFB118","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03014957","pos":29956062,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.428271,"CPT_P":0.0014423832831597,"CPT_FDR":0.183316397866362}]}

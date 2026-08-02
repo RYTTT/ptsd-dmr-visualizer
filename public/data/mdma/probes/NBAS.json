@@ -1,0 +1,1 @@
+{"gene":"NBAS","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19851435","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.010592,"MDMA_P":0.0043575930195626,"MDMA_FDR":0.0547030496583944,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.196712,"CPT_P":0.008764610857444,"CPT_FDR":0.234651567399018}]}

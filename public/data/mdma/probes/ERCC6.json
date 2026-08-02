@@ -1,0 +1,1 @@
+{"gene":"ERCC6","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12418779","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.439919,"CPT_P":0.0007766164929508,"CPT_FDR":0.179603233791005}]}

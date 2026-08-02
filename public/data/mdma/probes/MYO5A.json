@@ -1,0 +1,1 @@
+{"gene":"MYO5A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02472935","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.715547,"Ketamine_P":0.0056603585516995,"Ketamine_FDR":0.42253290089671,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

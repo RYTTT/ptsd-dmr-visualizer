@@ -1,0 +1,1 @@
+{"gene":"KCNAB1-AS2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10230464","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.87246,"MDMA_P":0.0008629114033955,"MDMA_FDR":0.0235429808346619,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

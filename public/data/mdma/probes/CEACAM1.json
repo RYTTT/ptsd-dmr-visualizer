@@ -1,0 +1,1 @@
+{"gene":"CEACAM1","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19776453","pos":43033801,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.295677,"MDMA_P":0.0092876064487473,"MDMA_FDR":0.0821918152250626,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

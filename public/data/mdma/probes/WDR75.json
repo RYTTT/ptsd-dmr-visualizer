@@ -1,0 +1,1 @@
+{"gene":"WDR75","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23897324","pos":190338195,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.460919,"MDMA_P":3.5507362217365e-06,"MDMA_FDR":0.0016090719222556,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

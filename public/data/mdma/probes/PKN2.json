@@ -1,0 +1,1 @@
+{"gene":"PKN2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07230209","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.603035,"MDMA_P":0.0024722752958855,"MDMA_FDR":0.0404656090531941,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

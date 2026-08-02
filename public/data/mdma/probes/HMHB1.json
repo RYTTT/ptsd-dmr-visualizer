@@ -1,0 +1,1 @@
+{"gene":"HMHB1","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10678215","pos":143191565,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.485899,"MDMA_P":0.0065976601042058,"MDMA_FDR":0.0684520027262799,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"IL19","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20998511","pos":206972113,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.484328,"MDMA_P":0.0045933613113297,"MDMA_FDR":0.0563040829379184,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

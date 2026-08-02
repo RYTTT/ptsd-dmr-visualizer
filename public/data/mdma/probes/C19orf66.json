@@ -1,0 +1,1 @@
+{"gene":"C19orf66","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18125883","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.855154,"CPT_P":0.0016257989983859,"CPT_FDR":0.183637394240422}]}

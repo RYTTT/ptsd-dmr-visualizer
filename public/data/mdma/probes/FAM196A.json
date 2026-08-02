@@ -1,0 +1,1 @@
+{"gene":"FAM196A","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23240294","pos":128936093,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.132846,"CPT_P":0.0009882070677937,"CPT_FDR":0.180981316151499}]}

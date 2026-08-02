@@ -1,0 +1,1 @@
+{"gene":"SLC29A3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08857027","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.061157,"MDMA_P":0.0002256828126855,"MDMA_FDR":0.0120036210995437,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

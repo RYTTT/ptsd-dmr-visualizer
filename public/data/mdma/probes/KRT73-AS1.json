@@ -1,0 +1,1 @@
+{"gene":"KRT73-AS1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07153441","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.839769,"MDMA_P":0.0021794430272308,"MDMA_FDR":0.0378360742609493,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

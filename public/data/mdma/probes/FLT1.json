@@ -1,0 +1,1 @@
+{"gene":"FLT1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11914194","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.075074,"MDMA_P":0.0002376034336734,"MDMA_FDR":0.0123155086334808,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

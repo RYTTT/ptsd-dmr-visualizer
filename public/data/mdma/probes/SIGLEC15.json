@@ -1,0 +1,1 @@
+{"gene":"SIGLEC15","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23563958","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.350746,"MDMA_P":0.0033537945583823,"MDMA_FDR":0.0475911565009211,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

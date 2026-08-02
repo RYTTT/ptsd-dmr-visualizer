@@ -1,0 +1,1 @@
+{"gene":"PTRF","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26849238","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.643608,"Ketamine_P":0.0002922588506381,"Ketamine_FDR":0.266102133972253,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

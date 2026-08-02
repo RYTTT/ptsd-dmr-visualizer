@@ -1,0 +1,1 @@
+{"gene":"NSL1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04230117","pos":212956176,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.819236,"MDMA_P":0.002940041864958,"MDMA_FDR":0.0443441398973463,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.023835,"CPT_P":0.0009062367104235,"CPT_FDR":0.180515537374112}]}

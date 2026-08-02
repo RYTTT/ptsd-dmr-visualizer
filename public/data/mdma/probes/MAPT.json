@@ -1,0 +1,1 @@
+{"gene":"MAPT","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05533539","pos":44104521,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-0.260353,"MDMA_P":0.0085255935386291,"MDMA_FDR":0.0785294356724559,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

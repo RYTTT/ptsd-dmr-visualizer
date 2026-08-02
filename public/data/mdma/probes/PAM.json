@@ -1,0 +1,1 @@
+{"gene":"PAM","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20655220","pos":102246737,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.181816,"MDMA_P":0.0006045085227261,"MDMA_FDR":0.0196443761698215,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

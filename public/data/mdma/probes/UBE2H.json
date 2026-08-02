@@ -1,0 +1,1 @@
+{"gene":"UBE2H","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16720564","pos":129543162,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.054951,"MDMA_P":0.0001883565190451,"MDMA_FDR":0.010974700604438,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

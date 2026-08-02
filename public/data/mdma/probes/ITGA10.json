@@ -1,0 +1,1 @@
+{"gene":"ITGA10","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23820933","pos":145542931,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.986735,"CPT_P":0.0040211701881036,"CPT_FDR":0.202061083574381}]}

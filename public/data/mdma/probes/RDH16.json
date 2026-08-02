@@ -1,0 +1,1 @@
+{"gene":"RDH16","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02629586","pos":57345407,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.6407,"MDMA_P":3.46296882576298e-05,"MDMA_FDR":0.0046923578328672,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

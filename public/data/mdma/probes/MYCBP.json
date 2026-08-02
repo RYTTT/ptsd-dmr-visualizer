@@ -1,0 +1,1 @@
+{"gene":"MYCBP","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23396057","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.301738,"Ketamine_P":0.0058559643540306,"Ketamine_FDR":0.423725760361055,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

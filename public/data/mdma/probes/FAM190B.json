@@ -1,0 +1,1 @@
+{"gene":"FAM190B","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13442811","pos":86131100,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.066245,"MDMA_P":0.0032572316453217,"MDMA_FDR":0.046898142603555,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

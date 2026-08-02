@@ -1,0 +1,1 @@
+{"gene":"XAF1","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09251764","pos":6659070,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.361657,"Ketamine_P":0.0069947460784375,"Ketamine_FDR":0.433722419321575,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

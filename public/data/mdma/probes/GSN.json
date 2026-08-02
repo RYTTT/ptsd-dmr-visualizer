@@ -1,0 +1,1 @@
+{"gene":"GSN","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08124134","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.495122,"Ketamine_P":0.0028511229843775,"Ketamine_FDR":0.385702078565007,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,0 +1,1 @@
+{"gene":"CACNA2D2","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00383793","pos":50488162,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.81535,"Ketamine_P":0.0040391049813827,"Ketamine_FDR":0.405674457524921,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

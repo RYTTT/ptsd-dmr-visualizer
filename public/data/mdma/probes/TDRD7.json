@@ -1,0 +1,1 @@
+{"gene":"TDRD7","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07400247","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.084404,"MDMA_P":3.78827329698389e-05,"MDMA_FDR":0.0049038754952763,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

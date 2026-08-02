@@ -1,0 +1,1 @@
+{"gene":"MYST3","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21706771","pos":41873091,"feature":"Body","cpgIsland":"","MDMA_logFC":0.33117,"MDMA_P":0.0096788500100905,"MDMA_FDR":0.0840662456419315,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

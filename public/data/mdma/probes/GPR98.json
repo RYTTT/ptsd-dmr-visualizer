@@ -1,0 +1,1 @@
+{"gene":"GPR98","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08675002","pos":90437527,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.852306,"CPT_P":0.0055459454737179,"CPT_FDR":0.214512911386558}]}

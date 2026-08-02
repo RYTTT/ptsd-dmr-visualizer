@@ -1,0 +1,1 @@
+{"gene":"CGN","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13831030","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.256683,"CPT_P":0.0035584789458612,"CPT_FDR":0.198698695774588}]}

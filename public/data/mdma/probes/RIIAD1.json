@@ -1,0 +1,1 @@
+{"gene":"RIIAD1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01609658","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.443812,"Ketamine_P":0.0082303760180556,"Ketamine_FDR":0.446300728649492,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

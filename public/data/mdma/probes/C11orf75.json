@@ -1,0 +1,1 @@
+{"gene":"C11orf75","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07744502","pos":93271083,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.187554,"Ketamine_P":0.0095074821943115,"Ketamine_FDR":0.455908521288502,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

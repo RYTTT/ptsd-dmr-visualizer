@@ -1,0 +1,1 @@
+{"gene":"APOBEC3F","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10191799","pos":39436141,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.791811,"Ketamine_P":0.0057829632083511,"Ketamine_FDR":0.423221634534752,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

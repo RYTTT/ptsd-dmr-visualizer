@@ -1,0 +1,1 @@
+{"gene":"RTBDN","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20653999","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.881153,"MDMA_P":0.0003699151597392,"MDMA_FDR":0.015364834489799,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

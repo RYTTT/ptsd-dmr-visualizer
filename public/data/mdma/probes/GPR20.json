@@ -1,0 +1,1 @@
+{"gene":"GPR20","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02526274","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.779224,"MDMA_P":0.0019301404301068,"MDMA_FDR":0.0355396492928074,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

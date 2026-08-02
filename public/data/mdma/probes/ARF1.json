@@ -1,0 +1,1 @@
+{"gene":"ARF1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06625004","pos":228278432,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.799277,"CPT_P":0.0048158436124038,"CPT_FDR":0.208418121509562}]}

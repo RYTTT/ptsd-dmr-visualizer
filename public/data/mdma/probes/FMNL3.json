@@ -1,0 +1,1 @@
+{"gene":"FMNL3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10984256","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.066303,"MDMA_P":0.0026597413833719,"MDMA_FDR":0.0420451308888989,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.417381,"CPT_P":0.0009542795604638,"CPT_FDR":0.180927894018411}]}

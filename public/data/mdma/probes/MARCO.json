@@ -1,0 +1,1 @@
+{"gene":"MARCO","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02431964","pos":119700029,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.708009,"Ketamine_P":0.00224192546949,"Ketamine_FDR":0.370704846163028,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

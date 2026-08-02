@@ -1,0 +1,1 @@
+{"gene":"AZGP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17928973","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.042584,"MDMA_P":3.15222827959934e-06,"MDMA_FDR":0.0015339823915106,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

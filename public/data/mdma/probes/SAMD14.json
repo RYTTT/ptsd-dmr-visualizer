@@ -1,0 +1,1 @@
+{"gene":"SAMD14","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13127421","pos":48202128,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.432354,"CPT_P":0.0090218535977853,"CPT_FDR":0.235863578316968}]}

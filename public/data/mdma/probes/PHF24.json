@@ -1,0 +1,1 @@
+{"gene":"PHF24","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26617734","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.883159,"MDMA_P":0.0080838515030496,"MDMA_FDR":0.0763240888939285,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

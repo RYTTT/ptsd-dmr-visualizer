@@ -1,0 +1,1 @@
+{"gene":"GM2A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01411934","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.720707,"MDMA_P":0.0049412988302642,"MDMA_FDR":0.0585201848385489,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

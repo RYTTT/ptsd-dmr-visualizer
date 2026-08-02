@@ -1,0 +1,1 @@
+{"gene":"ANKRD34B","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00575311","pos":79855768,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.346337,"CPT_P":0.0049423096124393,"CPT_FDR":0.209278422665679}]}

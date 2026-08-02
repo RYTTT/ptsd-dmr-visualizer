@@ -1,0 +1,1 @@
+{"gene":"SDR16C5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14995797","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.373146,"MDMA_P":0.0028938032402793,"MDMA_FDR":0.0439764428276936,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

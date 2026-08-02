@@ -1,0 +1,1 @@
+{"gene":"MIR548H2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09825167","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.025771,"MDMA_P":0.001538160074495,"MDMA_FDR":0.0316339305096269,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.382622,"CPT_P":0.0008012753378373,"CPT_FDR":0.179603233791005}]}

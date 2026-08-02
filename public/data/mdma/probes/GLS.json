@@ -1,0 +1,1 @@
+{"gene":"GLS","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17604469","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.356843,"MDMA_P":2.33066079758803e-06,"MDMA_FDR":0.0013187312505946,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.907953,"CPT_P":0.00825077864321,"CPT_FDR":0.231522326430512}]}

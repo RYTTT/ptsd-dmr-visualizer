@@ -1,0 +1,1 @@
+{"gene":"DCTN2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23710031","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-1.083799,"Ketamine_P":0.0025602840743734,"Ketamine_FDR":0.378648841525077,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

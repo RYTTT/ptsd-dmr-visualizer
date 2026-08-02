@@ -1,0 +1,1 @@
+{"gene":"MSR1","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16536964","pos":16051412,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.072738,"CPT_P":0.0041070269207324,"CPT_FDR":0.202513653572434}]}

@@ -1,0 +1,1 @@
+{"gene":"TRIM6-TRIM34","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11831003","pos":5646029,"feature":"Body","cpgIsland":"","MDMA_logFC":1.507291,"MDMA_P":2.09607844190516e-07,"MDMA_FDR":0.0004057569776394,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

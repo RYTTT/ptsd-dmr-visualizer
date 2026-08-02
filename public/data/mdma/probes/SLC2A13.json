@@ -1,0 +1,1 @@
+{"gene":"SLC2A13","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03601580","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.175034,"MDMA_P":0.00093037493804,"MDMA_FDR":0.0244580484894317,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

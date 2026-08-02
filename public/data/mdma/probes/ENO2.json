@@ -1,0 +1,1 @@
+{"gene":"ENO2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17754830","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.795637,"CPT_P":0.0095283846005862,"CPT_FDR":0.23879657953093}]}

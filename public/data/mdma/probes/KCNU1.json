@@ -1,0 +1,1 @@
+{"gene":"KCNU1","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19782158","pos":36641197,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.855526,"CPT_P":0.0040834874979853,"CPT_FDR":0.202350723302202}]}

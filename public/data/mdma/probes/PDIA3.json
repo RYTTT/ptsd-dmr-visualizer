@@ -1,0 +1,1 @@
+{"gene":"PDIA3","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20060080","pos":44063940,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-1.392586,"MDMA_P":1.77755891563198e-05,"MDMA_FDR":0.0033892969551817,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

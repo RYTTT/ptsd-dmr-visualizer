@@ -1,0 +1,1 @@
+{"gene":"TGFBI","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25566312","pos":135398944,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-0.610494,"MDMA_P":0.000237963927787,"MDMA_FDR":0.0123215538486102,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}
