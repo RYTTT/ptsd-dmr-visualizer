@@ -1,1 +1,0 @@
-{"gene":"BTBD16","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01077100","pos":124067280,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.560495,"CPT_P":0.0007709246206603,"CPT_FDR":0.179603233791005}]}

@@ -1,1 +1,0 @@
-{"gene":"RAPGEF6","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11958644","pos":130872422,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.095282,"CPT_P":0.0031249587267797,"CPT_FDR":0.194910700244185}]}

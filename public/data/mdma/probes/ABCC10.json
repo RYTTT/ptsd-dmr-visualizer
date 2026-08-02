@@ -1,1 +1,0 @@
-{"gene":"ABCC10","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10856810","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.083299,"MDMA_P":0.0006726274770925,"MDMA_FDR":0.0207163550755355,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

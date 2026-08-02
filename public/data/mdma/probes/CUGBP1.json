@@ -1,1 +1,0 @@
-{"gene":"CUGBP1","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09206890","pos":47516604,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.78786,"MDMA_P":0.0016103240660328,"MDMA_FDR":0.0323813423226491,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

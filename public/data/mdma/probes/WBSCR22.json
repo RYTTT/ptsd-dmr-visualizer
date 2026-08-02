@@ -1,1 +1,0 @@
-{"gene":"WBSCR22","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12248186","pos":73112226,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-1.068262,"MDMA_P":0.0002268210649262,"MDMA_FDR":0.0120268903063788,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

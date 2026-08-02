@@ -1,1 +1,0 @@
-{"gene":"MIR4797","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04605696","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.212627,"MDMA_P":3.96615123751436e-08,"MDMA_FDR":0.0001499543046606,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

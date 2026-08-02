@@ -1,1 +1,0 @@
-{"gene":"DKFZp686A1627","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04103251","pos":19692715,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.678866,"CPT_P":0.0033738249477764,"CPT_FDR":0.196874004872092}]}

@@ -1,1 +1,0 @@
-{"gene":"LOC90586","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22325828","pos":41018218,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.553519,"Ketamine_P":9.02896818837778e-06,"Ketamine_FDR":0.148144476083201,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"TREH","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04315692","pos":118530575,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.307683,"MDMA_P":0.0030319770987853,"MDMA_FDR":0.0450613225733235,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

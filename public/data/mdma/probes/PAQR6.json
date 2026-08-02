@@ -1,1 +1,0 @@
-{"gene":"PAQR6","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09604463","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.766681,"MDMA_P":0.0003009186495695,"MDMA_FDR":0.0138007667725938,"Ketamine_logFC":-0.46264,"Ketamine_P":0.008614767831285,"Ketamine_FDR":0.449627059873796,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

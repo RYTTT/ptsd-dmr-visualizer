@@ -1,1 +1,0 @@
-{"gene":"NKPD1","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01969586","pos":45663415,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.838424,"Ketamine_P":0.000799144517884,"Ketamine_FDR":0.311917746504886,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"SLFN12L","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24895173","pos":33825374,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.473535,"MDMA_P":0.0061339134024816,"MDMA_FDR":0.0658512432613404,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

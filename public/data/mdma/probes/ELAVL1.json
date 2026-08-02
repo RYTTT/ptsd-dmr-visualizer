@@ -1,1 +1,0 @@
-{"gene":"ELAVL1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12079207","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.467997,"Ketamine_P":0.0010911908093081,"Ketamine_FDR":0.332716875229461,"CPT_logFC":0.710187,"CPT_P":0.0044330962077518,"CPT_FDR":0.204992324028395}]}

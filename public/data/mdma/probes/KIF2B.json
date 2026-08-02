@@ -1,1 +1,0 @@
-{"gene":"KIF2B","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20130965","pos":51899837,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.962075,"MDMA_P":0.0012552870830604,"MDMA_FDR":0.0284995187201397,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

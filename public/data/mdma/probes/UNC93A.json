@@ -1,1 +1,0 @@
-{"gene":"UNC93A","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06757935","pos":167709237,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.769514,"MDMA_P":0.0002923837859072,"MDMA_FDR":0.0135929114738174,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

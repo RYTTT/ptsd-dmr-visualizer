@@ -1,1 +1,0 @@
-{"gene":"TMEM144","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05171580","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.002785,"MDMA_P":8.54246333276163e-05,"MDMA_FDR":0.0073753445327489,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

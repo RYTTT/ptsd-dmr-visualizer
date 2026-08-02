@@ -1,1 +1,0 @@
-{"gene":"FAM118B","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25857886","pos":126098838,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":-1.118837,"MDMA_P":6.35104342124913e-05,"MDMA_FDR":0.0063627591296816,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

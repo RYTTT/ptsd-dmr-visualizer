@@ -1,1 +1,0 @@
-{"gene":"DSG4","chr":"18","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13445249","pos":28957111,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.062327,"MDMA_P":0.0010691004629216,"MDMA_FDR":0.0262937625166225,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.184733,"CPT_P":0.0027476393277681,"CPT_FDR":0.191710024092389}]}

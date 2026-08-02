@@ -1,1 +1,0 @@
-{"gene":"TMEM182","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24918798","pos":103432687,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.397388,"CPT_P":0.0017439612467524,"CPT_FDR":0.184026436140098}]}

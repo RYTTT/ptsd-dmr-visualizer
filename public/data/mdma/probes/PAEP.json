@@ -1,1 +1,0 @@
-{"gene":"PAEP","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14532484","pos":138458521,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-0.61402,"MDMA_P":0.003681032659701,"MDMA_FDR":0.0500507414491288,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

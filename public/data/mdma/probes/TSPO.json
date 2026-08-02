@@ -1,1 +1,0 @@
-{"gene":"TSPO","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17456022","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.061793,"MDMA_P":0.0051554214301864,"MDMA_FDR":0.0598469662952227,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"COL10A1","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05408873","pos":116447219,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.426407,"CPT_P":0.0002102793642764,"CPT_FDR":0.176561132189866}]}

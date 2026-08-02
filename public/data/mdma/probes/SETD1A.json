@@ -1,1 +1,0 @@
-{"gene":"SETD1A","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10020520","pos":30976186,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.482252,"MDMA_P":0.0086013814811876,"MDMA_FDR":0.078904997859126,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

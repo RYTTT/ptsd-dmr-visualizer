@@ -1,1 +1,0 @@
-{"gene":"NUDCD1","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14694381","pos":110272720,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.848615,"MDMA_P":0.0057706741226629,"MDMA_FDR":0.0637688298802085,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

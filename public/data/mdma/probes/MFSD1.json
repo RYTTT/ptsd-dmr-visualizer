@@ -1,1 +1,0 @@
-{"gene":"MFSD1","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03539313","pos":158541027,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.784864,"MDMA_P":0.0086348179560353,"MDMA_FDR":0.0790623526040057,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.148807,"CPT_P":0.0068041622746059,"CPT_FDR":0.22276937891039}]}

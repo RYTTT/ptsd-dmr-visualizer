@@ -1,1 +1,0 @@
-{"gene":"AFAP1L2","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19598094","pos":116073949,"feature":"Body","cpgIsland":"","MDMA_logFC":0.427615,"MDMA_P":0.0053143257446398,"MDMA_FDR":0.0608681267885247,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

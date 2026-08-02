@@ -1,1 +1,0 @@
-{"gene":"GLT6D1","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13559820","pos":138518416,"feature":"Body","cpgIsland":"","MDMA_logFC":0.673155,"MDMA_P":0.0073661343699063,"MDMA_FDR":0.0725598645360386,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

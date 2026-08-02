@@ -1,1 +1,0 @@
-{"gene":"DET1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17265311","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.918051,"MDMA_P":0.0086656591320302,"MDMA_FDR":0.079213413800718,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.931461,"CPT_P":0.0081853010182078,"CPT_FDR":0.230951103770075}]}

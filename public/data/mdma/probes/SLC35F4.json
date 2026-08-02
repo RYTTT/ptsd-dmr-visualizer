@@ -1,1 +1,0 @@
-{"gene":"SLC35F4","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20038225","pos":58064661,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.119329,"MDMA_P":9.27609072523226e-05,"MDMA_FDR":0.0076921407374687,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

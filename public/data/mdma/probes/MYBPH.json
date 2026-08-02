@@ -1,1 +1,0 @@
-{"gene":"MYBPH","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23609672","pos":203144862,"feature":"1stExon","cpgIsland":"","MDMA_logFC":0.455387,"MDMA_P":0.004569091309379,"MDMA_FDR":0.0561351497913708,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"TNFSF14","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05348870","pos":6671045,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.629346,"MDMA_P":0.0001502899991087,"MDMA_FDR":0.009810743658826,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

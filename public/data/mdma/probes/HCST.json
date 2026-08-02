@@ -1,1 +1,0 @@
-{"gene":"HCST","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18940235","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.079231,"MDMA_P":0.0006410322777996,"MDMA_FDR":0.0202402739411556,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.964962,"CPT_P":0.0062466094846615,"CPT_FDR":0.218808612883683}]}

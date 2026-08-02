@@ -1,1 +1,0 @@
-{"gene":"PIK3C2A","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05466223","pos":17158572,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.156723,"MDMA_P":0.0007210424182957,"MDMA_FDR":0.0214885346333849,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.424979,"CPT_P":0.0002346153064911,"CPT_FDR":0.176561132189866}]}

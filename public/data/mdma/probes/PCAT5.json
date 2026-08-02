@@ -1,1 +1,0 @@
-{"gene":"PCAT5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21777724","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.782688,"MDMA_P":0.0004756148466795,"MDMA_FDR":0.0174169636107864,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

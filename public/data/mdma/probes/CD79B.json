@@ -1,1 +1,0 @@
-{"gene":"CD79B","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11746924","pos":62007912,"feature":"Body","cpgIsland":"","MDMA_logFC":0.401516,"MDMA_P":0.0033711308960901,"MDMA_FDR":0.047729579566631,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

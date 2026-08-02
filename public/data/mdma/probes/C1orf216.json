@@ -1,1 +1,0 @@
-{"gene":"C1orf216","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09417503","pos":36180082,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-0.643765,"MDMA_P":0.002123742067548,"MDMA_FDR":0.0373258177342205,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

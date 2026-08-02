@@ -1,1 +1,0 @@
-{"gene":"TXNDC3","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02531859","pos":37888154,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.792394,"Ketamine_P":0.0098816913387227,"Ketamine_FDR":0.458369886685494,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

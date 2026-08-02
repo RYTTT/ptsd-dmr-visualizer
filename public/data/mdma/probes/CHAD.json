@@ -1,1 +1,0 @@
-{"gene":"CHAD","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16192404","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.514547,"Ketamine_P":0.005690103748401,"Ketamine_FDR":0.422692444145742,"CPT_logFC":0.99565,"CPT_P":0.0069211431942453,"CPT_FDR":0.223175465536459}]}

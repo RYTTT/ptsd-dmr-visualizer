@@ -1,1 +1,0 @@
-{"gene":"ATP5C1","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16719077","pos":7849111,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.631029,"Ketamine_P":0.0087241029432849,"Ketamine_FDR":0.449755445401682,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

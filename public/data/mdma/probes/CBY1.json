@@ -1,1 +1,0 @@
-{"gene":"CBY1","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10148694","pos":39069843,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-1.045905,"MDMA_P":0.0001303070507078,"MDMA_FDR":0.0091485409927709,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"LOC100287718","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00170295","pos":46720370,"feature":"Body","cpgIsland":"","MDMA_logFC":0.740292,"MDMA_P":0.0001325841892594,"MDMA_FDR":0.0092362638329133,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

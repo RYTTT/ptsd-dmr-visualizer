@@ -1,1 +1,0 @@
-{"gene":"MME","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09901765","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.141643,"MDMA_P":6.09760950640926e-06,"MDMA_FDR":0.0020669763224961,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

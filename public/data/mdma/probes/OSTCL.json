@@ -1,1 +1,0 @@
-{"gene":"OSTCL","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04215245","pos":159272251,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.132793,"MDMA_P":0.0011861643198583,"MDMA_FDR":0.0276893249960698,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

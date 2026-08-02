@@ -1,1 +1,0 @@
-{"gene":"OR52D1","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg18532907","pos":5508789,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.070131,"MDMA_P":0.0064964526606629,"MDMA_FDR":0.0678627479829188,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"LOC644145","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16606320","pos":56685972,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.089465,"CPT_P":0.0061106109495749,"CPT_FDR":0.218205007267782}]}

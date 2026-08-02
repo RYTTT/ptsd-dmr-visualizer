@@ -1,1 +1,0 @@
-{"gene":"TAAR9","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11186224","pos":132859485,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.386022,"CPT_P":0.0034551865858108,"CPT_FDR":0.197484520029127}]}

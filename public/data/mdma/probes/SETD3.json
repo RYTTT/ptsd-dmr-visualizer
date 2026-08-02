@@ -1,1 +1,0 @@
-{"gene":"SETD3","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13049261","pos":99879199,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.880637,"Ketamine_P":0.0051003622308738,"Ketamine_FDR":0.418068520516265,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

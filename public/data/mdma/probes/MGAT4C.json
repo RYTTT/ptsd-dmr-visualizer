@@ -1,1 +1,0 @@
-{"gene":"MGAT4C","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22957121","pos":86659008,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.918375,"CPT_P":0.0090051898186848,"CPT_FDR":0.235805916896978}]}

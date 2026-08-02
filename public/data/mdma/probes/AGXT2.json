@@ -1,1 +1,0 @@
-{"gene":"AGXT2","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13663303","pos":35046992,"feature":"Body","cpgIsland":"","MDMA_logFC":0.725593,"MDMA_P":0.0086276792461771,"MDMA_FDR":0.0790234198642198,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

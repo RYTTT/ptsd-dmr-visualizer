@@ -1,1 +1,0 @@
-{"gene":"TRIM59","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19996272","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.02882,"MDMA_P":0.0007871449797586,"MDMA_FDR":0.0224601013938627,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

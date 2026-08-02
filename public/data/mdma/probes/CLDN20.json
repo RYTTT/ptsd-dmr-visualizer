@@ -1,1 +1,0 @@
-{"gene":"CLDN20","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10082398","pos":155595675,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.415542,"CPT_P":0.0004854139515924,"CPT_FDR":0.176561132189866}]}

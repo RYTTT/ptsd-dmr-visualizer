@@ -1,1 +1,0 @@
-{"gene":"DENND5A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14604220","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.190998,"MDMA_P":0.0004443983603858,"MDMA_FDR":0.0168467542147902,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.123923,"CPT_P":0.0026354789858044,"CPT_FDR":0.191015735020603}]}

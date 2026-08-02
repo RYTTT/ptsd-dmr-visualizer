@@ -1,1 +1,0 @@
-{"gene":"CDIP1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10401537","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.544655,"Ketamine_P":0.0054683609071425,"Ketamine_FDR":0.421198885133713,"CPT_logFC":0.814504,"CPT_P":0.0091418566878077,"CPT_FDR":0.236709673308925}]}

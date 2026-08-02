@@ -1,1 +1,0 @@
-{"gene":"TTLL6","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21745595","pos":46878809,"feature":"Body","cpgIsland":"","MDMA_logFC":0.939917,"MDMA_P":0.0003970920803459,"MDMA_FDR":0.0159363870557116,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

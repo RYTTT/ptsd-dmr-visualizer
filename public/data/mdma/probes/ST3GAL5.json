@@ -1,1 +1,0 @@
-{"gene":"ST3GAL5","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06909254","pos":86092937,"feature":"Body","cpgIsland":"","MDMA_logFC":0.476191,"MDMA_P":0.0010616445961961,"MDMA_FDR":0.0262029746594199,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

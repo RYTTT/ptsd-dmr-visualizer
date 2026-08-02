@@ -1,1 +1,0 @@
-{"gene":"ZNF699","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27639283","pos":9412868,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.945953,"CPT_P":0.004847867651515,"CPT_FDR":0.208418121509562}]}

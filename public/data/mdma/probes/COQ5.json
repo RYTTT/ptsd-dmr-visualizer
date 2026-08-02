@@ -1,1 +1,0 @@
-{"gene":"COQ5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20394430","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.135364,"MDMA_P":0.0025633832968854,"MDMA_FDR":0.0412178826367863,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.384447,"CPT_P":0.000564779806342,"CPT_FDR":0.178003450622601}]}

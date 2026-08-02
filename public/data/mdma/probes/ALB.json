@@ -1,1 +1,0 @@
-{"gene":"ALB","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08368094","pos":74286665,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.026493,"CPT_P":0.0080023870941013,"CPT_FDR":0.229991129692002}]}

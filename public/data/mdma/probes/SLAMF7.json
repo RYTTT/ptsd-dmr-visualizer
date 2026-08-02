@@ -1,1 +1,0 @@
-{"gene":"SLAMF7","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11721194","pos":160709239,"feature":"Body","cpgIsland":"","MDMA_logFC":0.664184,"MDMA_P":0.0002385390358836,"MDMA_FDR":0.0123310917321008,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"RXFP4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22863889","pos":155910967,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.719294,"CPT_P":0.0016974324218542,"CPT_FDR":0.183637394240422}]}

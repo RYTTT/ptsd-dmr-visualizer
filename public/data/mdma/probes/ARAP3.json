@@ -1,1 +1,0 @@
-{"gene":"ARAP3","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10621012","pos":141062313,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.357637,"MDMA_P":0.0037435650134223,"MDMA_FDR":0.0504655766720182,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

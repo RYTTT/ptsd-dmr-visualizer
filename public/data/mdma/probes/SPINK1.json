@@ -1,1 +1,0 @@
-{"gene":"SPINK1","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14452346","pos":147212032,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.935284,"MDMA_P":0.0026849359169458,"MDMA_FDR":0.0422290094309178,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

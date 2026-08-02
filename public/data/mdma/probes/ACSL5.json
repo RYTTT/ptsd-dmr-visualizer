@@ -1,1 +1,0 @@
-{"gene":"ACSL5","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13333374","pos":114133235,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.655062,"Ketamine_P":0.0064744870755695,"Ketamine_FDR":0.429512316386775,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

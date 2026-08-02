@@ -1,1 +1,0 @@
-{"gene":"CCDC38","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12007863","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.686545,"Ketamine_P":3.82436214604434e-05,"Ketamine_FDR":0.181553628735588,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

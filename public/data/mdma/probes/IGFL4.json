@@ -1,1 +1,0 @@
-{"gene":"IGFL4","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27048142","pos":46544240,"feature":"1stExon","cpgIsland":"","MDMA_logFC":-0.789026,"MDMA_P":0.008413884796537,"MDMA_FDR":0.0779873367035118,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

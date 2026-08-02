@@ -1,1 +1,0 @@
-{"gene":"MAP3K7IP2","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04362800","pos":149732642,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-0.987477,"MDMA_P":0.002942742537807,"MDMA_FDR":0.0443649741307957,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

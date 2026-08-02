@@ -1,1 +1,0 @@
-{"gene":"ADAMTS8","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06476693","pos":130283454,"feature":"Body","cpgIsland":"","MDMA_logFC":0.921944,"MDMA_P":0.0041637541180951,"MDMA_FDR":0.0533460639222517,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"APOL6","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25045868","pos":36052486,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.155589,"MDMA_P":0.000350099906658,"MDMA_FDR":0.0149343288756108,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

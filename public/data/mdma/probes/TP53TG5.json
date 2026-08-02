@@ -1,1 +1,0 @@
-{"gene":"TP53TG5","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15124800","pos":44007676,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.752517,"MDMA_P":0.0088136213665402,"MDMA_FDR":0.0799227788058377,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

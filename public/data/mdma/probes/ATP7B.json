@@ -1,1 +1,0 @@
-{"gene":"ATP7B","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06585776","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.058433,"MDMA_P":0.0001271415133375,"MDMA_FDR":0.0090141200991435,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

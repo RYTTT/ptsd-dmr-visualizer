@@ -1,1 +1,0 @@
-{"gene":"ATG4C","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09756865","pos":63249197,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.719836,"MDMA_P":5.05601951793315e-05,"MDMA_FDR":0.0057025253225231,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

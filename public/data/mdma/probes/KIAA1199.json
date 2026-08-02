@@ -1,1 +1,0 @@
-{"gene":"KIAA1199","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02240539","pos":81163247,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.898028,"MDMA_P":0.0004454453105058,"MDMA_FDR":0.0168696938806249,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

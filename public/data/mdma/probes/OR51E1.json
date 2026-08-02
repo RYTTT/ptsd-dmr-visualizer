@@ -1,1 +1,0 @@
-{"gene":"OR51E1","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24412714","pos":4666412,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.405197,"Ketamine_P":0.0085848877390001,"Ketamine_FDR":0.44942435543711,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

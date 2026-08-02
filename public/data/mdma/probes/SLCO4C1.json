@@ -1,1 +1,0 @@
-{"gene":"SLCO4C1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10143464","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.262345,"MDMA_P":2.29277714978253e-05,"MDMA_FDR":0.0038448389061881,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

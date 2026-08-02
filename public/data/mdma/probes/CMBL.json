@@ -1,1 +1,0 @@
-{"gene":"CMBL","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11591758","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.588424,"MDMA_P":0.0001994021762105,"MDMA_FDR":0.0112878506390417,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

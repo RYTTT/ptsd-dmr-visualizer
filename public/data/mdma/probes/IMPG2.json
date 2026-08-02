@@ -1,1 +1,0 @@
-{"gene":"IMPG2","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01095395","pos":101039372,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":-1.10886,"MDMA_P":0.000372646212572,"MDMA_FDR":0.0154305366256919,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

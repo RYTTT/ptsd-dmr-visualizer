@@ -1,1 +1,0 @@
-{"gene":"ATP6V0D1","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07231738","pos":67472363,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-0.367116,"MDMA_P":0.00159837646062,"MDMA_FDR":0.0322613195319701,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

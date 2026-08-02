@@ -1,1 +1,0 @@
-{"gene":"LCN2","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13518265","pos":130910662,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.859248,"CPT_P":0.0018754332005449,"CPT_FDR":0.185007984181236}]}

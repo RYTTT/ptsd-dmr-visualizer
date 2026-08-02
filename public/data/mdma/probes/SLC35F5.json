@@ -1,1 +1,0 @@
-{"gene":"SLC35F5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15584430","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.096262,"MDMA_P":0.0007693342484046,"MDMA_FDR":0.022204871874105,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.372167,"CPT_P":0.004065457137433,"CPT_FDR":0.202350723302202}]}

@@ -1,1 +1,0 @@
-{"gene":"SEL1L2","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04521027","pos":13971064,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.544517,"CPT_P":0.000198894169812,"CPT_FDR":0.176561132189866}]}

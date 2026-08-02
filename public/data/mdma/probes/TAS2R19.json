@@ -1,1 +1,0 @@
-{"gene":"TAS2R19","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25677688","pos":11176386,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.511272,"Ketamine_P":0.0049823019056977,"Ketamine_FDR":0.417575710622178,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

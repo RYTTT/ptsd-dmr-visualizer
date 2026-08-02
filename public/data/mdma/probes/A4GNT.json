@@ -1,1 +1,0 @@
-{"gene":"A4GNT","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19734045","pos":137852643,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.099492,"MDMA_P":6.9044917270399e-06,"MDMA_FDR":0.0021835247352555,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

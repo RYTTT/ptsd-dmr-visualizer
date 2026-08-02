@@ -1,1 +1,0 @@
-{"gene":"C17orf66","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27254338","pos":34192710,"feature":"Body","cpgIsland":"","MDMA_logFC":0.615271,"MDMA_P":0.0033567741181234,"MDMA_FDR":0.0476129495359783,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

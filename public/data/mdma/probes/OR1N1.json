@@ -1,1 +1,0 @@
-{"gene":"OR1N1","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14598387","pos":125289357,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.611469,"Ketamine_P":0.0035514343193563,"Ketamine_FDR":0.397360053970718,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"OR2H1","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00114160","pos":29430096,"feature":"Body","cpgIsland":"","MDMA_logFC":1.035883,"MDMA_P":0.000140563949978,"MDMA_FDR":0.0094836122746041,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

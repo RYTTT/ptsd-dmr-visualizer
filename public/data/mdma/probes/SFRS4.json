@@ -1,1 +1,0 @@
-{"gene":"SFRS4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03581113","pos":29475685,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.011923,"MDMA_P":3.35028008346275e-05,"MDMA_FDR":0.0046292689211089,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

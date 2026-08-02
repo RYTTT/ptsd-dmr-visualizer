@@ -1,1 +1,0 @@
-{"gene":"IGF2","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03553386","pos":2170880,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.55526,"MDMA_P":0.0008278270606954,"MDMA_FDR":0.0230472926968253,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

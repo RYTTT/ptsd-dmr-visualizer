@@ -1,1 +1,0 @@
-{"gene":"TXNIP","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10713626","pos":145438766,"feature":"1stExon","cpgIsland":"","MDMA_logFC":1.150569,"MDMA_P":0.0002655283489519,"MDMA_FDR":0.0129671783173626,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

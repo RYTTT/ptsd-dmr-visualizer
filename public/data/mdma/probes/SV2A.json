@@ -1,1 +1,0 @@
-{"gene":"SV2A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06466628","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.110856,"MDMA_P":0.0011699608336707,"MDMA_FDR":0.027520789598551,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"EML4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23530241","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.121288,"MDMA_P":0.000181508561685,"MDMA_FDR":0.0107786329552022,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.533166,"CPT_P":0.0029407786061266,"CPT_FDR":0.193615746383514}]}

@@ -1,1 +1,0 @@
-{"gene":"FCRL3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19602479","pos":157670869,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.991586,"CPT_P":0.0063031059401474,"CPT_FDR":0.219356489351245}]}

@@ -1,1 +1,0 @@
-{"gene":"PSMA1","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04446326","pos":14613845,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.117273,"MDMA_P":1.47768459784725e-05,"MDMA_FDR":0.0030920846593288,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

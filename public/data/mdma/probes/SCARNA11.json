@@ -1,1 +1,0 @@
-{"gene":"SCARNA11","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24708308","pos":6691698,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.07967,"MDMA_P":0.0009922741842457,"MDMA_FDR":0.0252698836330309,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

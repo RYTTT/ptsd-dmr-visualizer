@@ -1,1 +1,0 @@
-{"gene":"IDH3A","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05392644","pos":78454622,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.837132,"CPT_P":0.0089708312744676,"CPT_FDR":0.235681004315902}]}

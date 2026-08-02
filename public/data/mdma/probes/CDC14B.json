@@ -1,1 +1,0 @@
-{"gene":"CDC14B","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03595351","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.450892,"MDMA_P":0.0075516898388448,"MDMA_FDR":0.0735418513629149,"Ketamine_logFC":-0.627754,"Ketamine_P":0.0003229923852977,"Ketamine_FDR":0.273621891433863,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

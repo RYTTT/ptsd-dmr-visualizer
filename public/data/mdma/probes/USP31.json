@@ -1,1 +1,0 @@
-{"gene":"USP31","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02634998","pos":23080440,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.879584,"MDMA_P":0.0065575107699366,"MDMA_FDR":0.0682223852339978,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

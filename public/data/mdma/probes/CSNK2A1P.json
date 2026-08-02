@@ -1,1 +1,0 @@
-{"gene":"CSNK2A1P","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21008046","pos":11374837,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.641224,"MDMA_P":1.22867973429982e-05,"MDMA_FDR":0.0028562438861299,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

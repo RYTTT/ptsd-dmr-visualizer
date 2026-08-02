@@ -1,1 +1,0 @@
-{"gene":"MIR551B","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg21490751","pos":168268421,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.698008,"MDMA_P":0.0045685644715285,"MDMA_FDR":0.0561344049096644,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.83383,"CPT_P":0.007108598093464,"CPT_FDR":0.22464982651076}]}

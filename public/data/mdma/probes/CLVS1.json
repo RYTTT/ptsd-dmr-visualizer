@@ -1,1 +1,0 @@
-{"gene":"CLVS1","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01405761","pos":62200689,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.673317,"Ketamine_P":0.0009759001836563,"Ketamine_FDR":0.323551635829966,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"GBP4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12614667","pos":89663868,"feature":"Body","cpgIsland":"","MDMA_logFC":0.581972,"MDMA_P":0.0012875529961464,"MDMA_FDR":0.0288940914861856,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

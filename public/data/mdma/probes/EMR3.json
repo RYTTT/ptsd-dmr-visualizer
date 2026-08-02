@@ -1,1 +1,0 @@
-{"gene":"EMR3","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15552238","pos":14785749,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.998308,"CPT_P":0.0048709693565162,"CPT_FDR":0.208456807494501}]}

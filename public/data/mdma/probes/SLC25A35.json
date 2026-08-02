@@ -1,1 +1,0 @@
-{"gene":"SLC25A35","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03710587","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.964059,"MDMA_P":0.002827075239297,"MDMA_FDR":0.0434158189222289,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

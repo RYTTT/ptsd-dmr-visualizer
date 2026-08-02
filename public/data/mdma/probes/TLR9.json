@@ -1,1 +1,0 @@
-{"gene":"TLR9","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09595853","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.948602,"MDMA_P":5.82512582480862e-06,"MDMA_FDR":0.0020177826958776,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

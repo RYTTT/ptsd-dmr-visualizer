@@ -1,1 +1,0 @@
-{"gene":"AGPAT5","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26814335","pos":6584320,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.47432,"Ketamine_P":0.0055842254234322,"Ketamine_FDR":0.421775828527426,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

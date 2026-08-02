@@ -1,1 +1,0 @@
-{"gene":"ZNF568","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24049084","pos":37434842,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.37683,"CPT_P":0.0039284713978375,"CPT_FDR":0.201109562205078}]}

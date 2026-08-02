@@ -1,1 +1,0 @@
-{"gene":"AOC2","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19317715","pos":40996578,"feature":"TSS200","cpgIsland":"","MDMA_logFC":-0.320451,"MDMA_P":0.0060503615195273,"MDMA_FDR":0.0653821542597075,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

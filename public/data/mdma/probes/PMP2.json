@@ -1,1 +1,0 @@
-{"gene":"PMP2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02826687","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.376647,"MDMA_P":5.14359077340919e-05,"MDMA_FDR":0.0057546556836744,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.766662,"CPT_P":0.0002356994065524,"CPT_FDR":0.176561132189866}]}

@@ -1,1 +1,0 @@
-{"gene":"KRTDAP","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06918506","pos":35981347,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.729659,"Ketamine_P":0.0008043466674128,"Ketamine_FDR":0.312178475757412,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

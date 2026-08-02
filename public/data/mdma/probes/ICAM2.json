@@ -1,1 +1,0 @@
-{"gene":"ICAM2","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07918509","pos":62083407,"feature":"Body","cpgIsland":"","MDMA_logFC":0.730484,"MDMA_P":0.0015193058807388,"MDMA_FDR":0.0314589591981799,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

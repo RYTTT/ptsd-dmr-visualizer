@@ -1,1 +1,0 @@
-{"gene":"SULF1","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04845579","pos":70378673,"feature":"TSS200","cpgIsland":"","MDMA_logFC":-0.98043,"MDMA_P":0.0023958402262303,"MDMA_FDR":0.0398268745095443,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

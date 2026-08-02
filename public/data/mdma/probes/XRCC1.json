@@ -1,1 +1,0 @@
-{"gene":"XRCC1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06158978","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.270206,"MDMA_P":0.0016338368927809,"MDMA_FDR":0.0326534693887672,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

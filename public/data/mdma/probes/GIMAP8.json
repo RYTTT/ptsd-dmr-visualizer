@@ -1,1 +1,0 @@
-{"gene":"GIMAP8","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01364581","pos":150175800,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-0.641947,"MDMA_P":0.001930660373995,"MDMA_FDR":0.0355445202403846,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

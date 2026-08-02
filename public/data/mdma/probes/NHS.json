@@ -1,1 +1,0 @@
-{"gene":"NHS","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15619301","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.569252,"Ketamine_P":0.0076290364603532,"Ketamine_FDR":0.441333198187243,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"POU6F1","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19989018","pos":51592080,"feature":"Body","cpgIsland":"","MDMA_logFC":1.272881,"MDMA_P":2.46356058666724e-05,"MDMA_FDR":0.0039870049328368,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

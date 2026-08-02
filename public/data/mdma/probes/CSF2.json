@@ -1,1 +1,0 @@
-{"gene":"CSF2","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08686879","pos":131409634,"feature":"1stExon","cpgIsland":"","MDMA_logFC":0.691773,"MDMA_P":0.0032858898922486,"MDMA_FDR":0.0471008630562229,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

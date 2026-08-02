@@ -1,1 +1,0 @@
-{"gene":"CLEC9A","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19223467","pos":10183267,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.948976,"MDMA_P":3.12590309974026e-05,"MDMA_FDR":0.0044679263272548,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

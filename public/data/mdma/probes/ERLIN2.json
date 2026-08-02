@@ -1,1 +1,0 @@
-{"gene":"ERLIN2","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06994936","pos":37603176,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.192748,"CPT_P":0.0048822400351966,"CPT_FDR":0.208703807119899}]}

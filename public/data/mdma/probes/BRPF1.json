@@ -1,1 +1,0 @@
-{"gene":"BRPF1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14763036","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.377938,"MDMA_P":6.70027254911342e-07,"MDMA_FDR":0.0007228372264068,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

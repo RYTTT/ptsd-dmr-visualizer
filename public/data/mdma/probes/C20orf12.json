@@ -1,1 +1,0 @@
-{"gene":"C20orf12","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04229650","pos":18393738,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.787289,"CPT_P":0.004887311704391,"CPT_FDR":0.20880481355831}]}

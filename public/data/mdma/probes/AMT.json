@@ -1,1 +1,0 @@
-{"gene":"AMT","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20191453","pos":49459855,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.542036,"MDMA_P":0.0090991665966175,"MDMA_FDR":0.0813037014797989,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

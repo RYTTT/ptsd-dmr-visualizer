@@ -1,1 +1,0 @@
-{"gene":"C20orf123","chr":"20","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17775490","pos":45179354,"feature":"TSS200","cpgIsland":"","MDMA_logFC":-0.605399,"MDMA_P":0.0016570184278002,"MDMA_FDR":0.0328961227262149,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

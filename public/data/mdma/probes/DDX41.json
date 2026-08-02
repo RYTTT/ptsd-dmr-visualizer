@@ -1,1 +1,0 @@
-{"gene":"DDX41","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13676583","pos":176938866,"feature":"Body","cpgIsland":"","MDMA_logFC":0.657932,"MDMA_P":0.0056152974562103,"MDMA_FDR":0.0627836037303332,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

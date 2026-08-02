@@ -1,1 +1,0 @@
-{"gene":"XIRP1","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02243386","pos":39234924,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.588345,"MDMA_P":0.0078230212247208,"MDMA_FDR":0.0749691350098104,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"COPS4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08313853","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.68081,"MDMA_P":0.0029468488753664,"MDMA_FDR":0.0443997213724591,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

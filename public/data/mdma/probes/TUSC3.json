@@ -1,1 +1,0 @@
-{"gene":"TUSC3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13636978","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.060154,"MDMA_P":0.0007821779546506,"MDMA_FDR":0.0223990570430621,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.12865,"CPT_P":0.001188143598103,"CPT_FDR":0.180981316151499}]}

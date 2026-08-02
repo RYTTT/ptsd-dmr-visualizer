@@ -1,1 +1,0 @@
-{"gene":"KRTAP4-1","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08785166","pos":39340694,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.401003,"CPT_P":0.0002408918463276,"CPT_FDR":0.176561132189866}]}

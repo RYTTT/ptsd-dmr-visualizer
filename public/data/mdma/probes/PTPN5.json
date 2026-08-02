@@ -1,1 +1,0 @@
-{"gene":"PTPN5","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19141411","pos":18754784,"feature":"Body","cpgIsland":"","MDMA_logFC":0.916921,"MDMA_P":6.90642662138048e-05,"MDMA_FDR":0.00664410822195,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

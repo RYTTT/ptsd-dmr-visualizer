@@ -1,1 +1,0 @@
-{"gene":"TMEM127","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11714752","pos":96926568,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.035412,"CPT_P":0.0047532728805226,"CPT_FDR":0.20803357422513}]}

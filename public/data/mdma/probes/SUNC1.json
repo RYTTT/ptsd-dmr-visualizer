@@ -1,1 +1,0 @@
-{"gene":"SUNC1","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27150552","pos":48026856,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.541042,"CPT_P":0.0004753811200289,"CPT_FDR":0.176561132189866}]}

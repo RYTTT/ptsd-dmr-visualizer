@@ -1,1 +1,0 @@
-{"gene":"GSTO1","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07631309","pos":106020930,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.520746,"Ketamine_P":0.0079439379302692,"Ketamine_FDR":0.444230539858436,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

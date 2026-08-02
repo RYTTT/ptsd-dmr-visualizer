@@ -1,1 +1,0 @@
-{"gene":"DEC1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15755381","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.09653,"MDMA_P":3.81383106278742e-05,"MDMA_FDR":0.0049175325582018,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

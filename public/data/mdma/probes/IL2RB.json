@@ -1,1 +1,0 @@
-{"gene":"IL2RB","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04995291","pos":37546325,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.557537,"Ketamine_P":0.0008686548023222,"Ketamine_FDR":0.315746229997241,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

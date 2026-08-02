@@ -1,1 +1,0 @@
-{"gene":"ARMC3","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11710969","pos":23217173,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.059448,"CPT_P":0.0066023171743834,"CPT_FDR":0.221145813425579}]}

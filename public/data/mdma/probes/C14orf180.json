@@ -1,1 +1,0 @@
-{"gene":"C14orf180","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04220416","pos":105045877,"feature":"TSS200","cpgIsland":"","MDMA_logFC":-0.767531,"MDMA_P":0.003334333547238,"MDMA_FDR":0.0474556066141195,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

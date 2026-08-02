@@ -1,1 +1,0 @@
-{"gene":"CHIT1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05767015","pos":203199848,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":1.372284,"MDMA_P":8.85999672955403e-07,"MDMA_FDR":0.0008269756110217,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

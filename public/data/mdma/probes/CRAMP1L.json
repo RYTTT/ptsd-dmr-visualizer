@@ -1,1 +1,0 @@
-{"gene":"CRAMP1L","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01135315","pos":1670311,"feature":"Body","cpgIsland":"","MDMA_logFC":0.925348,"MDMA_P":0.003605766981942,"MDMA_FDR":0.0495232597354852,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

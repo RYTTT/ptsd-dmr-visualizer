@@ -1,1 +1,0 @@
-{"gene":"KCNIP3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14097129","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.172307,"MDMA_P":1.48909681202265e-05,"MDMA_FDR":0.0031035192087135,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"ARSF","chr":"X","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06291093","pos":2984721,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.386226,"Ketamine_P":0.008202666712317,"Ketamine_FDR":0.446030666811697,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

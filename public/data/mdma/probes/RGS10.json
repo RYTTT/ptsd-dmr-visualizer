@@ -1,1 +1,0 @@
-{"gene":"RGS10","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01417742","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.00843,"MDMA_P":0.0024026116216704,"MDMA_FDR":0.0398832734222812,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.989703,"CPT_P":0.0014512347673543,"CPT_FDR":0.183316397866362}]}

@@ -1,1 +1,0 @@
-{"gene":"IL17B","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01940751","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.607129,"MDMA_P":0.0002759126866418,"MDMA_FDR":0.0132072823925942,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

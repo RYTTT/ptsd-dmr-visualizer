@@ -1,1 +1,0 @@
-{"gene":"LAIR1","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25573710","pos":54875364,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.219052,"CPT_P":0.0003677903035442,"CPT_FDR":0.176561132189866}]}

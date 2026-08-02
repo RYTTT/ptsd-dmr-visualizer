@@ -1,1 +1,0 @@
-{"gene":"ASB5","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14729184","pos":177190325,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.892316,"CPT_P":0.0086262385692091,"CPT_FDR":0.233972462659743}]}

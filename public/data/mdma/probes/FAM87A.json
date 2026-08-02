@@ -1,1 +1,0 @@
-{"gene":"FAM87A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14105901","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.615531,"MDMA_P":0.0089784703614913,"MDMA_FDR":0.0807272217962523,"Ketamine_logFC":-0.484463,"Ketamine_P":0.00630470471587,"Ketamine_FDR":0.428524063035873,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

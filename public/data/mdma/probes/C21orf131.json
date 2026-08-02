@@ -1,1 +1,0 @@
-{"gene":"C21orf131","chr":"21","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26977737","pos":22175522,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.597567,"Ketamine_P":0.006298510714742,"Ketamine_FDR":0.428524063035873,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

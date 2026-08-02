@@ -1,1 +1,0 @@
-{"gene":"MTHFSD","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16219822","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.318238,"MDMA_P":1.71456358163927e-07,"MDMA_FDR":0.0003673382304689,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

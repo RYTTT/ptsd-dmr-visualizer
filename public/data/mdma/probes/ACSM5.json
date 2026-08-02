@@ -1,1 +1,0 @@
-{"gene":"ACSM5","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10938486","pos":20420716,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.671194,"Ketamine_P":0.0046849404175559,"Ketamine_FDR":0.413759781039758,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

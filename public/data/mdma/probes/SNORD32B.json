@@ -1,1 +1,0 @@
-{"gene":"SNORD32B","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06308109","pos":29548691,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.522928,"MDMA_P":0.0046722716825861,"MDMA_FDR":0.0568069390366553,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

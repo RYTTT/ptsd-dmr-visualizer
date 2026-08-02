@@ -1,1 +1,0 @@
-{"gene":"ACCSL","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08403064","pos":44068709,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.594859,"MDMA_P":0.0017173885626803,"MDMA_FDR":0.033499571241937,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

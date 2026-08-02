@@ -1,1 +1,0 @@
-{"gene":"KRBA2","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14788994","pos":8274570,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.934631,"Ketamine_P":0.00753219255592,"Ketamine_FDR":0.440810307639831,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

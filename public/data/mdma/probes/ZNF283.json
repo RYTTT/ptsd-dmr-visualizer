@@ -1,1 +1,0 @@
-{"gene":"ZNF283","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04895616","pos":44331009,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.432661,"MDMA_P":0.007750135467406,"MDMA_FDR":0.07458155060067,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

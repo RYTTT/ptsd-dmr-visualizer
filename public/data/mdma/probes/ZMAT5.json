@@ -1,1 +1,0 @@
-{"gene":"ZMAT5","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23355661","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.638557,"MDMA_P":0.0011313746809928,"MDMA_FDR":0.0270501441847813,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

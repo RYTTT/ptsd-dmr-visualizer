@@ -1,1 +1,0 @@
-{"gene":"ENPP3","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13491506","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.695251,"CPT_P":5.43519660818677e-05,"CPT_FDR":0.176561132189866}]}

@@ -1,1 +1,0 @@
-{"gene":"EBF2","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08322280","pos":25793539,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.198446,"MDMA_P":0.0015135863158998,"MDMA_FDR":0.0313966813681399,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

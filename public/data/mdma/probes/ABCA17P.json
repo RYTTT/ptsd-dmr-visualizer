@@ -1,1 +1,0 @@
-{"gene":"ABCA17P","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02847766","pos":2470641,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.674878,"Ketamine_P":0.0027344272275981,"Ketamine_FDR":0.382941616297059,"CPT_logFC":1.230203,"CPT_P":0.0012739323079961,"CPT_FDR":0.181763811368561}]}

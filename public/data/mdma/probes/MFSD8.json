@@ -1,1 +1,0 @@
-{"gene":"MFSD8","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22473806","pos":128839476,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.577715,"CPT_P":0.0014963273708636,"CPT_FDR":0.183637394240422}]}

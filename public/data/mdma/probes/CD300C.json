@@ -1,1 +1,0 @@
-{"gene":"CD300C","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14173969","pos":72541932,"feature":"1stExon","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.493884,"Ketamine_P":0.0038427664060812,"Ketamine_FDR":0.401581494327597,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"MIR380","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00175487","pos":101490186,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.756634,"MDMA_P":0.0037719310994582,"MDMA_FDR":0.0506641880572861,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

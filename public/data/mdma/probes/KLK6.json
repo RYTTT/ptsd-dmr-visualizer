@@ -1,1 +1,0 @@
-{"gene":"KLK6","chr":"19","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26304088","pos":51462100,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.862397,"CPT_P":0.0065728479189241,"CPT_FDR":0.220974449457668}]}

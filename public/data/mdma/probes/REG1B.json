@@ -1,1 +1,0 @@
-{"gene":"REG1B","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17863076","pos":79312664,"feature":"Body","cpgIsland":"","MDMA_logFC":0.417723,"MDMA_P":0.0037326857735411,"MDMA_FDR":0.0503933924367219,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

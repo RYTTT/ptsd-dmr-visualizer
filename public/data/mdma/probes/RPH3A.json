@@ -1,1 +1,0 @@
-{"gene":"RPH3A","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05967001","pos":113229647,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.865499,"CPT_P":0.0074028768786704,"CPT_FDR":0.226612749315274}]}

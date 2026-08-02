@@ -1,1 +1,0 @@
-{"gene":"CRYGA","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11729430","pos":209028478,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.627212,"MDMA_P":0.0090660451003618,"MDMA_FDR":0.0811625031339674,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

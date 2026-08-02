@@ -1,1 +1,0 @@
-{"gene":"RBM9","chr":"22","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00615377","pos":36236649,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.793532,"CPT_P":0.0095314881447982,"CPT_FDR":0.238809827141817}]}

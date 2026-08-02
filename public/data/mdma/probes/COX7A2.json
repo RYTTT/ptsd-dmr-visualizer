@@ -1,1 +1,0 @@
-{"gene":"COX7A2","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25716013","pos":75954053,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.203544,"MDMA_P":0.0042833129599052,"MDMA_FDR":0.0542102531726143,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"CARS","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04806632","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.681746,"MDMA_P":0.0011676026331386,"MDMA_FDR":0.0274851605408046,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

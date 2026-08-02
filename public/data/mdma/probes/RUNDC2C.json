@@ -1,1 +1,0 @@
-{"gene":"RUNDC2C","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06586763","pos":29302087,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.427871,"Ketamine_P":0.0042819396968967,"Ketamine_FDR":0.409161182456617,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

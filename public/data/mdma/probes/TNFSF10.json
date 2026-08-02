@@ -1,1 +1,0 @@
-{"gene":"TNFSF10","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22882684","pos":172233778,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.965256,"MDMA_P":0.0048526650629602,"MDMA_FDR":0.0579898415607818,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

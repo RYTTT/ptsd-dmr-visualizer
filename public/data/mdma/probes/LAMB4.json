@@ -1,1 +1,0 @@
-{"gene":"LAMB4","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26395761","pos":107700124,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.830625,"MDMA_P":0.0066023373521927,"MDMA_FDR":0.068480052606374,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

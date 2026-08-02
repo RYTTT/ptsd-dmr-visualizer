@@ -1,1 +1,0 @@
-{"gene":"RBMS2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20848759","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.048243,"MDMA_P":3.53914326003398e-05,"MDMA_FDR":0.0047494982505139,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

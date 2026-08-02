@@ -1,1 +1,0 @@
-{"gene":"SEC23B","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23815422","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.997812,"CPT_P":0.0026108582293467,"CPT_FDR":0.191015735020603}]}

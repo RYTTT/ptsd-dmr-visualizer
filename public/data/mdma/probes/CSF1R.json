@@ -1,1 +1,0 @@
-{"gene":"CSF1R","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07260017","pos":149492480,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.673308,"MDMA_P":0.009723771376214,"MDMA_FDR":0.0842669415770345,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

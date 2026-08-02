@@ -1,1 +1,0 @@
-{"gene":"LINC01479","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03898002","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.87195,"MDMA_P":0.00746089473643,"MDMA_FDR":0.0730667893315561,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

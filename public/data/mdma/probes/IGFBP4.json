@@ -1,1 +1,0 @@
-{"gene":"IGFBP4","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19878076","pos":38609634,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.735687,"Ketamine_P":0.0030338894148598,"Ketamine_FDR":0.389887847689934,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

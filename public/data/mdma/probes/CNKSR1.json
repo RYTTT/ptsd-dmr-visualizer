@@ -1,1 +1,0 @@
-{"gene":"CNKSR1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08280543","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.057033,"MDMA_P":0.0003433038265771,"MDMA_FDR":0.0147881758742164,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

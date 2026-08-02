@@ -1,1 +1,0 @@
-{"gene":"COL4A3BP","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03649429","pos":74798138,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.165157,"MDMA_P":0.0080418973254892,"MDMA_FDR":0.0761022271803829,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

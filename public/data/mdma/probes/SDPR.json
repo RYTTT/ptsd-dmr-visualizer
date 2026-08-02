@@ -1,1 +1,0 @@
-{"gene":"SDPR","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19163350","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.55867,"MDMA_P":0.0005189812261754,"MDMA_FDR":0.0182272523289868,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

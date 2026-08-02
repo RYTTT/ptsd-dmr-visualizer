@@ -1,1 +1,0 @@
-{"gene":"CLCA2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg06785712","pos":86888624,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.248812,"CPT_P":0.0008227148051982,"CPT_FDR":0.179805415875673}]}

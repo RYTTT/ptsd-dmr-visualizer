@@ -1,1 +1,0 @@
-{"gene":"REV1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02471749","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.057895,"MDMA_P":0.0009128377298396,"MDMA_FDR":0.0242298228179144,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

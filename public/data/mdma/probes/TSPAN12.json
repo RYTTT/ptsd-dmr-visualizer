@@ -1,1 +1,0 @@
-{"gene":"TSPAN12","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26745178","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.800935,"MDMA_P":0.0064353694911497,"MDMA_FDR":0.0675226906426257,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.962072,"CPT_P":0.003473290455199,"CPT_FDR":0.197666602744309}]}

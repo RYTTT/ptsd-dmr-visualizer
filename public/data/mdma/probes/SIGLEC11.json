@@ -1,1 +1,0 @@
-{"gene":"SIGLEC11","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17237022","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.296989,"MDMA_P":1.71032851856824e-05,"MDMA_FDR":0.0033267140027555,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

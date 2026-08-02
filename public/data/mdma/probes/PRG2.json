@@ -1,1 +1,0 @@
-{"gene":"PRG2","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04549076","pos":57157508,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.322391,"MDMA_P":0.0061964334031478,"MDMA_FDR":0.0662025057788163,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

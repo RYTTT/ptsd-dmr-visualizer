@@ -1,1 +1,0 @@
-{"gene":"SEC61A1","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10167316","pos":127780031,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.918474,"CPT_P":0.0095366914017309,"CPT_FDR":0.238822747619078}]}

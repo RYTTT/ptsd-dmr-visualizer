@@ -1,1 +1,0 @@
-{"gene":"PLSCR4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24997692","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.689747,"MDMA_P":7.20617333584292e-06,"MDMA_FDR":0.0022228566555626,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"NCRNA00032","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24670241","pos":27282776,"feature":"Body","cpgIsland":"","MDMA_logFC":0.555597,"MDMA_P":0.0097601797536137,"MDMA_FDR":0.0844485596040215,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

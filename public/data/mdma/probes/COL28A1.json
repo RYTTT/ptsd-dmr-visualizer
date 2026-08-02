@@ -1,1 +1,0 @@
-{"gene":"COL28A1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00046774","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.721424,"MDMA_P":0.0051392213661004,"MDMA_FDR":0.0597510781610015,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.939709,"CPT_P":0.0084033029660242,"CPT_FDR":0.232484956329752}]}

@@ -1,1 +1,0 @@
-{"gene":"GALNT1","chr":"18","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05714729","pos":33234096,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.260284,"MDMA_P":0.0071492886332972,"MDMA_FDR":0.0714257958030153,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

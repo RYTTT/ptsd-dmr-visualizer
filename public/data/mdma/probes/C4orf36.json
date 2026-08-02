@@ -1,1 +1,0 @@
-{"gene":"C4orf36","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13981804","pos":87797509,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.90804,"CPT_P":0.0064034422660905,"CPT_FDR":0.2198863390439}]}

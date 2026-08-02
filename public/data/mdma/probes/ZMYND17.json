@@ -1,1 +1,0 @@
-{"gene":"ZMYND17","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08495198","pos":75194398,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.152243,"CPT_P":0.0020257325122391,"CPT_FDR":0.186967062289539}]}

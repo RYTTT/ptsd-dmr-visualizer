@@ -1,1 +1,0 @@
-{"gene":"FAM174B","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10547908","pos":93168068,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.797833,"CPT_P":0.006684443355264,"CPT_FDR":0.221672852907365}]}

@@ -1,1 +1,0 @@
-{"gene":"HYAL4","chr":"7","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12918130","pos":123504669,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":-1.150782,"MDMA_P":0.00016498196637,"MDMA_FDR":0.0102544144327627,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.10713,"CPT_P":0.000973741385855,"CPT_FDR":0.180981316151499}]}

@@ -1,1 +1,0 @@
-{"gene":"TSPAN17","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07347294","pos":176080248,"feature":"Body","cpgIsland":"","MDMA_logFC":0.548008,"MDMA_P":0.0077368233221465,"MDMA_FDR":0.0745034258399698,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

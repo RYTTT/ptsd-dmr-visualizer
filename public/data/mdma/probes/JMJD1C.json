@@ -1,1 +1,0 @@
-{"gene":"JMJD1C","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15437223","pos":65132738,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.936439,"CPT_P":0.0054092415611403,"CPT_FDR":0.213405155722481}]}

@@ -1,1 +1,0 @@
-{"gene":"C12orf27","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05674928","pos":121410996,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.839616,"CPT_P":0.005509993846758,"CPT_FDR":0.21422288431593}]}

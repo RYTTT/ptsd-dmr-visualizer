@@ -1,1 +1,0 @@
-{"gene":"SFTA2","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15992932","pos":30899405,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.826423,"Ketamine_P":0.0011409175709805,"Ketamine_FDR":0.333863359446916,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

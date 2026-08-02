@@ -1,1 +1,0 @@
-{"gene":"IL9","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15966954","pos":135231547,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.464685,"MDMA_P":0.0008543126498806,"MDMA_FDR":0.0234144905271914,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

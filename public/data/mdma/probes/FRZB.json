@@ -1,1 +1,0 @@
-{"gene":"FRZB","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01735082","pos":183719355,"feature":"Body","cpgIsland":"","MDMA_logFC":0.707956,"MDMA_P":0.0017111160583689,"MDMA_FDR":0.0334375782827815,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-0.683582,"CPT_P":0.00979143215909,"CPT_FDR":0.240292828017683}]}

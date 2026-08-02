@@ -1,1 +1,0 @@
-{"gene":"MIR143HG","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13688408","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.784306,"MDMA_P":0.0001418053391441,"MDMA_FDR":0.0095168114082711,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

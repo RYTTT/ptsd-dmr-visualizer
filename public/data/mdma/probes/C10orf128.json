@@ -1,1 +1,0 @@
-{"gene":"C10orf128","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00142482","pos":50396833,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.637497,"MDMA_P":0.0007159459100406,"MDMA_FDR":0.0213906517204812,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

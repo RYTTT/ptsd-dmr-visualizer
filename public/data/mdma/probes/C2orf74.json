@@ -1,1 +1,0 @@
-{"gene":"C2orf74","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10580144","pos":61372316,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.645084,"MDMA_P":0.0032276545740475,"MDMA_FDR":0.0466505818048675,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

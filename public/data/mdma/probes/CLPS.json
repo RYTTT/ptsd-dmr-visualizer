@@ -1,1 +1,0 @@
-{"gene":"CLPS","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26823505","pos":35765589,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.440924,"MDMA_P":0.0015612401488469,"MDMA_FDR":0.0318812049082042,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

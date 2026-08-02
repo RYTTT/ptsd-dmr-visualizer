@@ -1,1 +1,0 @@
-{"gene":"USP54","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15402162","pos":75336622,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-1.225104,"MDMA_P":0.0001523059827545,"MDMA_FDR":0.0098704013588585,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

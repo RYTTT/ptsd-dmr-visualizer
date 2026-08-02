@@ -1,1 +1,0 @@
-{"gene":"EDC3","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01380884","pos":74923934,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":-0.26528,"MDMA_P":0.0084767370204596,"MDMA_FDR":0.0782900476369097,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

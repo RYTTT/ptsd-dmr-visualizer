@@ -1,1 +1,0 @@
-{"gene":"FAIM2","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg15818700","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":1.006011,"MDMA_P":0.0001234555408792,"MDMA_FDR":0.0088775989260157,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

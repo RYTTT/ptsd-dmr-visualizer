@@ -1,1 +1,0 @@
-{"gene":"REG4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07193534","pos":120354250,"feature":"TSS200","cpgIsland":"","MDMA_logFC":-1.255752,"MDMA_P":0.0002180335179335,"MDMA_FDR":0.0117910456492943,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"SOCS4","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24008117","pos":55510053,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.063682,"MDMA_P":0.0006804231228219,"MDMA_FDR":0.0208476672123577,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

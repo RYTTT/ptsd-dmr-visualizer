@@ -1,1 +1,0 @@
-{"gene":"SEMA4A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03545117","pos":156134103,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.174958,"CPT_P":0.0002148429856439,"CPT_FDR":0.176561132189866}]}

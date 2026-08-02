@@ -8,7 +8,7 @@ import {
 } from 'recharts';
 import {
   Search, Filter, Download, ArrowUpDown, Dna, Loader2,
-  FlaskConical, ArrowLeft, LogOut, ChevronLeft, ChevronRight, MapPin, BookOpen,
+  FlaskConical, ArrowLeft, LogOut, ChevronLeft, ChevronRight, MapPin, Clock,
 } from 'lucide-react';
 import { GenomicTrackPlot } from '@/components/GenomicTrackPlot';
 import { GeneAnnotationCard } from '@/components/GeneAnnotationCard';
@@ -18,12 +18,29 @@ import { GeneAnnotationMap } from '@/types/annotation';
 // ---- Types ----
 interface CohortStat {
   deltaBeta: number;
-  pValue: number;
   fdr: number;
+  direction: string;
+  totalProbes: number;
+  nSigProbes: number;
+}
+
+interface CrossCohortGene {
+  gene: string;
+  nCohortsSig: number;
+  crossP: number;
+  cohorts: Record<string, CohortStat>;
+}
+
+interface UniqueGene {
+  gene: string;
+  totalProbes: number;
+  nSigProbes: number;
+  fdr: number;
+  deltaBeta: number;
   direction: string;
 }
 
-interface MetaDMR {
+interface MetaGene {
   gene: string;
   totalProbes: number;
   nSigProbes: number;
@@ -31,35 +48,24 @@ interface MetaDMR {
   pValue: number;
   deltaBeta: number;
   direction: string;
-  cohorts?: Record<string, CohortStat>;
 }
 
-interface CohortDMR {
-  gene: string;
-  totalProbes: number;
-  nSigProbes: number;
-  fdr: number;
-  pValue: number;
-  deltaBeta: number;
-  direction: string;
+interface TimepointData {
+  crossCohort: CrossCohortGene[];
+  uniqueCohorts: Record<string, UniqueGene[]>;
 }
 
 interface MdmaMasterData {
-  metaAnalysis: MetaDMR[];
-  cohorts: {
-    MDMA: CohortDMR[];
-    Ketamine: CohortDMR[];
-    CPT: CohortDMR[];
-  };
-  cohortLabels: Record<string, string>;
+  timepoints: { Pre: TimepointData; FUP: TimepointData };
+  metaAnalysis: MetaGene[];
 }
 
 // ---- Tab config ----
-const TABS = [
-  { key: 'meta', label: 'Meta-Analysis', color: '#0f172a' },
-  { key: 'MDMA', label: 'MDMA-AT', color: '#7c3aed' },
-  { key: 'Ketamine', label: 'Ketamine', color: '#0891b2' },
-  { key: 'CPT', label: 'CPT', color: '#059669' },
+const COHORT_TABS = [
+  { key: 'cross', label: 'Common', color: '#0f172a' },
+  { key: 'MDMA', label: 'MDMA-Unique', color: '#7c3aed' },
+  { key: 'Ketamine', label: 'Ketamine-Unique', color: '#0891b2' },
+  { key: 'CPT', label: 'CPT-Unique', color: '#059669' },
 ] as const;
 
 const COHORT_COLORS: Record<string, string> = { MDMA: '#7c3aed', Ketamine: '#0891b2', CPT: '#059669' };
@@ -68,7 +74,10 @@ export default function MdmaPage() {
   const [data, setData] = useState<MdmaMasterData | null>(null);
   const [annotationData, setAnnotationData] = useState<GeneAnnotationMap | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('meta');
+
+  // UI state
+  const [timepoint, setTimepoint] = useState<'Pre' | 'FUP'>('FUP');
+  const [activeTab, setActiveTab] = useState('cross');
   const [searchQuery, setSearchQuery] = useState('');
   const [directionFilter, setDirectionFilter] = useState('All');
   const [selectedGene, setSelectedGene] = useState<string | null>(null);
@@ -77,12 +86,12 @@ export default function MdmaPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 50;
 
-  // Probe data (on-demand)
+  // Probe data
   const [selectedTrackData, setSelectedTrackData] = useState<GeneProbeData | null>(null);
   const [trackLoading, setTrackLoading] = useState(false);
   const probeCache = useRef<Record<string, GeneProbeData | null>>({});
 
-  // Load master data + annotations
+  // Load data
   useEffect(() => {
     Promise.all([
       fetch('/data/mdma/dmrData.json').then((r) => r.json()),
@@ -91,13 +100,12 @@ export default function MdmaPage() {
       setData(d as MdmaMasterData);
       setAnnotationData(annot as GeneAnnotationMap);
       setLoading(false);
-      if ((d as MdmaMasterData).metaAnalysis.length > 0) {
-        setSelectedGene((d as MdmaMasterData).metaAnalysis[0].gene);
-      }
+      const tp = (d as MdmaMasterData).timepoints.FUP;
+      if (tp.crossCohort.length > 0) setSelectedGene(tp.crossCohort[0].gene);
     });
   }, []);
 
-  // Fetch probe data on demand
+  // Fetch probe data
   const fetchProbeData = useCallback(async (gene: string) => {
     if (probeCache.current[gene] !== undefined) {
       setSelectedTrackData(probeCache.current[gene]);
@@ -127,86 +135,108 @@ export default function MdmaPage() {
     else setSelectedTrackData(null);
   }, [selectedGene, fetchProbeData]);
 
-  // ---- Filtered dataset ----
+  // ---- Current timepoint data ----
+  const tpData = data ? data.timepoints[timepoint] : null;
+
+  // ---- Normalize rows to a common shape ----
   const filteredData = useMemo(() => {
-    if (!data) return [];
-    let list: any[] = activeTab === 'meta'
-      ? data.metaAnalysis
-      : data.cohorts[activeTab as keyof typeof data.cohorts] || [];
+    if (!tpData) return [];
+
+    let list: { gene: string; fdr: number; deltaBeta: number; direction: string; totalProbes: number; nSigProbes: number; nCohortsSig?: number }[] = [];
+
+    if (activeTab === 'cross') {
+      list = tpData.crossCohort.map((g) => {
+        // Best FDR and average deltaBeta across significant cohorts
+        const cohorts = Object.values(g.cohorts).filter((c) => c.fdr < 1);
+        const bestFdr = Math.min(...cohorts.map((c) => c.fdr), g.crossP);
+        const avgBeta = cohorts.length > 0 ? cohorts.reduce((s, c) => s + c.deltaBeta, 0) / cohorts.length : 0;
+        const totalP = cohorts.reduce((s, c) => s + c.totalProbes, 0);
+        const totalSig = cohorts.reduce((s, c) => s + c.nSigProbes, 0);
+        return {
+          gene: g.gene, fdr: g.crossP, deltaBeta: avgBeta,
+          direction: avgBeta > 0 ? 'Hypermethylated' : 'Hypomethylated',
+          totalProbes: totalP, nSigProbes: totalSig, nCohortsSig: g.nCohortsSig,
+        };
+      });
+    } else {
+      list = (tpData.uniqueCohorts[activeTab] || []).map((g) => ({
+        gene: g.gene, fdr: g.fdr, deltaBeta: g.deltaBeta, direction: g.direction,
+        totalProbes: g.totalProbes, nSigProbes: g.nSigProbes,
+      }));
+    }
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
-      list = list.filter((d: any) => d.gene.toLowerCase().includes(q));
+      list = list.filter((d) => d.gene.toLowerCase().includes(q));
     }
     if (directionFilter !== 'All') {
-      list = list.filter((d: any) => d.direction === directionFilter);
+      list = list.filter((d) => d.direction === directionFilter);
     }
 
-    const sorted = [...list].sort((a: any, b: any) => {
-      const va = a[sortField as keyof typeof a];
-      const vb = b[sortField as keyof typeof b];
-      if (typeof va === 'string') return sortAsc ? (va as string).localeCompare(vb as string) : (vb as string).localeCompare(va as string);
+    return [...list].sort((a, b) => {
+      const va = (a as any)[sortField];
+      const vb = (b as any)[sortField];
+      if (typeof va === 'string') return sortAsc ? va.localeCompare(vb as string) : (vb as string).localeCompare(va);
       return sortAsc ? (va as number) - (vb as number) : (vb as number) - (va as number);
     });
-    return sorted;
-  }, [data, activeTab, searchQuery, directionFilter, sortField, sortAsc]);
+  }, [tpData, activeTab, searchQuery, directionFilter, sortField, sortAsc]);
 
   const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
   const paginatedData = filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-  // ---- Bar chart data ----
+  // ---- Bar chart ----
   const selectedGeneBarData = useMemo(() => {
-    if (!data || !selectedGene) return null;
-
-    // Check if the gene is a meta gene with per-cohort data
-    const metaItem = data.metaAnalysis.find((d) => d.gene === selectedGene);
-    if (metaItem?.cohorts) {
+    if (!tpData || !selectedGene) return null;
+    // Find in cross
+    const crossItem = tpData.crossCohort.find((g) => g.gene === selectedGene);
+    if (crossItem) {
       return (['MDMA', 'Ketamine', 'CPT'] as const).map((c) => ({
         cohort: c,
-        deltaBeta: metaItem.cohorts![c]?.deltaBeta || 0,
-        fdr: metaItem.cohorts![c]?.fdr || 1,
-        direction: metaItem.cohorts![c]?.direction || 'N/A',
+        deltaBeta: crossItem.cohorts[c]?.deltaBeta || 0,
+        fdr: crossItem.cohorts[c]?.fdr || 1,
+        direction: crossItem.cohorts[c]?.direction || 'N/A',
         color: COHORT_COLORS[c],
       }));
     }
+    // Find in unique cohorts
+    for (const c of ['MDMA', 'Ketamine', 'CPT'] as const) {
+      const item = tpData.uniqueCohorts[c]?.find((g) => g.gene === selectedGene);
+      if (item) {
+        return (['MDMA', 'Ketamine', 'CPT'] as const).map((cc) => ({
+          cohort: cc,
+          deltaBeta: cc === c ? item.deltaBeta : 0,
+          fdr: cc === c ? item.fdr : 1,
+          direction: cc === c ? item.direction : 'N/A',
+          color: COHORT_COLORS[cc],
+        }));
+      }
+    }
+    return null;
+  }, [tpData, selectedGene]);
 
-    // Fallback: look up in cohort lists
-    return (['MDMA', 'Ketamine', 'CPT'] as const).map((c) => {
-      const item = data.cohorts[c].find((d) => d.gene === selectedGene);
-      return {
-        cohort: c,
-        deltaBeta: item?.deltaBeta || 0,
-        fdr: item?.fdr || 1,
-        direction: item?.direction || 'N/A',
-        color: COHORT_COLORS[c],
-      };
-    });
-  }, [data, selectedGene]);
-
-  // ---- Annotation ----
+  // Annotation
   const selectedAnnotation = useMemo(() => {
     if (!annotationData || !selectedGene) return null;
     return annotationData[selectedGene] || null;
   }, [annotationData, selectedGene]);
 
-  // ---- Volcano data ----
+  // Volcano
   const volcanoData = useMemo(() => {
-    return filteredData.map((d: any) => ({
-      gene: d.gene,
-      deltaBeta: d.deltaBeta,
+    return filteredData.map((d) => ({
+      gene: d.gene, deltaBeta: d.deltaBeta,
       negLogP: -Math.log10(Math.max(d.fdr, 1e-30)),
       direction: d.direction,
     }));
   }, [filteredData]);
 
-  // ---- CSV Export ----
+  // CSV Export
   const handleExportCSV = () => {
-    const headers = ['Gene', 'TotalProbes', 'N_Sig_Probes', 'FDR', 'DeltaBeta', 'Direction'];
-    const rows = filteredData.map((d: any) => [d.gene, d.totalProbes, d.nSigProbes, d.fdr, d.deltaBeta, d.direction]);
-    const csv = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r: any) => r.join(','))].join('\n');
+    const headers = ['Gene', 'FDR', 'DeltaBeta', 'Direction', 'TotalProbes', 'N_Sig'];
+    const rows = filteredData.map((d) => [d.gene, d.fdr, d.deltaBeta, d.direction, d.totalProbes, d.nSigProbes]);
+    const csv = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
     const link = document.createElement('a');
     link.setAttribute('href', encodeURI(csv));
-    link.setAttribute('download', `MDMA_DMR_${activeTab}_filtered.csv`);
+    link.setAttribute('download', `Treatment_DMR_${timepoint}_${activeTab}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -227,8 +257,6 @@ export default function MdmaPage() {
       </div>
     );
   }
-
-  const activeTabConfig = TABS.find((t) => t.key === activeTab)!;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-slate-900 selection:text-white pb-16">
@@ -257,29 +285,60 @@ export default function MdmaPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5">
-        {/* Tab Bar */}
-        <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
-          {TABS.map((tab) => {
-            const count = tab.key === 'meta' ? data.metaAnalysis.length : data.cohorts[tab.key as keyof typeof data.cohorts]?.length || 0;
-            return (
+        {/* Timepoint Toggle + Cohort Tabs */}
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            {COHORT_TABS.map((tab) => {
+              const count = activeTab === 'cross'
+                ? (tab.key === 'cross' ? (tpData?.crossCohort.length || 0) : 0)
+                : (tab.key !== 'cross' ? (tpData?.uniqueCohorts[tab.key]?.length || 0) : 0);
+              const actualCount = tab.key === 'cross'
+                ? (tpData?.crossCohort.length || 0)
+                : (tpData?.uniqueCohorts[tab.key]?.length || 0);
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => {
+                    setActiveTab(tab.key);
+                    setCurrentPage(1);
+                    const list = tab.key === 'cross'
+                      ? tpData?.crossCohort || []
+                      : tpData?.uniqueCohorts[tab.key] || [];
+                    if (list.length > 0) setSelectedGene(list[0].gene);
+                  }}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold border transition whitespace-nowrap ${
+                    activeTab === tab.key ? 'bg-white border-slate-300 text-slate-900 shadow-xs' : 'bg-slate-100 border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: tab.color }} />
+                  {tab.label}
+                  <span className="text-[10px] text-slate-400 font-mono">{actualCount}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Timepoint Toggle */}
+          <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-0.5 border border-slate-200">
+            <Clock className="w-3.5 h-3.5 text-slate-400 ml-2" />
+            {([['Pre', 'Baseline'], ['FUP', 'Follow-Up']] as const).map(([tp, label]) => (
               <button
-                key={tab.key}
+                key={tp}
                 onClick={() => {
-                  setActiveTab(tab.key);
+                  setTimepoint(tp);
                   setCurrentPage(1);
-                  const list = tab.key === 'meta' ? data.metaAnalysis : data.cohorts[tab.key as keyof typeof data.cohorts] || [];
+                  const tpd = data.timepoints[tp];
+                  const list = activeTab === 'cross' ? tpd.crossCohort : tpd.uniqueCohorts[activeTab] || [];
                   if (list.length > 0) setSelectedGene(list[0].gene);
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold border transition whitespace-nowrap ${
-                  activeTab === tab.key ? 'bg-white border-slate-300 text-slate-900 shadow-xs' : 'bg-slate-100 border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200'
+                className={`px-3 py-1.5 rounded-md text-[11px] font-bold transition ${
+                  timepoint === tp ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: tab.color }} />
-                {tab.label}
-                <span className="text-[10px] text-slate-400 font-mono">{count}</span>
+                {label}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
 
         {/* Filter Bar */}
@@ -298,7 +357,6 @@ export default function MdmaPage() {
                 <option value="All">All Directions</option>
                 <option value="Hypermethylated">Hyper</option>
                 <option value="Hypomethylated">Hypo</option>
-                <option value="Mixed">Mixed</option>
               </select>
             </div>
             <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition font-semibold shadow-xs">
@@ -315,23 +373,33 @@ export default function MdmaPage() {
               <div className="p-3 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
                 <div className="flex items-center gap-2">
                   <Dna className="w-4 h-4 text-slate-700" />
-                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">DMR Gene Registry ({filteredData.length} genes)</h3>
+                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                    {activeTab === 'cross' ? 'Common' : `${activeTab}-Unique`} DMR Genes ({filteredData.length})
+                  </h3>
                 </div>
+                <span className="text-[10px] text-slate-400 font-mono bg-slate-100 px-2 py-0.5 rounded">
+                  {timepoint === 'Pre' ? 'Baseline' : 'Follow-Up'}
+                </span>
               </div>
               <div className="overflow-x-auto flex-1">
                 <table className="w-full text-xs text-left">
                   <thead className="bg-slate-100/80 text-slate-700 border-b border-slate-200 font-bold uppercase text-[11px]">
                     <tr>
-                      {[{f:'gene',l:'Gene'},{f:'fdr',l:'FDR'},{f:'deltaBeta',l:'Δβ'}].map(({f,l}) => (
+                      {[
+                        { f: 'gene', l: 'Gene' },
+                        { f: activeTab === 'cross' ? 'fdr' : 'fdr', l: activeTab === 'cross' ? 'Cross P' : 'FDR' },
+                        { f: 'deltaBeta', l: 'Δβ' },
+                      ].map(({ f, l }) => (
                         <th key={f} className="p-2.5 cursor-pointer hover:text-slate-900" onClick={() => { setSortField(f); setSortAsc(sortField === f ? !sortAsc : true); }}>
                           <div className="flex items-center gap-1"><span>{l}</span><ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
                         </th>
                       ))}
                       <th className="p-2.5">Dir</th>
+                      {activeTab === 'cross' && <th className="p-2.5">#</th>}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-white">
-                    {paginatedData.map((row: any) => {
+                    {paginatedData.map((row) => {
                       const isSelected = selectedGene === row.gene;
                       return (
                         <tr key={row.gene} onClick={() => setSelectedGene(row.gene)}
@@ -347,8 +415,15 @@ export default function MdmaPage() {
                             <span className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${
                               row.direction === 'Hypermethylated' ? 'bg-red-50 text-red-700' :
                               row.direction === 'Hypomethylated' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
-                            }`}>{row.direction === 'Hypermethylated' ? 'Hyper' : row.direction === 'Hypomethylated' ? 'Hypo' : 'Mix'}</span>
+                            }`}>{row.direction === 'Hypermethylated' ? 'Hyper' : 'Hypo'}</span>
                           </td>
+                          {activeTab === 'cross' && (
+                            <td className="p-2.5">
+                              <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
+                                {row.nCohortsSig}/3
+                              </span>
+                            </td>
+                          )}
                         </tr>
                       );
                     })}
@@ -366,21 +441,16 @@ export default function MdmaPage() {
             </div>
           </div>
 
-          {/* RIGHT: Details */}
+          {/* RIGHT */}
           <div className="lg:col-span-7 space-y-5">
-            {/* Gene Annotation Card */}
-            {selectedGene && (
-              <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} />
-            )}
+            {selectedGene && <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} />}
 
-            {/* Cohort Comparison Bar Chart */}
+            {/* Bar Chart */}
             {selectedGene && selectedGeneBarData && (
               <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="text-base font-bold text-slate-900">{selectedGene}</h3>
-                    <p className="text-xs text-slate-500">Cross-Cohort Effect Size (Δβ) — Responder vs. Control/NonResponder</p>
-                  </div>
+                <div className="mb-3">
+                  <h3 className="text-base font-bold text-slate-900">{selectedGene}</h3>
+                  <p className="text-xs text-slate-500">Cross-Cohort Effect Size (Δβ) — {timepoint === 'Pre' ? 'Baseline' : 'Follow-Up'}</p>
                 </div>
                 <div className="h-56 w-full">
                   <ResponsiveContainer width="100%" height="100%">
@@ -394,10 +464,10 @@ export default function MdmaPage() {
                           const d = payload[0].payload;
                           return (
                             <div className="bg-white border border-slate-300 p-2.5 rounded shadow-lg text-xs space-y-1">
-                              <div className="font-bold text-slate-900">{d.cohort}</div>
-                              <div className="flex justify-between gap-4"><span className="text-slate-500">Δβ:</span><span className="font-mono font-bold">{d.deltaBeta > 0 ? `+${d.deltaBeta.toFixed(4)}` : d.deltaBeta.toFixed(4)}</span></div>
-                              <div className="flex justify-between gap-4"><span className="text-slate-500">FDR:</span><span className="font-mono">{d.fdr < 1e-15 ? '< 1e-15' : d.fdr.toExponential(2)}</span></div>
-                              <div className="flex justify-between gap-4"><span className="text-slate-500">Direction:</span><span>{d.direction}</span></div>
+                              <div className="font-bold">{d.cohort}</div>
+                              <div>Δβ: <span className="font-mono font-bold">{d.deltaBeta > 0 ? `+${d.deltaBeta.toFixed(4)}` : d.deltaBeta.toFixed(4)}</span></div>
+                              <div>FDR: <span className="font-mono">{d.fdr < 1e-15 ? '< 1e-15' : d.fdr.toExponential(2)}</span></div>
+                              <div>Direction: {d.direction}</div>
                             </div>
                           );
                         }
@@ -405,8 +475,8 @@ export default function MdmaPage() {
                       }} />
                       <ReferenceLine y={0} stroke="#94a3b8" strokeWidth={1.2} />
                       <Bar dataKey="deltaBeta" radius={[4, 4, 0, 0]}>
-                        {selectedGeneBarData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        {selectedGeneBarData.map((entry, i) => (
+                          <Cell key={i} fill={entry.color} />
                         ))}
                       </Bar>
                     </BarChart>
@@ -415,7 +485,7 @@ export default function MdmaPage() {
               </div>
             )}
 
-            {/* Probe-Level Genomic Track */}
+            {/* Probe Track */}
             <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
               <div className="flex items-center space-x-2.5 mb-3">
                 <MapPin className="w-4 h-4 text-slate-800" />
@@ -440,7 +510,7 @@ export default function MdmaPage() {
         {/* Volcano Plot */}
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs mb-6">
           <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4">
-            Volcano Plot — {activeTabConfig.label} ({filteredData.length} DMRs)
+            Volcano Plot — {activeTab === 'cross' ? 'Common' : `${activeTab}-Unique`} ({timepoint === 'Pre' ? 'Baseline' : 'Follow-Up'}) — {filteredData.length} DMRs
           </h3>
           <div className="h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -456,7 +526,7 @@ export default function MdmaPage() {
                     const d = payload[0].payload;
                     return (
                       <div className="bg-white border border-slate-300 p-2.5 rounded shadow-lg text-xs space-y-0.5">
-                        <div className="font-bold text-slate-900">{d.gene}</div>
+                        <div className="font-bold">{d.gene}</div>
                         <div>Δβ: <span className="font-mono">{d.deltaBeta.toFixed(4)}</span></div>
                         <div>-log₁₀FDR: <span className="font-mono">{d.negLogP.toFixed(2)}</span></div>
                       </div>
@@ -464,11 +534,10 @@ export default function MdmaPage() {
                   }
                   return null;
                 }} />
-                <ReferenceLine y={-Math.log10(0.05)} stroke="#ef4444" strokeDasharray="5 3" label={{ value: 'FDR=0.05', position: 'right', fill: '#ef4444', fontSize: 10 }} />
                 <Scatter data={volcanoData} onClick={(d: any) => { if (d?.gene) setSelectedGene(d.gene); }} cursor="pointer">
                   {volcanoData.map((entry, idx) => (
-                    <Cell key={`vc-${idx}`}
-                      fill={entry.gene === selectedGene ? '#f59e0b' : entry.direction === 'Hypermethylated' ? '#dc2626' : entry.direction === 'Hypomethylated' ? '#2563eb' : '#d97706'}
+                    <Cell key={idx}
+                      fill={entry.gene === selectedGene ? '#f59e0b' : entry.direction === 'Hypermethylated' ? '#dc2626' : '#2563eb'}
                       opacity={entry.gene === selectedGene ? 1 : 0.6} />
                   ))}
                 </Scatter>

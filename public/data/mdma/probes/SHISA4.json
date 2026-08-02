@@ -1,1 +1,0 @@
-{"gene":"SHISA4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11586189","pos":201857591,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.967416,"Ketamine_P":0.0083704942445869,"Ketamine_FDR":0.447530749576598,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

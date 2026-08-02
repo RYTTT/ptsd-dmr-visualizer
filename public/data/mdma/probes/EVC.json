@@ -1,1 +1,0 @@
-{"gene":"EVC","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23239150","pos":5754217,"feature":"Body","cpgIsland":"","MDMA_logFC":0.508537,"MDMA_P":0.0015901107929991,"MDMA_FDR":0.0321663551060844,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

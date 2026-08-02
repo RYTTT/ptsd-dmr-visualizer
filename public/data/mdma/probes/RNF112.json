@@ -1,1 +1,0 @@
-{"gene":"RNF112","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23299807","pos":19313486,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.501281,"MDMA_P":0.0093332671677267,"MDMA_FDR":0.0824202212904289,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

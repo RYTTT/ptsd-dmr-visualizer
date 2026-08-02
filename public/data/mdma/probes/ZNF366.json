@@ -1,1 +1,0 @@
-{"gene":"ZNF366","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg04710768","pos":71803282,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.140175,"CPT_P":0.0015851789730612,"CPT_FDR":0.183637394240422}]}

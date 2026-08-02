@@ -1,1 +1,0 @@
-{"gene":"CYSTM1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08305295","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.768173,"MDMA_P":0.0017632595508323,"MDMA_FDR":0.0339344322820512,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

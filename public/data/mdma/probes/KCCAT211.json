@@ -1,1 +1,0 @@
-{"gene":"KCCAT211","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg20092942","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.600571,"MDMA_P":0.0054076650428391,"MDMA_FDR":0.0614709457225496,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.055274,"CPT_P":0.0008597879708136,"CPT_FDR":0.180208132689327}]}

@@ -1,1 +1,0 @@
-{"gene":"OVCH1","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19525078","pos":29581042,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.421462,"Ketamine_P":0.0055742727466132,"Ketamine_FDR":0.421707493752707,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"MIR1267","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07532986","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.603416,"MDMA_P":0.002904244446072,"MDMA_FDR":0.0440547568059162,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

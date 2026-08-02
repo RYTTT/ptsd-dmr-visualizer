@@ -1,1 +1,0 @@
-{"gene":"GGACT","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12258386","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":1.683725,"Ketamine_P":0.0039035989363458,"Ketamine_FDR":0.402530281311306,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

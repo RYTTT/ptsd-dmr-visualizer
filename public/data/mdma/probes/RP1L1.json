@@ -1,1 +1,0 @@
-{"gene":"RP1L1","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25231776","pos":10480438,"feature":"Body","cpgIsland":"","MDMA_logFC":0.625954,"MDMA_P":0.0007145382872625,"MDMA_FDR":0.021369028635825,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"RPL4","chr":"15","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12605747","pos":66798443,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.125542,"CPT_P":0.0021728438726366,"CPT_FDR":0.188327046979856}]}

@@ -1,1 +1,0 @@
-{"gene":"SLC7A2","chr":"8","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22416376","pos":17395271,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.493839,"MDMA_P":0.005758928626066,"MDMA_FDR":0.0636891809331431,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

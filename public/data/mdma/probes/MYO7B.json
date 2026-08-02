@@ -1,1 +1,0 @@
-{"gene":"MYO7B","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11732925","pos":128293021,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.723729,"MDMA_P":0.0022456443327453,"MDMA_FDR":0.0384511293651612,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

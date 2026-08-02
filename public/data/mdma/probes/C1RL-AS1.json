@@ -1,1 +1,0 @@
-{"gene":"C1RL-AS1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14935578","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.100344,"MDMA_P":0.0022800062676982,"MDMA_FDR":0.0387443393177324,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.208344,"CPT_P":0.0007211795399103,"CPT_FDR":0.179603233791005}]}

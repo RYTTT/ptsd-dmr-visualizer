@@ -1,1 +1,0 @@
-{"gene":"TLR1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03430998","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.835779,"MDMA_P":0.0070086638293897,"MDMA_FDR":0.0707068771490795,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.190724,"CPT_P":0.0017332737423189,"CPT_FDR":0.183778810273222}]}

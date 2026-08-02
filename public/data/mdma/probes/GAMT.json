@@ -1,1 +1,0 @@
-{"gene":"GAMT","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26768664","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.465622,"MDMA_P":0.0060735977674421,"MDMA_FDR":0.0654933572905421,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.01463,"CPT_P":0.0007910138671693,"CPT_FDR":0.179603233791005}]}

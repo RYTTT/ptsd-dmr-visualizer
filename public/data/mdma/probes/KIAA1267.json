@@ -1,1 +1,0 @@
-{"gene":"KIAA1267","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19832721","pos":44249866,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.910668,"MDMA_P":0.0023950164146686,"MDMA_FDR":0.0398180393140059,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.87132,"CPT_P":0.0002542822333494,"CPT_FDR":0.176561132189866}]}

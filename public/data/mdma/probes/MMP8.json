@@ -1,1 +1,0 @@
-{"gene":"MMP8","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08747557","pos":102583226,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":0.977651,"MDMA_P":0.0061670487101387,"MDMA_FDR":0.0660244785448674,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

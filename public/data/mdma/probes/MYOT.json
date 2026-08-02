@@ -1,1 +1,0 @@
-{"gene":"MYOT","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27457029","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.21458,"MDMA_P":0.0002235939829814,"MDMA_FDR":0.0119473248573992,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.012292,"CPT_P":0.0027401679496288,"CPT_FDR":0.191593540794151}]}

@@ -1,1 +1,0 @@
-{"gene":"ADH4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26409348","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.918818,"MDMA_P":0.0025734514331698,"MDMA_FDR":0.0413078121856123,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

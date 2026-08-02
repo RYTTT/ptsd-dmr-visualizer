@@ -1,1 +1,0 @@
-{"gene":"HSP90AA1","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13263472","pos":102593156,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.046693,"CPT_P":0.0006916561859115,"CPT_FDR":0.179603233791005}]}

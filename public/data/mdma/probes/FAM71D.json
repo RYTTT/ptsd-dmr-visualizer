@@ -1,1 +1,0 @@
-{"gene":"FAM71D","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16689937","pos":67656241,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.692145,"MDMA_P":0.0005532007305832,"MDMA_FDR":0.0187803958750493,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

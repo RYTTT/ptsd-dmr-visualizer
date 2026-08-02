@@ -1,1 +1,0 @@
-{"gene":"GCG","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17202985","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.835606,"MDMA_P":0.004833006434982,"MDMA_FDR":0.0578794481632952,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.190577,"CPT_P":0.0035721656593086,"CPT_FDR":0.198735726308521}]}

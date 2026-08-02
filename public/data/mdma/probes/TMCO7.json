@@ -1,1 +1,0 @@
-{"gene":"TMCO7","chr":"16","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00804525","pos":68943500,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.057983,"CPT_P":0.0013942777243363,"CPT_FDR":0.182765732164755}]}

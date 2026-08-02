@@ -1,1 +1,0 @@
-{"gene":"CSN1S2AP","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17350987","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.952568,"MDMA_P":0.0038480940385013,"MDMA_FDR":0.0512214294259334,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.852845,"CPT_P":0.0075539621468163,"CPT_FDR":0.227445259508565}]}

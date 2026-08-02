@@ -1,1 +1,0 @@
-{"gene":"FAM125B","chr":"9","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14018429","pos":129138146,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.448444,"Ketamine_P":0.0008491543299733,"Ketamine_FDR":0.314057093152815,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

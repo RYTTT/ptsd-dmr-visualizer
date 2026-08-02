@@ -1,1 +1,0 @@
-{"gene":"NAALADL1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11105761","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.813428,"MDMA_P":0.001810408754924,"MDMA_FDR":0.0343997662269812,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"GPR128","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07704151","pos":100327897,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":-0.89668,"MDMA_P":0.0037905649845631,"MDMA_FDR":0.0508096464205292,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

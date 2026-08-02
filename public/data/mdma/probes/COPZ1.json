@@ -1,1 +1,0 @@
-{"gene":"COPZ1","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24670383","pos":54719352,"feature":"Body","cpgIsland":"","MDMA_logFC":0.68487,"MDMA_P":8.90726744909382e-06,"MDMA_FDR":0.0024430301274011,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

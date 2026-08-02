@@ -1,1 +1,0 @@
-{"gene":"C13orf30","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg26529044","pos":43354767,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.485162,"Ketamine_P":0.0003256021645901,"Ketamine_FDR":0.274235986182585,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

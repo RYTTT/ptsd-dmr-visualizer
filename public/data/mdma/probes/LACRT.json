@@ -1,1 +1,0 @@
-{"gene":"LACRT","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07855572","pos":55028956,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":0.349733,"MDMA_P":0.0077343270683744,"MDMA_FDR":0.0744846703141796,"Ketamine_logFC":0.726707,"Ketamine_P":0.0060283027497006,"Ketamine_FDR":0.425509285926913,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

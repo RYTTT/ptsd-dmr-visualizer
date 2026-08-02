@@ -1,1 +1,0 @@
-{"gene":"UNC80","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08393822","pos":210737704,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.006589,"MDMA_P":0.0001608027106749,"MDMA_FDR":0.0101370556255438,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"TMEM49","chr":"17","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02782634","pos":57916643,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.836254,"Ketamine_P":0.0037429866893643,"Ketamine_FDR":0.400829509916655,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"TMEM45A","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00967711","pos":100281202,"feature":"Body","cpgIsland":"","MDMA_logFC":1.001545,"MDMA_P":0.0004718838708452,"MDMA_FDR":0.0173417678189918,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

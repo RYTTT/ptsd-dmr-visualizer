@@ -1,1 +1,0 @@
-{"gene":"A2M","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg12058490","pos":9268379,"feature":"1stExon","cpgIsland":"","MDMA_logFC":-1.366005,"MDMA_P":0.0001424422731647,"MDMA_FDR":0.0095391858557888,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

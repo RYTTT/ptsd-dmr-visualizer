@@ -1,1 +1,0 @@
-{"gene":"OR8J3","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg11323650","pos":55905246,"feature":"TSS200","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.039366,"CPT_P":0.0042472382580623,"CPT_FDR":0.20334762957994}]}

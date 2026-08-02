@@ -1,1 +1,0 @@
-{"gene":"FAM170A","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24537512","pos":118965202,"feature":"TSS200","cpgIsland":"","MDMA_logFC":-1.40999,"MDMA_P":1.24297370854058e-05,"MDMA_FDR":0.002865985081296,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

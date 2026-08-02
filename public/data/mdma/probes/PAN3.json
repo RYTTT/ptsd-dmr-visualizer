@@ -1,1 +1,0 @@
-{"gene":"PAN3","chr":"13","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17426969","pos":28803434,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.039396,"MDMA_P":0.0006854938730841,"MDMA_FDR":0.0209216814253341,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.909126,"CPT_P":0.0094364263538082,"CPT_FDR":0.238419491859612}]}

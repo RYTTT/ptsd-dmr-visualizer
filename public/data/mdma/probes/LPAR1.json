@@ -1,1 +1,0 @@
-{"gene":"LPAR1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02380641","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.024415,"MDMA_P":0.0010734355549074,"MDMA_FDR":0.0263342086616336,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.958469,"CPT_P":0.0047149755204915,"CPT_FDR":0.207548859948392}]}

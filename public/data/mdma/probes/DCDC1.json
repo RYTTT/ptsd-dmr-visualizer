@@ -1,1 +1,0 @@
-{"gene":"DCDC1","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg01711021","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":0.966693,"MDMA_P":4.97155583061201e-07,"MDMA_FDR":0.0006388375969572,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"ARL14","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg02885259","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.937039,"MDMA_P":0.0048993018467007,"MDMA_FDR":0.0582750146218653,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.348521,"CPT_P":0.002323505252571,"CPT_FDR":0.18950998036598}]}

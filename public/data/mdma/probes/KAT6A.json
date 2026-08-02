@@ -1,1 +1,0 @@
-{"gene":"KAT6A","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg03611544","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.266017,"CPT_P":0.0028008308939536,"CPT_FDR":0.192599814724328}]}

@@ -1,1 +1,0 @@
-{"gene":"HMGB4","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg22599122","pos":34329757,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.434583,"MDMA_P":0.0079103490253103,"MDMA_FDR":0.0754424889782301,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

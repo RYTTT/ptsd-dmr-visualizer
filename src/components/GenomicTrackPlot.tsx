@@ -15,6 +15,12 @@ const SUBTYPE_CONFIG: Record<string, { label: string; color: string; bg: string 
   MDMA: { label: 'MDMA-AT — Responder vs HC', color: '#7c3aed', bg: '#f5f3ff' },
   Ketamine: { label: 'Ketamine — Resp vs NonResp', color: '#0891b2', bg: '#ecfeff' },
   CPT: { label: 'CPT — Resp vs NonResp', color: '#059669', bg: '#ecfdf5' },
+  MDMA_Pre: { label: 'MDMA Baseline', color: '#a78bfa', bg: '#f5f3ff' },
+  MDMA_FUP: { label: 'MDMA Follow-Up', color: '#7c3aed', bg: '#ede9fe' },
+  Ketamine_Pre: { label: 'Ketamine Baseline', color: '#67e8f9', bg: '#ecfeff' },
+  Ketamine_FUP: { label: 'Ketamine Follow-Up', color: '#0891b2', bg: '#cffafe' },
+  CPT_Pre: { label: 'CPT Baseline', color: '#6ee7b7', bg: '#ecfdf5' },
+  CPT_FUP: { label: 'CPT Follow-Up', color: '#059669', bg: '#d1fae5' },
 };
 
 const HYPER_COLOR = '#dc2626';
@@ -46,17 +52,16 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       if (m && m[1] !== 'adj') detected.add(m[1]);
     }
     // Maintain a stable ordering
-    const order = ['SSS', 'ADS', 'ICF', 'ISS', 'MDMA', 'Ketamine', 'CPT'];
+    const order = ['SSS', 'ADS', 'ICF', 'ISS', 'MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'MDMA', 'Ketamine', 'CPT'];
     const result: { key: string; label: string; color: string; bg: string }[] = [];
     for (const k of order) {
       if (detected.has(k) && SUBTYPE_CONFIG[k]) {
         result.push({ key: k, ...SUBTYPE_CONFIG[k] });
       }
     }
-    // Any remaining detected subtypes not in order
     for (const k of detected) {
-      if (!order.includes(k) && SUBTYPE_CONFIG[k]) {
-        result.push({ key: k, ...SUBTYPE_CONFIG[k] });
+      if (!order.includes(k)) {
+        result.push({ key: k, label: k, color: '#64748b', bg: '#f8fafc' });
       }
     }
     return result;

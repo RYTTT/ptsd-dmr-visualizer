@@ -1,1 +1,0 @@
-{"gene":"KRT23","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg27491818","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-1.037186,"MDMA_P":0.0052670317264478,"MDMA_FDR":0.0605636464751233,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.342671,"CPT_P":0.001455150673416,"CPT_FDR":0.18336899656682}]}

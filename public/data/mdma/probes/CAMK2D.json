@@ -1,1 +1,0 @@
-{"gene":"CAMK2D","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05257260","pos":114561619,"feature":"Body","cpgIsland":"","MDMA_logFC":-0.984673,"MDMA_P":0.0026723059974476,"MDMA_FDR":0.0421320165496772,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

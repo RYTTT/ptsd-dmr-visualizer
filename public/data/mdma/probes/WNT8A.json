@@ -1,1 +1,0 @@
-{"gene":"WNT8A","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg08603768","pos":137420044,"feature":"Body","cpgIsland":"","MDMA_logFC":0.601549,"MDMA_P":0.0024276034199466,"MDMA_FDR":0.0400870183365489,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

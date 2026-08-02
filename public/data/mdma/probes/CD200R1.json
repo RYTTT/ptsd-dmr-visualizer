@@ -1,1 +1,0 @@
-{"gene":"CD200R1","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00246486","pos":112642487,"feature":"3'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":1.126141,"CPT_P":0.0006251034892451,"CPT_FDR":0.178003450622601}]}

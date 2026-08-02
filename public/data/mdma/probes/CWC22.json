@@ -1,1 +1,0 @@
-{"gene":"CWC22","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg14175777","pos":180846309,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.11812,"MDMA_P":0.0011708428154099,"MDMA_FDR":0.0275271179575555,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

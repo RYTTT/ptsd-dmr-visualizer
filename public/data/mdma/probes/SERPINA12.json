@@ -1,1 +1,0 @@
-{"gene":"SERPINA12","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25599521","pos":94981685,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":0.558182,"MDMA_P":0.0011221913934369,"MDMA_FDR":0.026940782660694,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

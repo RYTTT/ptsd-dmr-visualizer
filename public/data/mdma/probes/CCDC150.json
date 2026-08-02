@@ -1,1 +1,0 @@
-{"gene":"CCDC150","chr":"2","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05980785","pos":197583891,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.44408,"Ketamine_P":0.0081203802109024,"Ketamine_FDR":0.445405018995444,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

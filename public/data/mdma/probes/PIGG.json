@@ -1,1 +1,0 @@
-{"gene":"PIGG","chr":"4","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg10395330","pos":523927,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":0.963646,"CPT_P":0.0073916021765833,"CPT_FDR":0.226612749315274}]}

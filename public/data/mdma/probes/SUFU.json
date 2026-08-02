@@ -1,1 +1,0 @@
-{"gene":"SUFU","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05096777","pos":104283225,"feature":"Body","cpgIsland":"","MDMA_logFC":1.066281,"MDMA_P":3.79094042582796e-05,"MDMA_FDR":0.0049038754952763,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

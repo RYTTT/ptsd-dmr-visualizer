@@ -1,1 +1,0 @@
-{"gene":"BATF","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg24673600","pos":76005929,"feature":"Body","cpgIsland":"","MDMA_logFC":0.791252,"MDMA_P":0.003813764063849,"MDMA_FDR":0.0509894555313933,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

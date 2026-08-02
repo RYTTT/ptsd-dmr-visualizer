@@ -1,1 +1,0 @@
-{"gene":"C10orf58","chr":"10","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg09203802","pos":82178348,"feature":"Body","cpgIsland":"","MDMA_logFC":0.853819,"MDMA_P":0.0086072956327366,"MDMA_FDR":0.0789351684303442,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

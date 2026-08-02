@@ -1,1 +1,0 @@
-{"gene":"ACTL8","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19685066","pos":18082003,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":1.072241,"MDMA_P":5.52037113230816e-07,"MDMA_FDR":0.0006647797091587,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

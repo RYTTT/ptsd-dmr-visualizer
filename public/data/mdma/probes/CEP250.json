@@ -1,1 +1,0 @@
-{"gene":"CEP250","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg19504335","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.632848,"MDMA_P":0.0082942350622387,"MDMA_FDR":0.0774000469472468,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

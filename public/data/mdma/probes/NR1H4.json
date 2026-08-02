@@ -1,1 +1,0 @@
-{"gene":"NR1H4","chr":"12","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg23256150","pos":100867758,"feature":"5'UTR","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.870745,"Ketamine_P":0.000403492360327,"Ketamine_FDR":0.284210563357496,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

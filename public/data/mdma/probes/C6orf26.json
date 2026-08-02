@@ -1,1 +1,0 @@
-{"gene":"C6orf26","chr":"6","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16224104","pos":31731740,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.602698,"MDMA_P":2.36421475655025e-05,"MDMA_FDR":0.0039095185808567,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

@@ -1,1 +1,0 @@
-{"gene":"APCS","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg05919685","pos":159556997,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":-1.225088,"CPT_P":0.002829211505895,"CPT_FDR":0.192789117108789}]}

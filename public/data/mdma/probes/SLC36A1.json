@@ -1,1 +1,0 @@
-{"gene":"SLC36A1","chr":"5","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25658464","pos":150861640,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.034657,"MDMA_P":0.000142096017729,"MDMA_FDR":0.0095231223031775,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

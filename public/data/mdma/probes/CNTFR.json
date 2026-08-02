@@ -1,1 +1,0 @@
-{"gene":"CNTFR","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg07810763","pos":0,"feature":"","cpgIsland":"","MDMA_logFC":-0.528785,"MDMA_P":0.0043335349265777,"MDMA_FDR":0.0545434513585578,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

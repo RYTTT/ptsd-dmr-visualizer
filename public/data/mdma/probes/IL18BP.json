@@ -1,1 +1,0 @@
-{"gene":"IL18BP","chr":"11","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg13944685","pos":71710643,"feature":"TSS200","cpgIsland":"","MDMA_logFC":0.822783,"MDMA_P":2.58688276173804e-05,"MDMA_FDR":0.0040624656550698,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

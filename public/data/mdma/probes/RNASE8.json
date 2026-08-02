@@ -1,1 +1,0 @@
-{"gene":"RNASE8","chr":"14","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg16627949","pos":21526351,"feature":"1stExon","cpgIsland":"","MDMA_logFC":0.563028,"MDMA_P":0.0094784705281975,"MDMA_FDR":0.0830814220354642,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

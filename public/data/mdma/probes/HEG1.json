@@ -1,1 +1,0 @@
-{"gene":"HEG1","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg17618528","pos":124732494,"feature":"Body","cpgIsland":"","MDMA_logFC":-1.482813,"MDMA_P":1.54408022669684e-05,"MDMA_FDR":0.0031653146508174,"Ketamine_logFC":null,"Ketamine_P":null,"Ketamine_FDR":null,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

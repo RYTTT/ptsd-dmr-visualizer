@@ -1,1 +1,0 @@
-{"gene":"MNDA","chr":"1","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg25119415","pos":158799935,"feature":"TSS1500","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":0.383486,"Ketamine_P":0.0085570132046263,"Ketamine_FDR":0.448992753103837,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}

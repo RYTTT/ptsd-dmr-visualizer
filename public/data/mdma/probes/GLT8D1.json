@@ -1,1 +1,0 @@
-{"gene":"GLT8D1","chr":"3","totalProbes":1,"cpgIslands":[],"probes":[{"probe":"cg00139496","pos":52731124,"feature":"Body","cpgIsland":"","MDMA_logFC":null,"MDMA_P":null,"MDMA_FDR":null,"Ketamine_logFC":-0.870776,"Ketamine_P":6.09209224257611e-05,"Ketamine_FDR":0.202474166877584,"CPT_logFC":null,"CPT_P":null,"CPT_FDR":null}]}
