@@ -26,8 +26,12 @@ interface CohortStat {
 
 interface CrossCohortGene {
   gene: string;
-  nCohortsSig: number;
-  crossP: number;
+  fdr: number;
+  pValue: number;
+  deltaBeta: number;
+  direction: string;
+  totalProbes: number;
+  nSigProbes: number;
   cohorts: Record<string, CohortStat>;
 }
 
@@ -40,24 +44,13 @@ interface UniqueGene {
   direction: string;
 }
 
-interface MetaGene {
-  gene: string;
-  totalProbes: number;
-  nSigProbes: number;
-  fdr: number;
-  pValue: number;
-  deltaBeta: number;
-  direction: string;
-}
-
 interface TimepointData {
-  crossCohort: CrossCohortGene[];
   uniqueCohorts: Record<string, UniqueGene[]>;
 }
 
 interface MdmaMasterData {
+  crossCohort: CrossCohortGene[];
   timepoints: { Pre: TimepointData; FUP: TimepointData };
-  metaAnalysis: MetaGene[];
 }
 
 // ---- Tab config ----
@@ -100,8 +93,8 @@ export default function MdmaPage() {
       setData(d as MdmaMasterData);
       setAnnotationData(annot as GeneAnnotationMap);
       setLoading(false);
-      const tp = (d as MdmaMasterData).timepoints.FUP;
-      if (tp.crossCohort.length > 0) setSelectedGene(tp.crossCohort[0].gene);
+      const md = d as MdmaMasterData;
+      if (md.crossCohort.length > 0) setSelectedGene(md.crossCohort[0].gene);
     });
   }, []);
 
@@ -135,30 +128,20 @@ export default function MdmaPage() {
     else setSelectedTrackData(null);
   }, [selectedGene, fetchProbeData]);
 
-  // ---- Current timepoint data ----
-  const tpData = data ? data.timepoints[timepoint] : null;
 
   // ---- Normalize rows to a common shape ----
   const filteredData = useMemo(() => {
-    if (!tpData) return [];
+    if (!data) return [];
 
-    let list: { gene: string; fdr: number; deltaBeta: number; direction: string; totalProbes: number; nSigProbes: number; nCohortsSig?: number }[] = [];
+    let list: { gene: string; fdr: number; deltaBeta: number; direction: string; totalProbes: number; nSigProbes: number }[] = [];
 
     if (activeTab === 'cross') {
-      list = tpData.crossCohort.map((g) => {
-        // Best FDR and average deltaBeta across significant cohorts
-        const cohorts = Object.values(g.cohorts).filter((c) => c.fdr < 1);
-        const bestFdr = Math.min(...cohorts.map((c) => c.fdr), g.crossP);
-        const avgBeta = cohorts.length > 0 ? cohorts.reduce((s, c) => s + c.deltaBeta, 0) / cohorts.length : 0;
-        const totalP = cohorts.reduce((s, c) => s + c.totalProbes, 0);
-        const totalSig = cohorts.reduce((s, c) => s + c.nSigProbes, 0);
-        return {
-          gene: g.gene, fdr: g.crossP, deltaBeta: avgBeta,
-          direction: avgBeta > 0 ? 'Hypermethylated' : 'Hypomethylated',
-          totalProbes: totalP, nSigProbes: totalSig, nCohortsSig: g.nCohortsSig,
-        };
-      });
+      list = data.crossCohort.map((g) => ({
+        gene: g.gene, fdr: g.fdr, deltaBeta: g.deltaBeta, direction: g.direction,
+        totalProbes: g.totalProbes, nSigProbes: g.nSigProbes,
+      }));
     } else {
+      const tpData = data.timepoints[timepoint];
       list = (tpData.uniqueCohorts[activeTab] || []).map((g) => ({
         gene: g.gene, fdr: g.fdr, deltaBeta: g.deltaBeta, direction: g.direction,
         totalProbes: g.totalProbes, nSigProbes: g.nSigProbes,
@@ -179,16 +162,16 @@ export default function MdmaPage() {
       if (typeof va === 'string') return sortAsc ? va.localeCompare(vb as string) : (vb as string).localeCompare(va);
       return sortAsc ? (va as number) - (vb as number) : (vb as number) - (va as number);
     });
-  }, [tpData, activeTab, searchQuery, directionFilter, sortField, sortAsc]);
+  }, [data, timepoint, activeTab, searchQuery, directionFilter, sortField, sortAsc]);
 
   const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
   const paginatedData = filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   // ---- Bar chart ----
   const selectedGeneBarData = useMemo(() => {
-    if (!tpData || !selectedGene) return null;
+    if (!data || !selectedGene) return null;
     // Find in cross
-    const crossItem = tpData.crossCohort.find((g) => g.gene === selectedGene);
+    const crossItem = data.crossCohort.find((g) => g.gene === selectedGene);
     if (crossItem) {
       return (['MDMA', 'Ketamine', 'CPT'] as const).map((c) => ({
         cohort: c,
@@ -200,7 +183,8 @@ export default function MdmaPage() {
     }
     // Find in unique cohorts
     for (const c of ['MDMA', 'Ketamine', 'CPT'] as const) {
-      const item = tpData.uniqueCohorts[c]?.find((g) => g.gene === selectedGene);
+      const tpd = data.timepoints[timepoint];
+      const item = tpd.uniqueCohorts[c]?.find((g) => g.gene === selectedGene);
       if (item) {
         return (['MDMA', 'Ketamine', 'CPT'] as const).map((cc) => ({
           cohort: cc,
@@ -212,7 +196,7 @@ export default function MdmaPage() {
       }
     }
     return null;
-  }, [tpData, selectedGene]);
+  }, [data, timepoint, selectedGene]);
 
   // Annotation
   const selectedAnnotation = useMemo(() => {
@@ -289,12 +273,10 @@ export default function MdmaPage() {
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             {COHORT_TABS.map((tab) => {
-              const count = activeTab === 'cross'
-                ? (tab.key === 'cross' ? (tpData?.crossCohort.length || 0) : 0)
-                : (tab.key !== 'cross' ? (tpData?.uniqueCohorts[tab.key]?.length || 0) : 0);
+              const tpd = data?.timepoints[timepoint];
               const actualCount = tab.key === 'cross'
-                ? (tpData?.crossCohort.length || 0)
-                : (tpData?.uniqueCohorts[tab.key]?.length || 0);
+                ? (data?.crossCohort.length || 0)
+                : (tpd?.uniqueCohorts[tab.key]?.length || 0);
               return (
                 <button
                   key={tab.key}
@@ -302,8 +284,8 @@ export default function MdmaPage() {
                     setActiveTab(tab.key);
                     setCurrentPage(1);
                     const list = tab.key === 'cross'
-                      ? tpData?.crossCohort || []
-                      : tpData?.uniqueCohorts[tab.key] || [];
+                      ? data?.crossCohort || []
+                      : tpd?.uniqueCohorts[tab.key] || [];
                     if (list.length > 0) setSelectedGene(list[0].gene);
                   }}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold border transition whitespace-nowrap ${
@@ -327,8 +309,8 @@ export default function MdmaPage() {
                 onClick={() => {
                   setTimepoint(tp);
                   setCurrentPage(1);
-                  const tpd = data.timepoints[tp];
-                  const list = activeTab === 'cross' ? tpd.crossCohort : tpd.uniqueCohorts[activeTab] || [];
+                  const tpd2 = data!.timepoints[tp];
+                  const list = activeTab === 'cross' ? data!.crossCohort : tpd2.uniqueCohorts[activeTab] || [];
                   if (list.length > 0) setSelectedGene(list[0].gene);
                 }}
                 className={`px-3 py-1.5 rounded-md text-[11px] font-bold transition ${
@@ -395,7 +377,6 @@ export default function MdmaPage() {
                         </th>
                       ))}
                       <th className="p-2.5">Dir</th>
-                      {activeTab === 'cross' && <th className="p-2.5">#</th>}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-white">
@@ -417,13 +398,6 @@ export default function MdmaPage() {
                               row.direction === 'Hypomethylated' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
                             }`}>{row.direction === 'Hypermethylated' ? 'Hyper' : 'Hypo'}</span>
                           </td>
-                          {activeTab === 'cross' && (
-                            <td className="p-2.5">
-                              <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
-                                {row.nCohortsSig}/3
-                              </span>
-                            </td>
-                          )}
                         </tr>
                       );
                     })}
