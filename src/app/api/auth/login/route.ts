@@ -3,11 +3,12 @@ import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
-    const { password } = await request.json();
+    const { username, password } = await request.json();
+    const correctUsername = process.env.AUTH_USERNAME || 'Ruoting';
     const correctPassword = process.env.AUTH_PASSWORD || 'dmr2026';
 
-    if (password !== correctPassword) {
-      return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
+    if (username !== correctUsername || password !== correctPassword) {
+      return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
     }
 
     // Create a simple signed token

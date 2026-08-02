@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Loader2, Lock, Dna } from 'lucide-react';
 
 export default function LoginPage() {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (res.ok) {
@@ -58,21 +59,39 @@ export default function LoginPage() {
             </h2>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wider"
+              >
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter username"
+                autoFocus
+                required
+                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition"
+              />
+            </div>
+
             <div>
               <label
                 htmlFor="password"
                 className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wider"
               >
-                Access Password
+                Password
               </label>
               <input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter research portal password"
-                autoFocus
+                placeholder="Enter password"
                 required
                 className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition"
               />
@@ -86,7 +105,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={loading || !password}
+              disabled={loading || !username || !password}
               className="w-full bg-slate-900 text-white rounded-lg px-4 py-3 text-sm font-bold hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-sm"
             >
               {loading ? (
