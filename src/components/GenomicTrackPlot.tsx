@@ -25,8 +25,8 @@ const SUBTYPE_CONFIG: Record<string, { label: string; color: string; bg: string 
 
 const HYPER_COLOR = '#dc2626';
 const HYPO_COLOR = '#2563eb';
-const ISLAND_FILL = 'rgba(253, 224, 71, 0.18)';
-const ISLAND_STROKE = 'rgba(161, 98, 7, 0.55)';
+const ISLAND_FILL = 'rgba(245, 158, 11, 0.28)';
+const ISLAND_STROKE = 'rgba(180, 83, 9, 0.75)';
 
 interface TooltipData {
   x: number;
@@ -73,11 +73,23 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
   const bottomMargin = 75;
   const leftMargin = 80;
   const rightMargin = 24;
-  const panelGap = 20;
-  const totalHeight = topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + bottomMargin;
+  const panelGap = 24;
 
+  const totalHeight = useMemo(() => {
+    const count = SUBTYPES.length || 1;
+    return topMargin + count * panelHeight + (count - 1) * panelGap + bottomMargin;
+  }, [SUBTYPES]);
+
+  // ---- X-AXIS DOMAIN: INCLUDE BOTH PROBES AND CPG ISLANDS ----
   const { minPos, maxPos, posRange } = useMemo(() => {
-    const positions = geneData.probes.map((p) => p.pos);
+    const positions = geneData.probes.map((p) => p.pos).filter((p) => p > 0);
+    if (geneData.cpgIslands) {
+      for (const isl of geneData.cpgIslands) {
+        if (isl.start > 0) positions.push(isl.start);
+        if (isl.end > 0) positions.push(isl.end);
+      }
+    }
+    if (!positions.length) return { minPos: 0, maxPos: 1000, posRange: 1000 };
     const min = Math.min(...positions);
     const max = Math.max(...positions);
     const pad = Math.max((max - min) * 0.06, 200);
@@ -196,24 +208,45 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       ctx.fillText(sub.label, leftMargin + 8, panelTop + 18);
 
       // ---- CpG Island shading ----
-      for (const island of geneData.cpgIslands) {
-        const x1 = Math.max(posToX(island.start), leftMargin);
-        const x2 = Math.min(posToX(island.end), leftMargin + plotWidth);
-        if (x2 > x1) {
-          ctx.fillStyle = ISLAND_FILL;
-          ctx.fillRect(x1, areaTop, x2 - x1, areaH);
-          ctx.strokeStyle = ISLAND_STROKE;
-          ctx.lineWidth = 1.2;
-          ctx.setLineDash([6, 4]);
-          ctx.strokeRect(x1, areaTop, x2 - x1, areaH);
-          ctx.setLineDash([]);
+      if (geneData.cpgIslands) {
+        for (const island of geneData.cpgIslands) {
+          const rawX1 = posToX(island.start);
+          const rawX2 = posToX(island.end);
+          if (rawX2 >= leftMargin && rawX1 <= leftMargin + plotWidth) {
+            const x1 = Math.max(rawX1, leftMargin);
+            const x2 = Math.min(rawX2, leftMargin + plotWidth);
+            const w = Math.max(x2 - x1, 4);
 
-          // Label on first panel only — positioned above panel border
-          if (idx === 0) {
-            ctx.fillStyle = '#92400e';
-            ctx.font = 'bold 10px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('CpG Island', (x1 + x2) / 2, panelTop - 6);
+            ctx.fillStyle = ISLAND_FILL;
+            ctx.fillRect(x1, areaTop, w, areaH);
+            ctx.strokeStyle = ISLAND_STROKE;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([5, 3]);
+            ctx.strokeRect(x1, areaTop, w, areaH);
+            ctx.setLineDash([]);
+
+            // Label on first panel only — positioned in badge
+            if (idx === 0) {
+              const centerX = Math.max(leftMargin + 40, Math.min(leftMargin + plotWidth - 40, (x1 + x2) / 2));
+              const badgeW = 68;
+              const badgeH = 14;
+              ctx.fillStyle = 'rgba(254, 243, 199, 0.95)';
+              ctx.strokeStyle = 'rgba(217, 119, 6, 0.8)';
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              if (typeof (ctx as any).roundRect === 'function') {
+                (ctx as any).roundRect(centerX - badgeW / 2, panelTop + 4, badgeW, badgeH, 3);
+              } else {
+                ctx.rect(centerX - badgeW / 2, panelTop + 4, badgeW, badgeH);
+              }
+              ctx.fill();
+              ctx.stroke();
+
+              ctx.fillStyle = '#b45309';
+              ctx.font = 'bold 9px Inter, system-ui, sans-serif';
+              ctx.textAlign = 'center';
+              ctx.fillText('CpG Island', centerX, panelTop + 14);
+            }
           }
         }
       }
