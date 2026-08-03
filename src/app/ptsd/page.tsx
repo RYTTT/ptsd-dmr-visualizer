@@ -20,8 +20,8 @@ import {
   Dna,
   Loader2,
   MapPin,
-  BookOpen,
 } from 'lucide-react';
+import { KeyResultsPanel, FTC_KEY_GENES } from '@/components/KeyResultsPanel';
 
 export default function Home() {
   // ---- Data loading state ----
@@ -276,6 +276,18 @@ export default function Home() {
           icfPtsdCount={icfPtsdCount}
           issCount={issCount}
           issPtsdCount={issPtsdCount}
+        />
+
+        {/* Key Results / Landmark PTSD Genes Panel */}
+        <KeyResultsPanel
+          projectTitle="FTC PTSD Cohort — Landmark Epigenetic Loci"
+          projectDescription="Key candidate genes identified across military & civilian trauma cohorts (Vet 450K & 850K EPIC array manifests). Click any landmark gene card to immediately view its genomic track plot."
+          genes={FTC_KEY_GENES}
+          selectedGene={selectedGene}
+          onSelectGene={(gene) => {
+            setSelectedGene(gene);
+            setShowTrack(true);
+          }}
         />
 
         {/* Controls & Filter Bar */}

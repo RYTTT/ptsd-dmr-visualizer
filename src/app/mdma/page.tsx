@@ -15,6 +15,8 @@ import { GeneAnnotationCard } from '@/components/GeneAnnotationCard';
 import { GeneProbeData } from '@/types/probe';
 import { GeneAnnotationMap } from '@/types/annotation';
 
+import { KeyResultsPanel, MDMA_KEY_GENES } from '@/components/KeyResultsPanel';
+
 // ---- Types ----
 interface CohortStat {
   deltaBeta: number;
@@ -269,6 +271,15 @@ export default function MdmaPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5">
+        {/* Key Results / Landmark Treatment Response Genes Panel */}
+        <KeyResultsPanel
+          projectTitle="Treatment Response Cohorts — Key Remethylation Loci"
+          projectDescription="Landmark treatment-responsive epigenetic loci identified across MDMA-assisted therapy, Ketamine, and CPT cohorts (IPW-adjusted, CD4+ T cells, 850K EPIC array). Click any landmark gene card to inspect its 3×2 pre/post genomic track plot."
+          genes={MDMA_KEY_GENES}
+          selectedGene={selectedGene}
+          onSelectGene={(gene) => setSelectedGene(gene)}
+        />
+
         {/* Timepoint Toggle + Cohort Tabs */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
