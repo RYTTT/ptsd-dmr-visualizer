@@ -99,6 +99,15 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     direction: 'Hypomethylated',
   },
   {
+    gene: 'NR3C1',
+    category: 'Glucocorticoid Receptor',
+    categoryColor: '#6d28d9',
+    categoryBg: '#f5f3ff',
+    finding: 'Central HPA axis receptor exhibiting significant cross-cohort treatment remethylation in meta-analysis (Meta FDR = 3.6e-5).',
+    statsLabel: '55 EPIC Probes | Meta FDR = 3.6e-5',
+    direction: 'Hypermethylated',
+  },
+  {
     gene: 'HOXB9',
     category: 'Chromatin Remodeling',
     categoryColor: '#0891b2',
@@ -133,15 +142,6 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     finding: 'HPA axis chaperone evaluated across pre- and post-treatment timepoints, tracking glucocorticoid sensitivity recovery following MDMA therapy.',
     statsLabel: '52 EPIC Probes | 3 CpG Islands',
     direction: 'Hypomethylated',
-  },
-  {
-    gene: 'BDNF',
-    category: 'Neuroplasticity Recovery',
-    categoryColor: '#4f46e5',
-    categoryBg: '#f0f9ff',
-    finding: 'Neurotrophic factor evaluating epigenetic remethylation corresponding to clinical PTSD symptom reduction post-intervention.',
-    statsLabel: '93 EPIC Probes | 4 CpG Islands',
-    direction: 'Hypermethylated',
   },
 ];
 
