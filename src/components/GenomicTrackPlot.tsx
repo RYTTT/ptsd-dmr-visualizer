@@ -829,7 +829,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
   );
 
   return (
-    <div ref={containerRef} className="relative w-full overflow-x-auto">
+    <div ref={containerRef} className="relative w-full overflow-hidden">
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: totalHeight }}

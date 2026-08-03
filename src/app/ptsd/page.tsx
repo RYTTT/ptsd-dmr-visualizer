@@ -352,8 +352,8 @@ export default function Home() {
 
         {/* ===== MAIN SIDE-BY-SIDE SPLIT LAYOUT ===== */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
-          {/* LEFT COLUMN (5 Cols): DMR Registry Table (Compact, Top-level Gene Selector) */}
-          <div className="lg:col-span-5 flex flex-col">
+          {/* LEFT COLUMN (4 Cols): DMR Registry Table (Compact, Top-level Gene Selector) */}
+          <div className="lg:col-span-4 flex flex-col">
             <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs flex-1 flex flex-col">
               <div className="p-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
                 <div className="flex items-center space-x-2">
@@ -474,8 +474,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN (7 Cols): Dynamic Selected Gene Details (Annotation + Subtype Bar Chart + Genomic Track) */}
-          <div className="lg:col-span-7 space-y-6">
+          {/* RIGHT COLUMN (8 Cols): Dynamic Selected Gene Details (Annotation + Subtype Bar Chart + Genomic Track) */}
+          <div className="lg:col-span-8 space-y-6">
             {/* Selected Gene Literature & Biological Annotation Card */}
             {selectedGene && (
               <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} />

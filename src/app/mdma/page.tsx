@@ -175,13 +175,25 @@ export default function MdmaPage() {
     // Find in cross
     const crossItem = data.crossCohort.find((g) => g.gene === selectedGene);
     if (crossItem) {
-      return (['MDMA', 'Ketamine', 'CPT'] as const).map((c) => ({
-        cohort: c,
-        deltaBeta: crossItem.cohorts[c]?.deltaBeta || 0,
-        fdr: crossItem.cohorts[c]?.fdr || 1,
-        direction: crossItem.cohorts[c]?.direction || 'N/A',
-        color: COHORT_COLORS[c],
-      }));
+      return (['MDMA', 'Ketamine', 'CPT'] as const).map((c) => {
+        const cohortObj = crossItem.cohorts[c] as any;
+        const tpStats = cohortObj?.[timepoint as 'Pre' | 'FUP'] || cohortObj;
+        const preStats = cohortObj?.Pre || { deltaBeta: 0, fdr: 1.0, direction: 'N/A' };
+        const fupStats = cohortObj?.FUP || { deltaBeta: 0, fdr: 1.0, direction: 'N/A' };
+        return {
+          cohort: c,
+          deltaBeta: tpStats?.deltaBeta || 0,
+          fdr: tpStats?.fdr || 1,
+          direction: tpStats?.direction || 'N/A',
+          deltaBeta_Pre: preStats.deltaBeta || 0,
+          fdr_Pre: preStats.fdr || 1,
+          direction_Pre: preStats.direction || 'N/A',
+          deltaBeta_FUP: fupStats.deltaBeta || 0,
+          fdr_FUP: fupStats.fdr || 1,
+          direction_FUP: fupStats.direction || 'N/A',
+          color: COHORT_COLORS[c],
+        };
+      });
     }
     // Find in unique cohorts
     for (const c of ['MDMA', 'Ketamine', 'CPT'] as const) {
@@ -193,6 +205,12 @@ export default function MdmaPage() {
           deltaBeta: cc === c ? item.deltaBeta : 0,
           fdr: cc === c ? item.fdr : 1,
           direction: cc === c ? item.direction : 'N/A',
+          deltaBeta_Pre: cc === c && timepoint === 'Pre' ? item.deltaBeta : 0,
+          fdr_Pre: cc === c && timepoint === 'Pre' ? item.fdr : 1,
+          direction_Pre: cc === c && timepoint === 'Pre' ? item.direction : 'N/A',
+          deltaBeta_FUP: cc === c && timepoint === 'FUP' ? item.deltaBeta : 0,
+          fdr_FUP: cc === c && timepoint === 'FUP' ? item.fdr : 1,
+          direction_FUP: cc === c && timepoint === 'FUP' ? item.direction : 'N/A',
           color: COHORT_COLORS[cc],
         }));
       }
@@ -361,7 +379,7 @@ export default function MdmaPage() {
         {/* Main Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-6">
           {/* LEFT: Registry Table */}
-          <div className="lg:col-span-5 flex flex-col">
+          <div className="lg:col-span-4 flex flex-col">
             <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs flex-1 flex flex-col">
               <div className="p-3 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
                 <div className="flex items-center gap-2">
@@ -427,17 +445,29 @@ export default function MdmaPage() {
           </div>
 
           {/* RIGHT */}
-          <div className="lg:col-span-7 space-y-5">
+          <div className="lg:col-span-8 space-y-5">
             {selectedGene && <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} />}
 
             {/* Bar Chart */}
             {selectedGene && selectedGeneBarData && (
               <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-                <div className="mb-3">
-                  <h3 className="text-base font-bold text-slate-900">{selectedGene}</h3>
-                  <p className="text-xs text-slate-500">Cross-Cohort Effect Size (Δβ) — {timepoint === 'Pre' ? 'Baseline' : 'Follow-Up'}</p>
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900">{selectedGene}</h3>
+                    <p className="text-xs text-slate-500">Cross-Cohort Effect Size (Δβ) — Baseline vs Follow-Up</p>
+                  </div>
+                  <div className="flex items-center gap-3 text-[11px]">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-xs bg-slate-400 border border-slate-500" />
+                      <span className="text-slate-600 font-medium">Baseline (Pre)</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-xs bg-purple-600 border border-purple-700" />
+                      <span className="text-slate-600 font-medium">Follow-Up (Post)</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="h-56 w-full">
+                <div className="h-60 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={selectedGeneBarData} margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -448,18 +478,28 @@ export default function MdmaPage() {
                         if (active && payload && payload.length) {
                           const d = payload[0].payload;
                           return (
-                            <div className="bg-white border border-slate-300 p-2.5 rounded shadow-lg text-xs space-y-1">
-                              <div className="font-bold">{d.cohort}</div>
-                              <div>Δβ: <span className="font-mono font-bold">{d.deltaBeta > 0 ? `+${d.deltaBeta.toFixed(4)}` : d.deltaBeta.toFixed(4)}</span></div>
-                              <div>FDR: <span className="font-mono">{d.fdr < 1e-15 ? '< 1e-15' : d.fdr.toExponential(2)}</span></div>
-                              <div>Direction: {d.direction}</div>
+                            <div className="bg-white border border-slate-300 p-3 rounded-xl shadow-xl text-xs space-y-1.5 min-w-[200px]">
+                              <div className="font-extrabold text-slate-900 border-b border-slate-100 pb-1">{d.cohort} Cohort</div>
+                              <div className="grid grid-cols-2 gap-2 text-[11px] pt-0.5">
+                                <div className="bg-slate-50 p-1.5 rounded border border-slate-200">
+                                  <div className="text-[10px] text-slate-400 font-bold uppercase">Baseline (Pre)</div>
+                                  <div>Δβ: <span className="font-mono font-bold">{d.deltaBeta_Pre > 0 ? `+${d.deltaBeta_Pre.toFixed(4)}` : d.deltaBeta_Pre.toFixed(4)}</span></div>
+                                  <div>FDR: <span className="font-mono">{d.fdr_Pre < 1e-15 ? '< 1e-15' : d.fdr_Pre.toExponential(2)}</span></div>
+                                </div>
+                                <div className="bg-purple-50/50 p-1.5 rounded border border-purple-200">
+                                  <div className="text-[10px] text-purple-700 font-bold uppercase">Follow-Up (Post)</div>
+                                  <div>Δβ: <span className="font-mono font-bold text-purple-900">{d.deltaBeta_FUP > 0 ? `+${d.deltaBeta_FUP.toFixed(4)}` : d.deltaBeta_FUP.toFixed(4)}</span></div>
+                                  <div>FDR: <span className="font-mono">{d.fdr_FUP < 1e-15 ? '< 1e-15' : d.fdr_FUP.toExponential(2)}</span></div>
+                                </div>
+                              </div>
                             </div>
                           );
                         }
                         return null;
                       }} />
                       <ReferenceLine y={0} stroke="#94a3b8" strokeWidth={1.2} />
-                      <Bar dataKey="deltaBeta" radius={[4, 4, 0, 0]}>
+                      <Bar dataKey="deltaBeta_Pre" name="Baseline (Pre)" fill="#94a3b8" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="deltaBeta_FUP" name="Follow-Up (Post)" radius={[4, 4, 0, 0]}>
                         {selectedGeneBarData.map((entry, i) => (
                           <Cell key={i} fill={entry.color} />
                         ))}
