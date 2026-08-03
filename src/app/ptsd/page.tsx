@@ -49,7 +49,7 @@ export default function Home() {
   useEffect(() => {
     Promise.all([
       fetch('/data/dmrData.json').then((r) => r.json()),
-      fetch('/data/geneAnnotations.json').then((r) => r.json()),
+      fetch('/data/common/geneAnnotations.json').then((r) => r.json()),
     ]).then(([dmr, annos]) => {
       setMasterData(dmr as MasterDMRData);
       setAnnotationData(annos as GeneAnnotationMap);

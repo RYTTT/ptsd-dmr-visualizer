@@ -90,7 +90,7 @@ export default function MdmaPage() {
   useEffect(() => {
     Promise.all([
       fetch('/data/mdma/dmrData.json').then((r) => r.json()),
-      fetch('/data/mdma/geneAnnotations.json').then((r) => r.json()).catch(() => null),
+      fetch('/data/common/geneAnnotations.json').then((r) => r.json()).catch(() => null),
     ]).then(([d, annot]) => {
       setData(d as MdmaMasterData);
       setAnnotationData(annot as GeneAnnotationMap);
