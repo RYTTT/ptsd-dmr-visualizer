@@ -15,13 +15,40 @@ const SUBTYPE_CONFIG: Record<string, { label: string; color: string; bg: string 
   MDMA: { label: 'MDMA-AT — Responder vs HC', color: '#7c3aed', bg: '#f5f3ff' },
   Ketamine: { label: 'Ketamine — Resp vs NonResp', color: '#0891b2', bg: '#ecfeff' },
   CPT: { label: 'CPT — Resp vs NonResp', color: '#059669', bg: '#ecfdf5' },
-  MDMA_Pre: { label: 'MDMA Baseline', color: '#a78bfa', bg: '#f5f3ff' },
-  MDMA_FUP: { label: 'MDMA Follow-Up', color: '#7c3aed', bg: '#ede9fe' },
-  Ketamine_Pre: { label: 'Ketamine Baseline', color: '#67e8f9', bg: '#ecfeff' },
-  Ketamine_FUP: { label: 'Ketamine Follow-Up', color: '#0891b2', bg: '#cffafe' },
-  CPT_Pre: { label: 'CPT Baseline', color: '#6ee7b7', bg: '#ecfdf5' },
-  CPT_FUP: { label: 'CPT Follow-Up', color: '#059669', bg: '#d1fae5' },
+  MDMA_Pre: { label: 'MDMA — Baseline', color: '#7c3aed', bg: '#f5f3ff' },
+  MDMA_FUP: { label: 'MDMA — Follow-Up', color: '#7c3aed', bg: '#ede9fe' },
+  Ketamine_Pre: { label: 'Ketamine — Baseline', color: '#0891b2', bg: '#ecfeff' },
+  Ketamine_FUP: { label: 'Ketamine — Follow-Up', color: '#0891b2', bg: '#cffafe' },
+  CPT_Pre: { label: 'CPT — Baseline', color: '#059669', bg: '#ecfdf5' },
+  CPT_FUP: { label: 'CPT — Follow-Up', color: '#059669', bg: '#d1fae5' },
 };
+
+const TREATMENT_GRID_ROWS = [
+  {
+    cohort: 'MDMA',
+    label: 'MDMA-AT',
+    cols: [
+      { key: 'MDMA_Pre', title: 'MDMA — Baseline (Pre)', color: '#7c3aed', bg: '#f5f3ff' },
+      { key: 'MDMA_FUP', title: 'MDMA — Follow-Up (Post)', color: '#7c3aed', bg: '#ede9fe' },
+    ],
+  },
+  {
+    cohort: 'Ketamine',
+    label: 'Ketamine',
+    cols: [
+      { key: 'Ketamine_Pre', title: 'Ketamine — Baseline (Pre)', color: '#0891b2', bg: '#ecfeff' },
+      { key: 'Ketamine_FUP', title: 'Ketamine — Follow-Up (Post)', color: '#0891b2', bg: '#cffafe' },
+    ],
+  },
+  {
+    cohort: 'CPT',
+    label: 'CPT',
+    cols: [
+      { key: 'CPT_Pre', title: 'CPT — Baseline (Pre)', color: '#059669', bg: '#ecfdf5' },
+      { key: 'CPT_FUP', title: 'CPT — Follow-Up (Post)', color: '#059669', bg: '#d1fae5' },
+    ],
+  },
+];
 
 const HYPER_COLOR = '#dc2626';
 const HYPO_COLOR = '#2563eb';
@@ -51,7 +78,6 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       const m = k.match(/^(.+)_P$/);
       if (m && m[1] !== 'adj') detected.add(m[1]);
     }
-    // Maintain a stable ordering
     const order = ['SSS', 'ADS', 'ICF', 'ISS', 'MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'MDMA', 'Ketamine', 'CPT'];
     const result: { key: string; label: string; color: string; bg: string }[] = [];
     for (const k of order) {
@@ -67,18 +93,27 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     return result;
   }, [geneData]);
 
-  // ---- ENLARGED DIMENSIONS ----
-  const panelHeight = 180;
-  const topMargin = 50;
-  const bottomMargin = 75;
-  const leftMargin = 80;
+  // Check if 3x2 treatment grid mode should be used
+  const isGrid = useMemo(() => {
+    return SUBTYPES.some((s) => s.key.includes('_Pre') || s.key.includes('_FUP'));
+  }, [SUBTYPES]);
+
+  // ---- DIMENSIONS ----
+  const panelHeight = 175;
+  const topMargin = isGrid ? 74 : 50;
+  const bottomMargin = 80;
+  const leftMargin1 = isGrid ? 55 : 80;
   const rightMargin = 24;
-  const panelGap = 24;
+  const panelGap = 26;
+  const colGap = 55;
 
   const totalHeight = useMemo(() => {
+    if (isGrid) {
+      return topMargin + 3 * panelHeight + 2 * panelGap + bottomMargin;
+    }
     const count = SUBTYPES.length || 1;
     return topMargin + count * panelHeight + (count - 1) * panelGap + bottomMargin;
-  }, [SUBTYPES]);
+  }, [SUBTYPES, isGrid, topMargin, panelHeight, panelGap, bottomMargin]);
 
   // ---- X-AXIS DOMAIN: INCLUDE BOTH PROBES AND CPG ISLANDS ----
   const { minPos, maxPos, posRange } = useMemo(() => {
@@ -109,7 +144,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       }
     }
     return Math.min(Math.ceil(maxVal * 1.15), 32);
-  }, [geneData]);
+  }, [geneData, SUBTYPES]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -128,22 +163,33 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     return () => observer.disconnect();
   }, [totalHeight]);
 
-  const effectiveWidth = Math.max(dimensions.width, 700);
-  const plotWidth = Math.max(effectiveWidth - leftMargin - rightMargin, 200);
+  const effectiveWidth = Math.max(dimensions.width, isGrid ? 850 : 700);
+
+  // Column metrics for Grid mode vs 1D mode
+  const colWidth = useMemo(() => {
+    if (!isGrid) return Math.max(effectiveWidth - leftMargin1 - rightMargin, 200);
+    const availableW = effectiveWidth - leftMargin1 - rightMargin - colGap;
+    return Math.max(availableW / 2, 250);
+  }, [isGrid, effectiveWidth, leftMargin1, rightMargin, colGap]);
+
+  const leftMargin2 = leftMargin1 + colWidth + colGap;
 
   const posToX = useCallback(
-    (pos: number) => leftMargin + ((pos - minPos) / posRange) * plotWidth,
-    [minPos, posRange, plotWidth]
+    (pos: number, colIndex = 0) => {
+      const colLeft = !isGrid || colIndex === 0 ? leftMargin1 : leftMargin2;
+      return colLeft + ((pos - minPos) / posRange) * colWidth;
+    },
+    [isGrid, leftMargin1, leftMargin2, minPos, posRange, colWidth]
   );
 
   const valToY = useCallback(
     (val: number, panelTop: number) => {
-      const areaTop = panelTop + 28;
+      const areaTop = panelTop + 26;
       const areaBot = panelTop + panelHeight - 8;
       const areaH = areaBot - areaTop;
       return areaBot - (val / maxNegLogP) * areaH;
     },
-    [maxNegLogP]
+    [maxNegLogP, panelHeight]
   );
 
   // ---- MAIN DRAW ----
@@ -181,237 +227,461 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       42
     );
 
-    // ---- Draw each subtype panel ----
-    SUBTYPES.forEach((sub, idx) => {
-      const panelTop = topMargin + idx * (panelHeight + panelGap);
-      const areaTop = panelTop + 28;
-      const areaBot = panelTop + panelHeight - 8;
-      const areaH = areaBot - areaTop;
+    if (isGrid) {
+      // ==========================================
+      // 3x2 GRID LAYOUT (MDMA, Ketamine, CPT x Pre, Post)
+      // ==========================================
 
-      // Panel background with subtle tint
-      ctx.fillStyle = sub.bg;
-      ctx.fillRect(leftMargin - 2, panelTop, plotWidth + 4, panelHeight);
+      // ---- Draw Column Headers (Pre vs Post) ----
+      const headerY = 52;
+      const headerH = 18;
 
-      // Panel border
-      ctx.strokeStyle = '#d1d5db';
+      // Col 0 Header: Pre / Baseline
+      ctx.fillStyle = '#f1f5f9';
+      ctx.strokeStyle = '#cbd5e1';
       ctx.lineWidth = 1;
-      ctx.strokeRect(leftMargin - 2, panelTop, plotWidth + 4, panelHeight);
+      ctx.beginPath();
+      if (typeof (ctx as any).roundRect === 'function') {
+        (ctx as any).roundRect(leftMargin1 - 2, headerY, colWidth + 4, headerH, 4);
+      } else {
+        ctx.rect(leftMargin1 - 2, headerY, colWidth + 4, headerH);
+      }
+      ctx.fill();
+      ctx.stroke();
 
-      // Colored left accent bar
-      ctx.fillStyle = sub.color;
-      ctx.fillRect(leftMargin - 2, panelTop, 4, panelHeight);
+      ctx.fillStyle = '#334155';
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Baseline (Pre-Treatment)', leftMargin1 + colWidth / 2, headerY + 13);
 
-      // Subtype label
-      ctx.fillStyle = sub.color;
-      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText(sub.label, leftMargin + 8, panelTop + 18);
+      // Col 1 Header: Post / Follow-Up
+      ctx.fillStyle = '#ede9fe';
+      ctx.strokeStyle = '#c4b5fd';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      if (typeof (ctx as any).roundRect === 'function') {
+        (ctx as any).roundRect(leftMargin2 - 2, headerY, colWidth + 4, headerH, 4);
+      } else {
+        ctx.rect(leftMargin2 - 2, headerY, colWidth + 4, headerH);
+      }
+      ctx.fill();
+      ctx.stroke();
 
-      // ---- CpG Island shading ----
-      if (geneData.cpgIslands) {
-        for (const island of geneData.cpgIslands) {
-          const rawX1 = posToX(island.start);
-          const rawX2 = posToX(island.end);
-          if (rawX2 >= leftMargin && rawX1 <= leftMargin + plotWidth) {
-            const x1 = Math.max(rawX1, leftMargin);
-            const x2 = Math.min(rawX2, leftMargin + plotWidth);
-            const w = Math.max(x2 - x1, 4);
+      ctx.fillStyle = '#5b21b6';
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Follow-Up (Post-Treatment)', leftMargin2 + colWidth / 2, headerY + 13);
 
-            ctx.fillStyle = ISLAND_FILL;
-            ctx.fillRect(x1, areaTop, w, areaH);
-            ctx.strokeStyle = ISLAND_STROKE;
-            ctx.lineWidth = 1.5;
-            ctx.setLineDash([5, 3]);
-            ctx.strokeRect(x1, areaTop, w, areaH);
+      // ---- Draw Panels for 3 Rows x 2 Cols ----
+      TREATMENT_GRID_ROWS.forEach((rowConfig, rIdx) => {
+        const panelTop = topMargin + rIdx * (panelHeight + panelGap);
+        const areaTop = panelTop + 26;
+        const areaBot = panelTop + panelHeight - 8;
+        const areaH = areaBot - areaTop;
+
+        rowConfig.cols.forEach((colSlot, cIdx) => {
+          const colLeft = cIdx === 0 ? leftMargin1 : leftMargin2;
+
+          // Panel background
+          ctx.fillStyle = colSlot.bg;
+          ctx.fillRect(colLeft - 2, panelTop, colWidth + 4, panelHeight);
+
+          // Panel border
+          ctx.strokeStyle = '#d1d5db';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(colLeft - 2, panelTop, colWidth + 4, panelHeight);
+
+          // Left accent bar
+          ctx.fillStyle = colSlot.color;
+          ctx.fillRect(colLeft - 2, panelTop, 4, panelHeight);
+
+          // Panel Title
+          ctx.fillStyle = colSlot.color;
+          ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(colSlot.title, colLeft + 8, panelTop + 16);
+
+          // CpG Island shading
+          if (geneData.cpgIslands) {
+            for (const island of geneData.cpgIslands) {
+              const rawX1 = posToX(island.start, cIdx);
+              const rawX2 = posToX(island.end, cIdx);
+              if (rawX2 >= colLeft && rawX1 <= colLeft + colWidth) {
+                const x1 = Math.max(rawX1, colLeft);
+                const x2 = Math.min(rawX2, colLeft + colWidth);
+                const w = Math.max(x2 - x1, 4);
+
+                ctx.fillStyle = ISLAND_FILL;
+                ctx.fillRect(x1, areaTop, w, areaH);
+                ctx.strokeStyle = ISLAND_STROKE;
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([5, 3]);
+                ctx.strokeRect(x1, areaTop, w, areaH);
+                ctx.setLineDash([]);
+
+                // Label on top row panels
+                if (rIdx === 0) {
+                  const centerX = Math.max(colLeft + 35, Math.min(colLeft + colWidth - 35, (x1 + x2) / 2));
+                  const badgeW = 64;
+                  const badgeH = 13;
+                  ctx.fillStyle = 'rgba(254, 243, 199, 0.95)';
+                  ctx.strokeStyle = 'rgba(217, 119, 6, 0.8)';
+                  ctx.lineWidth = 1;
+                  ctx.beginPath();
+                  if (typeof (ctx as any).roundRect === 'function') {
+                    (ctx as any).roundRect(centerX - badgeW / 2, panelTop + 3, badgeW, badgeH, 3);
+                  } else {
+                    ctx.rect(centerX - badgeW / 2, panelTop + 3, badgeW, badgeH);
+                  }
+                  ctx.fill();
+                  ctx.stroke();
+
+                  ctx.fillStyle = '#b45309';
+                  ctx.font = 'bold 8.5px Inter, system-ui, sans-serif';
+                  ctx.textAlign = 'center';
+                  ctx.fillText('CpG Island', centerX, panelTop + 12);
+                }
+              }
+            }
+          }
+
+          // Y-axis grid lines and ticks
+          const tickValues = [0, 1.301, 2, 3, 5, 8, 10, 15, 20, 25, 30].filter((v) => v <= maxNegLogP);
+          for (const tick of tickValues) {
+            const y = valToY(tick, panelTop);
+            if (y < areaTop - 1 || y > areaBot + 1) continue;
+
+            if (tick === 1.301) {
+              ctx.strokeStyle = '#ef4444';
+              ctx.lineWidth = 1.2;
+              ctx.setLineDash([6, 4]);
+            } else if (tick === 2) {
+              ctx.strokeStyle = '#b91c1c';
+              ctx.lineWidth = 1;
+              ctx.setLineDash([4, 4]);
+            } else if (tick === 0) {
+              ctx.strokeStyle = '#94a3b8';
+              ctx.lineWidth = 1;
+              ctx.setLineDash([]);
+            } else {
+              ctx.strokeStyle = '#e2e8f0';
+              ctx.lineWidth = 0.6;
+              ctx.setLineDash([3, 4]);
+            }
+            ctx.beginPath();
+            ctx.moveTo(colLeft, y);
+            ctx.lineTo(colLeft + colWidth, y);
+            ctx.stroke();
             ctx.setLineDash([]);
 
-            // Label on first panel only — positioned in badge
-            if (idx === 0) {
-              const centerX = Math.max(leftMargin + 40, Math.min(leftMargin + plotWidth - 40, (x1 + x2) / 2));
-              const badgeW = 68;
-              const badgeH = 14;
-              ctx.fillStyle = 'rgba(254, 243, 199, 0.95)';
-              ctx.strokeStyle = 'rgba(217, 119, 6, 0.8)';
-              ctx.lineWidth = 1;
-              ctx.beginPath();
-              if (typeof (ctx as any).roundRect === 'function') {
-                (ctx as any).roundRect(centerX - badgeW / 2, panelTop + 4, badgeW, badgeH, 3);
-              } else {
-                ctx.rect(centerX - badgeW / 2, panelTop + 4, badgeW, badgeH);
-              }
-              ctx.fill();
-              ctx.stroke();
-
-              ctx.fillStyle = '#b45309';
+            // Tick text
+            ctx.font = '9px Inter, system-ui, sans-serif';
+            ctx.textAlign = 'right';
+            if (tick === 1.301) {
+              ctx.fillStyle = '#ef4444';
               ctx.font = 'bold 9px Inter, system-ui, sans-serif';
-              ctx.textAlign = 'center';
-              ctx.fillText('CpG Island', centerX, panelTop + 14);
+              ctx.fillText('p=.05', colLeft - 5, y + 3);
+            } else if (tick === 2) {
+              ctx.fillStyle = '#b91c1c';
+              ctx.font = 'bold 9px Inter, system-ui, sans-serif';
+              ctx.fillText('p=.01', colLeft - 5, y + 3);
+            } else if (tick > 0) {
+              ctx.fillStyle = '#94a3b8';
+              ctx.fillText(tick.toFixed(0), colLeft - 5, y + 3);
+            }
+          }
+
+          // Probe lollipops
+          const pKey = `${colSlot.key}_P` as keyof ProbeEntry;
+          const lfcKey = `${colSlot.key}_logFC` as keyof ProbeEntry;
+
+          const sortedProbes = [...geneData.probes].sort((a, b) => {
+            const pa = (a[pKey] as number | null) ?? 1;
+            const pb = (b[pKey] as number | null) ?? 1;
+            return pb - pa;
+          });
+
+          for (const probe of sortedProbes) {
+            const pVal = probe[pKey] as number | null;
+            const logFC = probe[lfcKey] as number | null;
+            if (!pVal || pVal <= 0) continue;
+
+            const nlp = -Math.log10(pVal);
+            const x = posToX(probe.pos, cIdx);
+            const yBase = valToY(0, panelTop);
+            const yTop = valToY(Math.min(nlp, maxNegLogP), panelTop);
+            const isHyper = logFC && logFC > 0;
+            const dotColor = isHyper ? HYPER_COLOR : HYPO_COLOR;
+            const isSig05 = nlp > 1.301;
+            const isSig01 = nlp > 2;
+
+            ctx.strokeStyle = dotColor;
+            ctx.lineWidth = isSig05 ? 1.8 : 1.1;
+            ctx.globalAlpha = isSig05 ? 0.65 : 0.3;
+            ctx.beginPath();
+            ctx.moveTo(x, yBase);
+            ctx.lineTo(x, yTop);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+
+            let radius = isSig01 ? 5 : isSig05 ? 3.5 : 2.2;
+            ctx.beginPath();
+            ctx.arc(x, yTop, radius, 0, Math.PI * 2);
+            ctx.fillStyle = dotColor;
+            ctx.fill();
+
+            if (isSig05) {
+              ctx.strokeStyle = '#ffffff';
+              ctx.lineWidth = 1.2;
+              ctx.stroke();
+              ctx.strokeStyle = dotColor;
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
+
+            if (nlp > 3) {
+              ctx.fillStyle = '#ffffff';
+              ctx.beginPath();
+              ctx.arc(x, yTop, 1.8, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        });
+      });
+
+      // ---- X-Axis at bottom of grid (under Row 2) ----
+      const xAxisY = topMargin + 3 * panelHeight + 2 * panelGap + 12;
+
+      [0, 1].forEach((cIdx) => {
+        const colLeft = cIdx === 0 ? leftMargin1 : leftMargin2;
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(colLeft, xAxisY);
+        ctx.lineTo(colLeft + colWidth, xAxisY);
+        ctx.stroke();
+
+        const nTicks = Math.min(6, Math.floor(colWidth / 70));
+        ctx.font = '9px Inter, system-ui, sans-serif';
+        ctx.fillStyle = '#475569';
+        ctx.textAlign = 'center';
+        for (let i = 0; i <= nTicks; i++) {
+          const pos = minPos + (posRange * i) / nTicks;
+          const x = posToX(pos, cIdx);
+          ctx.beginPath();
+          ctx.moveTo(x, xAxisY);
+          ctx.lineTo(x, xAxisY + 5);
+          ctx.stroke();
+          ctx.fillText(Math.round(pos).toLocaleString(), x, xAxisY + 16);
+        }
+
+        ctx.fillStyle = '#334155';
+        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.fillText('Genomic Position (bp)', colLeft + colWidth / 2, xAxisY + 32);
+      });
+
+    } else {
+      // ==========================================
+      // 1D STACKED LAYOUT (FTC PTSD Subtypes)
+      // ==========================================
+      SUBTYPES.forEach((sub, idx) => {
+        const panelTop = topMargin + idx * (panelHeight + panelGap);
+        const areaTop = panelTop + 26;
+        const areaBot = panelTop + panelHeight - 8;
+        const areaH = areaBot - areaTop;
+
+        ctx.fillStyle = sub.bg;
+        ctx.fillRect(leftMargin1 - 2, panelTop, colWidth + 4, panelHeight);
+
+        ctx.strokeStyle = '#d1d5db';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(leftMargin1 - 2, panelTop, colWidth + 4, panelHeight);
+
+        ctx.fillStyle = sub.color;
+        ctx.fillRect(leftMargin1 - 2, panelTop, 4, panelHeight);
+
+        ctx.fillStyle = sub.color;
+        ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(sub.label, leftMargin1 + 8, panelTop + 18);
+
+        if (geneData.cpgIslands) {
+          for (const island of geneData.cpgIslands) {
+            const rawX1 = posToX(island.start, 0);
+            const rawX2 = posToX(island.end, 0);
+            if (rawX2 >= leftMargin1 && rawX1 <= leftMargin1 + colWidth) {
+              const x1 = Math.max(rawX1, leftMargin1);
+              const x2 = Math.min(rawX2, leftMargin1 + colWidth);
+              const w = Math.max(x2 - x1, 4);
+
+              ctx.fillStyle = ISLAND_FILL;
+              ctx.fillRect(x1, areaTop, w, areaH);
+              ctx.strokeStyle = ISLAND_STROKE;
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([5, 3]);
+              ctx.strokeRect(x1, areaTop, w, areaH);
+              ctx.setLineDash([]);
+
+              if (idx === 0) {
+                const centerX = Math.max(leftMargin1 + 40, Math.min(leftMargin1 + colWidth - 40, (x1 + x2) / 2));
+                const badgeW = 68;
+                const badgeH = 14;
+                ctx.fillStyle = 'rgba(254, 243, 199, 0.95)';
+                ctx.strokeStyle = 'rgba(217, 119, 6, 0.8)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                if (typeof (ctx as any).roundRect === 'function') {
+                  (ctx as any).roundRect(centerX - badgeW / 2, panelTop + 4, badgeW, badgeH, 3);
+                } else {
+                  ctx.rect(centerX - badgeW / 2, panelTop + 4, badgeW, badgeH);
+                }
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#b45309';
+                ctx.font = 'bold 9px Inter, system-ui, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('CpG Island', centerX, panelTop + 14);
+              }
             }
           }
         }
-      }
 
-      // ---- Y-axis grid and tick labels ----
-      const tickValues = [0, 1.301, 2, 3, 5, 8, 10, 15, 20, 25, 30].filter((v) => v <= maxNegLogP);
-      for (const tick of tickValues) {
-        const y = valToY(tick, panelTop);
-        if (y < areaTop - 1 || y > areaBot + 1) continue;
+        const tickValues = [0, 1.301, 2, 3, 5, 8, 10, 15, 20, 25, 30].filter((v) => v <= maxNegLogP);
+        for (const tick of tickValues) {
+          const y = valToY(tick, panelTop);
+          if (y < areaTop - 1 || y > areaBot + 1) continue;
 
-        // Grid line
-        if (tick === 1.301) {
-          ctx.strokeStyle = '#ef4444';
-          ctx.lineWidth = 1.2;
-          ctx.setLineDash([6, 4]);
-        } else if (tick === 2) {
-          ctx.strokeStyle = '#b91c1c';
-          ctx.lineWidth = 1;
-          ctx.setLineDash([4, 4]);
-        } else if (tick === 0) {
-          ctx.strokeStyle = '#94a3b8';
-          ctx.lineWidth = 1;
+          if (tick === 1.301) {
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 1.2;
+            ctx.setLineDash([6, 4]);
+          } else if (tick === 2) {
+            ctx.strokeStyle = '#b91c1c';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 4]);
+          } else if (tick === 0) {
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([]);
+          } else {
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 0.6;
+            ctx.setLineDash([3, 4]);
+          }
+          ctx.beginPath();
+          ctx.moveTo(leftMargin1, y);
+          ctx.lineTo(leftMargin1 + colWidth, y);
+          ctx.stroke();
           ctx.setLineDash([]);
-        } else {
-          ctx.strokeStyle = '#e2e8f0';
-          ctx.lineWidth = 0.6;
-          ctx.setLineDash([3, 4]);
+
+          ctx.font = '10px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'right';
+          if (tick === 1.301) {
+            ctx.fillStyle = '#ef4444';
+            ctx.font = 'bold 10px Inter, system-ui, sans-serif';
+            ctx.fillText('p=.05', leftMargin1 - 10, y + 4);
+          } else if (tick === 2) {
+            ctx.fillStyle = '#b91c1c';
+            ctx.font = 'bold 10px Inter, system-ui, sans-serif';
+            ctx.fillText('p=.01', leftMargin1 - 10, y + 4);
+          } else if (tick > 0) {
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText(tick.toFixed(0), leftMargin1 - 10, y + 4);
+          }
         }
-        ctx.beginPath();
-        ctx.moveTo(leftMargin, y);
-        ctx.lineTo(leftMargin + plotWidth, y);
-        ctx.stroke();
-        ctx.setLineDash([]);
 
-        // Tick label
-        ctx.font = '10px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'right';
-        if (tick === 1.301) {
-          ctx.fillStyle = '#ef4444';
-          ctx.font = 'bold 10px Inter, system-ui, sans-serif';
-          ctx.fillText('p=.05', leftMargin - 10, y + 4);
-        } else if (tick === 2) {
-          ctx.fillStyle = '#b91c1c';
-          ctx.font = 'bold 10px Inter, system-ui, sans-serif';
-          ctx.fillText('p=.01', leftMargin - 10, y + 4);
-        } else if (tick > 0) {
-          ctx.fillStyle = '#94a3b8';
-          ctx.fillText(tick.toFixed(0), leftMargin - 10, y + 4);
+        const pKey = `${sub.key}_P` as keyof ProbeEntry;
+        const lfcKey = `${sub.key}_logFC` as keyof ProbeEntry;
+
+        const sortedProbes = [...geneData.probes].sort((a, b) => {
+          const pa = (a[pKey] as number | null) ?? 1;
+          const pb = (b[pKey] as number | null) ?? 1;
+          return pb - pa;
+        });
+
+        for (const probe of sortedProbes) {
+          const pVal = probe[pKey] as number | null;
+          const logFC = probe[lfcKey] as number | null;
+          if (!pVal || pVal <= 0) continue;
+
+          const nlp = -Math.log10(pVal);
+          const x = posToX(probe.pos, 0);
+          const yBase = valToY(0, panelTop);
+          const yTop = valToY(Math.min(nlp, maxNegLogP), panelTop);
+          const isHyper = logFC && logFC > 0;
+          const dotColor = isHyper ? HYPER_COLOR : HYPO_COLOR;
+          const isSig05 = nlp > 1.301;
+          const isSig01 = nlp > 2;
+
+          ctx.strokeStyle = dotColor;
+          ctx.lineWidth = isSig05 ? 2 : 1.2;
+          ctx.globalAlpha = isSig05 ? 0.65 : 0.3;
+          ctx.beginPath();
+          ctx.moveTo(x, yBase);
+          ctx.lineTo(x, yTop);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+
+          let radius = isSig01 ? 5.5 : isSig05 ? 4 : 2.5;
+
+          ctx.beginPath();
+          ctx.arc(x, yTop, radius, 0, Math.PI * 2);
+          ctx.fillStyle = dotColor;
+          ctx.fill();
+
+          if (isSig05) {
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.strokeStyle = dotColor;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+
+          if (nlp > 3) {
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(x, yTop, 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
-      }
-
-      // ---- Lollipop stems and heads ----
-      const pKey = `${sub.key}_P` as keyof ProbeEntry;
-      const lfcKey = `${sub.key}_logFC` as keyof ProbeEntry;
-
-      // Sort by significance so the most significant probes render on top
-      const sortedProbes = [...geneData.probes].sort((a, b) => {
-        const pa = (a[pKey] as number | null) ?? 1;
-        const pb = (b[pKey] as number | null) ?? 1;
-        return pb - pa; // least significant first, most significant on top
       });
 
-      for (const probe of sortedProbes) {
-        const pVal = probe[pKey] as number | null;
-        const logFC = probe[lfcKey] as number | null;
-        if (!pVal || pVal <= 0) continue;
-
-        const nlp = -Math.log10(pVal);
-        const x = posToX(probe.pos);
-        const yBase = valToY(0, panelTop);
-        const yTop = valToY(Math.min(nlp, maxNegLogP), panelTop);
-        const isHyper = logFC && logFC > 0;
-        const dotColor = isHyper ? HYPER_COLOR : HYPO_COLOR;
-        const isSig05 = nlp > 1.301;
-        const isSig01 = nlp > 2;
-
-        // Stem — thicker and more visible
-        ctx.strokeStyle = dotColor;
-        ctx.lineWidth = isSig05 ? 2 : 1.2;
-        ctx.globalAlpha = isSig05 ? 0.65 : 0.3;
-        ctx.beginPath();
-        ctx.moveTo(x, yBase);
-        ctx.lineTo(x, yTop);
-        ctx.stroke();
-        ctx.globalAlpha = 1;
-
-        // Head — larger dots
-        let radius: number;
-        if (isSig01) {
-          radius = 5.5;
-        } else if (isSig05) {
-          radius = 4;
-        } else {
-          radius = 2.5;
-        }
-
-        ctx.beginPath();
-        ctx.arc(x, yTop, radius, 0, Math.PI * 2);
-        ctx.fillStyle = dotColor;
-        ctx.fill();
-
-        // White border on significant probes
-        if (isSig05) {
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-          // Dark outline
-          ctx.strokeStyle = dotColor;
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-        }
-
-        // Diamond marker for p < 0.001
-        if (nlp > 3) {
-          ctx.fillStyle = '#ffffff';
-          ctx.beginPath();
-          ctx.arc(x, yTop, 2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-    });
-
-    // ---- X-axis ----
-    const xAxisY = topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + 14;
-    ctx.strokeStyle = '#475569';
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.moveTo(leftMargin, xAxisY);
-    ctx.lineTo(leftMargin + plotWidth, xAxisY);
-    ctx.stroke();
-
-    // X-axis ticks
-    const nTicks = Math.min(8, Math.floor(plotWidth / 80));
-    ctx.font = '10px Inter, system-ui, sans-serif';
-    ctx.fillStyle = '#475569';
-    ctx.textAlign = 'center';
-    for (let i = 0; i <= nTicks; i++) {
-      const pos = minPos + (posRange * i) / nTicks;
-      const x = posToX(pos);
+      const xAxisY = topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + 14;
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.moveTo(x, xAxisY);
-      ctx.lineTo(x, xAxisY + 6);
+      ctx.moveTo(leftMargin1, xAxisY);
+      ctx.lineTo(leftMargin1 + colWidth, xAxisY);
       ctx.stroke();
-      ctx.fillText(Math.round(pos).toLocaleString(), x, xAxisY + 20);
+
+      const nTicks = Math.min(8, Math.floor(colWidth / 80));
+      ctx.font = '10px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#475569';
+      ctx.textAlign = 'center';
+      for (let i = 0; i <= nTicks; i++) {
+        const pos = minPos + (posRange * i) / nTicks;
+        const x = posToX(pos, 0);
+        ctx.beginPath();
+        ctx.moveTo(x, xAxisY);
+        ctx.lineTo(x, xAxisY + 6);
+        ctx.stroke();
+        ctx.fillText(Math.round(pos).toLocaleString(), x, xAxisY + 20);
+      }
+
+      ctx.fillStyle = '#334155';
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText('Genomic Position (bp)', effectiveWidth / 2, xAxisY + 38);
     }
 
-    // X-axis label
-    ctx.fillStyle = '#334155';
-    ctx.font = '12px Inter, system-ui, sans-serif';
-    ctx.fillText('Genomic Position (bp)', effectiveWidth / 2, xAxisY + 38);
-
-    // Y-axis label (rotated)
-    ctx.save();
-    ctx.translate(18, topMargin + (SUBTYPES.length * (panelHeight + panelGap)) / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillStyle = '#334155';
-    ctx.font = '12px Inter, system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('−log₁₀(P-value)', 0, 0);
-    ctx.restore();
-
     // ---- Legend (at bottom) ----
-    const legendY = xAxisY + 55;
-    ctx.font = '11px Inter, system-ui, sans-serif';
+    const xAxisY = isGrid
+      ? topMargin + 3 * panelHeight + 2 * panelGap + 12
+      : topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + 14;
+    const legendY = xAxisY + (isGrid ? 54 : 55);
 
+    ctx.font = '11px Inter, system-ui, sans-serif';
     const legendItems = [
       { type: 'dot', color: HYPER_COLOR, label: 'Hypermethylated (logFC > 0)' },
       { type: 'dot', color: HYPO_COLOR, label: 'Hypomethylated (logFC < 0)' },
@@ -456,7 +726,26 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       ctx.fillText(item.label, lx + 24, legendY + 4);
       lx += ctx.measureText(item.label).width + 46;
     }
-  }, [geneData, dimensions, minPos, maxPos, posRange, maxNegLogP, posToX, valToY, SUBTYPES, effectiveWidth, totalHeight]);
+  }, [
+    geneData,
+    dimensions,
+    minPos,
+    maxPos,
+    posRange,
+    maxNegLogP,
+    posToX,
+    valToY,
+    SUBTYPES,
+    effectiveWidth,
+    totalHeight,
+    isGrid,
+    colWidth,
+    leftMargin1,
+    leftMargin2,
+    panelHeight,
+    panelGap,
+    topMargin,
+  ]);
 
   // ---- Tooltip on hover ----
   const handleMouseMove = useCallback(
@@ -470,32 +759,77 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       let found: TooltipData | null = null;
       const hitRadius = 10;
 
-      for (let idx = 0; idx < SUBTYPES.length; idx++) {
-        const sub = SUBTYPES[idx];
-        const panelTop = topMargin + idx * (panelHeight + panelGap);
-        const pKey = `${sub.key}_P` as keyof ProbeEntry;
+      if (isGrid) {
+        // Grid mode: determine column and row
+        let cIdx = -1;
+        if (mx >= leftMargin1 - 10 && mx <= leftMargin1 + colWidth + 10) cIdx = 0;
+        else if (mx >= leftMargin2 - 10 && mx <= leftMargin2 + colWidth + 10) cIdx = 1;
 
-        for (const probe of geneData.probes) {
-          const pVal = probe[pKey] as number | null;
-          if (!pVal || pVal <= 0) continue;
-          const nlp = -Math.log10(pVal);
-          const x = posToX(probe.pos);
-          const y = valToY(Math.min(nlp, maxNegLogP), panelTop);
-          const dist = Math.sqrt((mx - x) ** 2 + (my - y) ** 2);
-          if (dist < hitRadius) {
-            found = { x: mx, y: my, probe, subtype: sub.key };
-            break;
-          }
+        if (cIdx >= 0) {
+          TREATMENT_GRID_ROWS.forEach((rConfig, rIdx) => {
+            if (found) return;
+            const panelTop = topMargin + rIdx * (panelHeight + panelGap);
+            if (my < panelTop - 5 || my > panelTop + panelHeight + 5) return;
+
+            const slot = rConfig.cols[cIdx];
+            const pKey = `${slot.key}_P` as keyof ProbeEntry;
+
+            for (const probe of geneData.probes) {
+              const pVal = probe[pKey] as number | null;
+              if (!pVal || pVal <= 0) continue;
+              const nlp = -Math.log10(pVal);
+              const x = posToX(probe.pos, cIdx);
+              const y = valToY(Math.min(nlp, maxNegLogP), panelTop);
+              const dist = Math.sqrt((mx - x) ** 2 + (my - y) ** 2);
+              if (dist < hitRadius) {
+                found = { x: mx, y: my, probe, subtype: slot.key };
+                break;
+              }
+            }
+          });
         }
-        if (found) break;
+      } else {
+        // 1D stacked mode
+        for (let idx = 0; idx < SUBTYPES.length; idx++) {
+          const sub = SUBTYPES[idx];
+          const panelTop = topMargin + idx * (panelHeight + panelGap);
+          const pKey = `${sub.key}_P` as keyof ProbeEntry;
+
+          for (const probe of geneData.probes) {
+            const pVal = probe[pKey] as number | null;
+            if (!pVal || pVal <= 0) continue;
+            const nlp = -Math.log10(pVal);
+            const x = posToX(probe.pos, 0);
+            const y = valToY(Math.min(nlp, maxNegLogP), panelTop);
+            const dist = Math.sqrt((mx - x) ** 2 + (my - y) ** 2);
+            if (dist < hitRadius) {
+              found = { x: mx, y: my, probe, subtype: sub.key };
+              break;
+            }
+          }
+          if (found) break;
+        }
       }
       setTooltip(found);
     },
-    [geneData, posToX, valToY, maxNegLogP]
+    [
+      isGrid,
+      leftMargin1,
+      leftMargin2,
+      colWidth,
+      topMargin,
+      panelHeight,
+      panelGap,
+      geneData,
+      posToX,
+      valToY,
+      maxNegLogP,
+      SUBTYPES,
+    ]
   );
 
   return (
-    <div ref={containerRef} className="relative w-full">
+    <div ref={containerRef} className="relative w-full overflow-x-auto">
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: totalHeight }}
@@ -518,11 +852,11 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
               className="px-2 py-0.5 text-[10px] font-bold rounded-full"
               style={{
                 backgroundColor:
-                  SUBTYPES.find((s) => s.key === tooltip.subtype)?.color + '18',
-                color: SUBTYPES.find((s) => s.key === tooltip.subtype)?.color,
+                  (SUBTYPE_CONFIG[tooltip.subtype]?.color || '#64748b') + '18',
+                color: SUBTYPE_CONFIG[tooltip.subtype]?.color || '#64748b',
               }}
             >
-              {tooltip.subtype}
+              {SUBTYPE_CONFIG[tooltip.subtype]?.label || tooltip.subtype}
             </span>
           </div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
