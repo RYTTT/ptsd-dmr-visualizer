@@ -71,30 +71,57 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
         </div>
       </div>
 
-      {/* PubMed Literature References */}
-      {annotation.references && annotation.references.length > 0 && (
-        <div className="border-t border-slate-100 pt-3">
-          <h5 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <BookOpen className="w-3.5 h-3.5 text-slate-700" />
-            Key PubMed Literature References:
-          </h5>
-          <ul className="space-y-1.5">
-            {annotation.references.map((ref, idx) => (
-              <li key={idx} className="text-xs flex items-center justify-between text-slate-800 bg-slate-50 px-3 py-1.5 rounded border border-slate-200">
-                <span className="font-medium">{ref.citation}</span>
-                <a
-                  href={ref.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-1 text-[11px] font-mono text-blue-700 hover:text-blue-900 hover:underline font-bold"
-                >
-                  PMID: {ref.pmid} <ExternalLink className="w-3 h-3" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* PubMed Literature & Database References */}
+      {annotation.references && annotation.references.length > 0 && (() => {
+        const peerReviewedRefs = annotation.references.filter((r) => /^\d+$/.test(r.pmid));
+        return (
+          <div className="border-t border-slate-100 pt-3 space-y-2">
+            {peerReviewedRefs.length > 0 && (
+              <div>
+                <h5 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <BookOpen className="w-3.5 h-3.5 text-slate-700" />
+                  Key Peer-Reviewed PubMed Literature:
+                </h5>
+                <ul className="space-y-1.5">
+                  {peerReviewedRefs.map((ref, idx) => (
+                    <li key={idx} className="text-xs flex items-center justify-between text-slate-800 bg-slate-50 px-3 py-1.5 rounded border border-slate-200">
+                      <span className="font-semibold text-slate-900">{ref.citation}</span>
+                      <a
+                        href={`https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-[11px] font-mono text-blue-700 hover:text-blue-900 hover:underline font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
+                      >
+                        PMID: {ref.pmid} <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
+            {/* Database & External Resources */}
+            <div className="flex items-center gap-2 pt-1">
+              <a
+                href={`https://www.genecards.org/cgi-bin/carddisp.pl?gene=${gene}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded border border-slate-300 transition"
+              >
+                GeneCards Profile <ExternalLink className="w-3 h-3" />
+              </a>
+              <a
+                href={`https://pubmed.ncbi.nlm.nih.gov/?term=${gene}+methylation+PTSD`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-[11px] font-bold text-blue-800 hover:text-blue-950 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded border border-blue-200 transition"
+              >
+                NCBI PubMed Query <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };

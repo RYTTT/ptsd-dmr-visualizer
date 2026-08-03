@@ -163,7 +163,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     return () => observer.disconnect();
   }, [totalHeight]);
 
-  const effectiveWidth = Math.max(dimensions.width, isGrid ? 850 : 700);
+  const effectiveWidth = dimensions.width > 0 ? dimensions.width : (isGrid ? 850 : 700);
 
   // Column metrics for Grid mode vs 1D mode
   const colWidth = useMemo(() => {
