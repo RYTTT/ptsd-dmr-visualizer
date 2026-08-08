@@ -29,7 +29,7 @@ const SUBTYPE_COLORS: Record<string, string> = {
   ISS: '#059669',
 };
 
-// Custom shape component for rendering exact 0-anchored bars
+// Custom shape component for rendering exact 0-anchored bars with non-overlapping labels
 const CustomBarShape = (props: any) => {
   const { x, width, payload, yAxis } = props;
   if (!payload || !yAxis || typeof yAxis.scale !== 'function') return null;
@@ -45,11 +45,16 @@ const CustomBarShape = (props: any) => {
     const posVal = payload.avgPosLogFC ?? 0;
     const negVal = payload.avgNegLogFC ?? 0;
 
-    const yPos = yAxis.scale(posVal); // Pixel Y for positive value (smaller Y value)
-    const yNeg = yAxis.scale(negVal); // Pixel Y for negative value (larger Y value)
+    const yPos = posVal > 0 ? yAxis.scale(posVal) : y0;
+    const yNeg = negVal < 0 ? yAxis.scale(negVal) : y0;
 
     const posHeight = Math.max(0, y0 - yPos);
     const negHeight = Math.max(0, yNeg - y0);
+
+    // Exact label Y positions to guarantee ZERO overlap
+    const yUp = posHeight > 0 ? yPos - 4 : y0;
+    const ySig = posHeight > 0 ? yUp - 12 : y0 - 6;
+    const yDown = negHeight > 0 ? yNeg + 13 : y0 + 13;
 
     return (
       <g>
@@ -81,11 +86,11 @@ const CustomBarShape = (props: any) => {
           />
         )}
 
-        {/* Probe count label above positive bar */}
+        {/* Upward probe count label ↑nPos */}
         {payload.nPos > 0 && posHeight > 0 && (
           <text
             x={x + width / 2}
-            y={yPos - 5}
+            y={yUp}
             textAnchor="middle"
             fill="#dc2626"
             fontSize={10}
@@ -95,11 +100,11 @@ const CustomBarShape = (props: any) => {
           </text>
         )}
 
-        {/* Probe count label below negative bar */}
+        {/* Downward probe count label ↓nNeg */}
         {payload.nNeg > 0 && negHeight > 0 && (
           <text
             x={x + width / 2}
-            y={yNeg + 13}
+            y={yDown}
             textAnchor="middle"
             fill="#2563eb"
             fontSize={10}
@@ -109,10 +114,10 @@ const CustomBarShape = (props: any) => {
           </text>
         )}
 
-        {/* Significance stars */}
+        {/* Significance stars *** at top of category column */}
         <text
           x={x + width / 2}
-          y={posHeight > 0 ? yPos - (payload.nPos > 0 ? 18 : 6) : y0 - 6}
+          y={ySig}
           textAnchor="middle"
           fill={isNs ? '#94a3b8' : '#0f172a'}
           fontSize={isNs ? 9 : 11}
@@ -193,7 +198,7 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
 
   const hasMixed = chartData.some((d) => d.isMixed);
 
-  // Force symmetric Y-axis domain around zero
+  // Force symmetric Y-axis domain around zero with ample padding for top/bottom labels
   const yDomain = useMemo(() => {
     const allVals = chartData.flatMap((d) => [
       d.deltaBeta,
@@ -201,7 +206,7 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
       d.avgNegLogFC ?? 0,
     ]);
     const maxAbs = Math.max(...allVals.map(Math.abs), 0.02);
-    const pad = maxAbs * 1.45; // Extra padding for top/bottom labels
+    const pad = maxAbs * 1.55; // 55% padding to ensure labels never clip
     return [-pad, pad];
   }, [chartData]);
 
@@ -229,9 +234,9 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
         </div>
       </div>
 
-      <div className="h-64 w-full">
+      <div className="h-68 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 25, right: 20, bottom: 25, left: 10 }}>
+          <BarChart data={chartData} margin={{ top: 32, right: 20, bottom: 30, left: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
             <XAxis dataKey="subtype" stroke="#64748b" fontSize={11} />
             <YAxis
@@ -302,7 +307,7 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
             />
             <ReferenceLine y={0} stroke="#64748b" strokeWidth={1.5} />
 
-            {/* Single Bar component with custom SVG shape renderer */}
+            {/* Custom SVG shape renderer handles all bars and non-overlapping labels */}
             <Bar
               dataKey="deltaBeta"
               shape={<CustomBarShape />}
