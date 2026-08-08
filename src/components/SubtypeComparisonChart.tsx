@@ -24,6 +24,13 @@ function sigStars(fdr: number): string {
   return 'ns';
 }
 
+const SUBTYPE_COLORS: Record<string, { main: string; light: string }> = {
+  SSS: { main: '#e11d48', light: '#fecdd3' },
+  ADS: { main: '#2563eb', light: '#bfdbfe' },
+  ICF: { main: '#7c3aed', light: '#ddd6fe' },
+  ISS: { main: '#059669', light: '#a7f3d0' },
+};
+
 export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) => {
   if (!geneData) {
     return (
@@ -35,74 +42,105 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
     );
   }
 
-  const chartData = [
-    {
-      subtype: 'SSS',
-      subtypeFull: 'SSS (Severe Stress)',
-      deltaBeta: geneData.subtypes.SSS.deltaBeta,
-      fdr: geneData.subtypes.SSS.fdr,
-      direction: geneData.subtypes.SSS.direction,
-      sig: sigStars(geneData.subtypes.SSS.fdr),
-      color: '#e11d48',
-    },
-    {
-      subtype: 'ADS',
-      subtypeFull: 'ADS (Depressive)',
-      deltaBeta: geneData.subtypes.ADS.deltaBeta,
-      fdr: geneData.subtypes.ADS.fdr,
-      direction: geneData.subtypes.ADS.direction,
-      sig: sigStars(geneData.subtypes.ADS.fdr),
-      color: '#2563eb',
-    },
-    {
-      subtype: 'ICF',
-      subtypeFull: 'ICF (Cognitive)',
-      deltaBeta: geneData.subtypes.ICF.deltaBeta,
-      fdr: geneData.subtypes.ICF.fdr,
-      direction: geneData.subtypes.ICF.direction,
-      sig: sigStars(geneData.subtypes.ICF.fdr),
-      color: '#7c3aed',
-    },
-    {
-      subtype: 'ISS',
-      subtypeFull: 'ISS (Intermediate)',
-      deltaBeta: geneData.subtypes.ISS.deltaBeta,
-      fdr: geneData.subtypes.ISS.fdr,
-      direction: geneData.subtypes.ISS.direction,
-      sig: sigStars(geneData.subtypes.ISS.fdr),
-      color: '#059669',
-    },
-  ];
+  const subtypeKeys = ['SSS', 'ADS', 'ICF', 'ISS'] as const;
+  const subtypeLabels: Record<string, string> = {
+    SSS: 'SSS',
+    ADS: 'ADS',
+    ICF: 'ICF',
+    ISS: 'ISS',
+  };
 
-  // Force symmetric Y-axis domain around zero so bars are visually comparable
+  // Build chart data: for each subtype, include avgPos/avgNeg for split bars
+  const chartData = subtypeKeys.map((sub) => {
+    const s = geneData.subtypes[sub];
+    return {
+      subtype: subtypeLabels[sub],
+      subtypeKey: sub,
+      deltaBeta: s.deltaBeta,
+      fdr: s.fdr,
+      direction: s.direction,
+      sig: sigStars(s.fdr),
+      color: SUBTYPE_COLORS[sub].main,
+      isMixed: s.direction === 'Mixed',
+      avgPosLogFC: s.avgPosLogFC ?? null,
+      avgNegLogFC: s.avgNegLogFC ?? null,
+      nPos: s.nPosTop3 ?? 0,
+      nNeg: s.nNegTop3 ?? 0,
+      // For the chart: if Mixed, use avgPos for the "hyper" bar and avgNeg for the "hypo" bar
+      // If concordant, avgPos or avgNeg will be null and we use deltaBeta only
+      hyperBar: s.direction === 'Mixed' ? (s.avgPosLogFC ?? 0) : (s.deltaBeta > 0 ? s.deltaBeta : 0),
+      hypoBar: s.direction === 'Mixed' ? (s.avgNegLogFC ?? 0) : (s.deltaBeta < 0 ? s.deltaBeta : 0),
+    };
+  });
+
+  const hasMixed = chartData.some((d) => d.isMixed);
+
+  // Force symmetric Y-axis domain around zero
   const yDomain = useMemo(() => {
-    const values = chartData.map((d) => d.deltaBeta);
-    const maxAbs = Math.max(...values.map(Math.abs), 0.01); // at least ±0.01
-    const pad = maxAbs * 1.3; // 30% padding for star labels
+    const allVals = chartData.flatMap((d) => [d.hyperBar, d.hypoBar, d.deltaBeta]);
+    const maxAbs = Math.max(...allVals.map(Math.abs), 0.01);
+    const pad = maxAbs * 1.35;
     return [-pad, pad];
   }, [chartData]);
 
-  // Custom label renderer: shows significance stars above/below each bar
-  const renderSigLabel = (props: any) => {
-    const { x, y, width, value, index } = props;
+  // Significance label renderer for the hyper bar (positive)
+  const renderHyperSigLabel = (props: any) => {
+    const { x, y, width, index } = props;
     if (index === undefined || !chartData[index]) return null;
     const entry = chartData[index];
-    const isPositive = entry.deltaBeta >= 0;
-    const labelY = isPositive ? y - 6 : y + 16;
-    const sigColor = entry.sig === 'ns' ? '#94a3b8' : '#0f172a';
+    if (!entry.isMixed && entry.deltaBeta <= 0) return null; // concordant hypo — skip this bar's label
+    const sig = entry.sig;
+    const sigColor = sig === 'ns' ? '#94a3b8' : '#0f172a';
+    // Position: if bar is positive, label above; if zero bar, skip
+    const barVal = entry.hyperBar;
+    if (barVal === 0) return null;
+    const labelY = y - 6;
     return (
-      <text
-        x={x + width / 2}
-        y={labelY}
-        textAnchor="middle"
-        fill={sigColor}
-        fontSize={entry.sig === 'ns' ? 9 : 11}
-        fontWeight={entry.sig === 'ns' ? 400 : 700}
-        fontStyle={entry.sig === 'ns' ? 'italic' : 'normal'}
-      >
-        {entry.sig}
+      <text x={x + width / 2} y={labelY} textAnchor="middle" fill={sigColor}
+        fontSize={sig === 'ns' ? 9 : 11} fontWeight={sig === 'ns' ? 400 : 700}
+        fontStyle={sig === 'ns' ? 'italic' : 'normal'}>
+        {entry.isMixed ? `↑${entry.nPos}` : sig}
       </text>
     );
+  };
+
+  // Significance label renderer for the hypo bar (negative)
+  const renderHypoSigLabel = (props: any) => {
+    const { x, y, width, height, index } = props;
+    if (index === undefined || !chartData[index]) return null;
+    const entry = chartData[index];
+    if (!entry.isMixed && entry.deltaBeta >= 0) return null;
+    const sig = entry.sig;
+    const sigColor = sig === 'ns' ? '#94a3b8' : '#0f172a';
+    const barVal = entry.hypoBar;
+    if (barVal === 0) return null;
+    const labelY = y + (height || 0) + 12;
+    return (
+      <text x={x + width / 2} y={labelY} textAnchor="middle" fill={sigColor}
+        fontSize={sig === 'ns' ? 9 : 11} fontWeight={sig === 'ns' ? 400 : 700}
+        fontStyle={sig === 'ns' ? 'italic' : 'normal'}>
+        {entry.isMixed ? `↓${entry.nNeg}` : sig}
+      </text>
+    );
+  };
+
+  // For concordant genes: render sig stars once (above or below)
+  const renderConcordantSigLabel = (props: any) => {
+    const { x, y, width, height, index } = props;
+    if (index === undefined || !chartData[index]) return null;
+    const entry = chartData[index];
+    if (entry.isMixed) {
+      // For mixed: show sig between the two bars
+      const sigColor = entry.sig === 'ns' ? '#94a3b8' : '#0f172a';
+      return (
+        <text x={x + width / 2} y={y + (height || 0) / 2 + 4} textAnchor="middle" fill={sigColor}
+          fontSize={entry.sig === 'ns' ? 8 : 10} fontWeight={entry.sig === 'ns' ? 400 : 700}
+          fontStyle={entry.sig === 'ns' ? 'italic' : 'normal'}>
+          {entry.sig}
+        </text>
+      );
+    }
+    return null;
   };
 
   return (
@@ -129,9 +167,9 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
         </div>
       </div>
 
-      <div className="h-56 w-full">
+      <div className="h-60 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 20, right: 20, bottom: 20, left: 10 }}>
+          <BarChart data={chartData} margin={{ top: 22, right: 20, bottom: 22, left: 10 }} barGap={0} barCategoryGap="25%">
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
             <XAxis dataKey="subtype" stroke="#64748b" fontSize={11} />
             <YAxis
@@ -140,7 +178,7 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
               domain={yDomain}
               tickFormatter={(v: number) => v.toFixed(2)}
               label={{
-                value: 'Top-3 Avg Δβ Difference',
+                value: 'Top-3 Avg Δβ',
                 angle: -90,
                 position: 'insideLeft',
                 fill: '#475569',
@@ -152,25 +190,36 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
                 if (active && payload && payload.length) {
                   const data = payload[0].payload;
                   return (
-                    <div className="bg-white border border-slate-300 p-2.5 rounded shadow-lg text-xs space-y-1">
-                      <div className="font-bold text-slate-900">{data.subtypeFull}</div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-slate-500">Avg Δβ:</span>
-                        <span className="font-mono font-bold text-slate-900">
-                          {data.deltaBeta > 0 ? `+${data.deltaBeta.toFixed(4)}` : data.deltaBeta.toFixed(4)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-slate-500">Subtype FDR:</span>
+                    <div className="bg-white border border-slate-300 p-2.5 rounded shadow-lg text-xs space-y-1.5 min-w-[180px]">
+                      <div className="font-bold text-slate-900 text-sm border-b border-slate-100 pb-1">{data.subtype}</div>
+                      {data.isMixed ? (
+                        <>
+                          <div className="text-[10px] font-bold text-amber-700 uppercase">Mixed Direction</div>
+                          <div className="flex justify-between gap-3">
+                            <span className="text-red-600 font-medium">↑ Hyper ({data.nPos} CpGs):</span>
+                            <span className="font-mono font-bold text-red-700">+{(data.avgPosLogFC ?? 0).toFixed(4)}</span>
+                          </div>
+                          <div className="flex justify-between gap-3">
+                            <span className="text-blue-600 font-medium">↓ Hypo ({data.nNeg} CpGs):</span>
+                            <span className="font-mono font-bold text-blue-700">{(data.avgNegLogFC ?? 0).toFixed(4)}</span>
+                          </div>
+                          <div className="text-slate-400 text-[10px]">Avg Δβ: {data.deltaBeta.toFixed(4)} (cancellation)</div>
+                        </>
+                      ) : (
+                        <div className="flex justify-between gap-4">
+                          <span className="text-slate-500">Avg Δβ:</span>
+                          <span className="font-mono font-bold text-slate-900">
+                            {data.deltaBeta > 0 ? `+${data.deltaBeta.toFixed(4)}` : data.deltaBeta.toFixed(4)}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex justify-between gap-4 border-t border-slate-100 pt-1">
+                        <span className="text-slate-500">FDR:</span>
                         <span className="font-mono text-slate-800">{data.fdr < 1e-15 ? '< 1e-15' : data.fdr.toExponential(2)}</span>
                       </div>
                       <div className="flex justify-between gap-4">
                         <span className="text-slate-500">Significance:</span>
-                        <span className={`font-bold ${data.sig === 'ns' ? 'text-slate-400' : 'text-slate-900'}`}>{data.sig} (FDR {data.fdr < 0.05 ? '< 0.05' : '≥ 0.05'})</span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-slate-500">Direction:</span>
-                        <span className="text-slate-800 font-medium">{data.direction}</span>
+                        <span className={`font-bold ${data.sig === 'ns' ? 'text-slate-400' : 'text-slate-900'}`}>{data.sig}</span>
                       </div>
                     </div>
                   );
@@ -179,22 +228,52 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
               }}
             />
             <ReferenceLine y={0} stroke="#94a3b8" strokeWidth={1.2} />
-            <Bar dataKey="deltaBeta" radius={[4, 4, 0, 0]}>
+
+            {/* Hyper (positive) bar — red for all */}
+            <Bar dataKey="hyperBar" stackId="a" radius={[4, 4, 0, 0]}>
               {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} opacity={entry.sig === 'ns' ? 0.4 : 1} />
+                <Cell
+                  key={`hyper-${index}`}
+                  fill={entry.isMixed ? '#dc2626' : entry.color}
+                  opacity={entry.sig === 'ns' ? 0.35 : (entry.isMixed ? 0.75 : 1)}
+                />
               ))}
-              <LabelList content={renderSigLabel} />
+              <LabelList content={renderHyperSigLabel} />
+            </Bar>
+
+            {/* Hypo (negative) bar — blue for Mixed, subtype color for concordant */}
+            <Bar dataKey="hypoBar" stackId="a" radius={[0, 0, 4, 4]}>
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`hypo-${index}`}
+                  fill={entry.isMixed ? '#2563eb' : entry.color}
+                  opacity={entry.sig === 'ns' ? 0.35 : (entry.isMixed ? 0.75 : 1)}
+                />
+              ))}
+              <LabelList content={renderHypoSigLabel} />
+              <LabelList content={renderConcordantSigLabel} />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Significance Legend */}
-      <div className="flex items-center justify-center gap-4 mt-1 text-[10px] text-slate-500 border-t border-slate-100 pt-2">
+      {/* Legend */}
+      <div className="flex items-center justify-center gap-4 mt-1 text-[10px] text-slate-500 border-t border-slate-100 pt-2 flex-wrap">
         <span><strong className="text-slate-900">***</strong> FDR &lt; 0.001</span>
         <span><strong className="text-slate-900">**</strong> FDR &lt; 0.01</span>
         <span><strong className="text-slate-900">*</strong> FDR &lt; 0.05</span>
         <span><em className="text-slate-400">ns</em> not significant</span>
+        {hasMixed && (
+          <>
+            <span className="border-l border-slate-200 pl-4">
+              <span className="text-red-600 font-bold">↑n</span> hyper CpGs
+            </span>
+            <span>
+              <span className="text-blue-600 font-bold">↓n</span> hypo CpGs
+            </span>
+            <span className="text-amber-600 font-semibold">(Mixed = opposing top-3 probe directions)</span>
+          </>
+        )}
       </div>
     </div>
   );

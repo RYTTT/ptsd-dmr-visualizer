@@ -2,6 +2,10 @@ export interface SubtypeStat {
   deltaBeta: number;
   fdr: number;
   direction: string;
+  avgPosLogFC?: number | null;
+  avgNegLogFC?: number | null;
+  nPosTop3?: number;
+  nNegTop3?: number;
 }
 
 export interface CrossSubtypeDMR {
@@ -28,6 +32,10 @@ export interface UniqueDMR {
   fdr: number;
   deltaBeta: number;
   direction: string;
+  avgPosLogFC?: number | null;
+  avgNegLogFC?: number | null;
+  nPosTop3?: number;
+  nNegTop3?: number;
 }
 
 export interface MasterDMRData {
