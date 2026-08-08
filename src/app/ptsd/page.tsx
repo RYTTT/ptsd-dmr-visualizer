@@ -21,7 +21,7 @@ import {
   Loader2,
   MapPin,
 } from 'lucide-react';
-import { KeyResultsPanel, FTC_KEY_GENES } from '@/components/KeyResultsPanel';
+import { KeyResultsPanel, FTC_KEY_GENES, EpicManifestEntry } from '@/components/KeyResultsPanel';
 
 export default function Home() {
   // ---- Data loading state ----
@@ -33,6 +33,14 @@ export default function Home() {
   const [selectedTrackData, setSelectedTrackData] = useState<GeneProbeData | null>(null);
   const [trackLoading, setTrackLoading] = useState(false);
   const probeCache = useRef<Record<string, GeneProbeData | null>>({});
+  const probeCacheKeys = useRef<string[]>([]);
+  const CACHE_LIMIT = 100;
+
+  // EPIC manifest for dynamic stats
+  const [epicManifest, setEpicManifest] = useState<Record<string, EpicManifestEntry> | undefined>(undefined);
+
+  // Auto-scroll ref
+  const trackSectionRef = useRef<HTMLDivElement>(null);
 
   // ---- UI state ----
   const [activeTab, setActiveTab] = useState<string>('cross');
@@ -46,13 +54,20 @@ export default function Home() {
   const [showTrack, setShowTrack] = useState<boolean>(true);
   const pageSize = 50;
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   useEffect(() => {
     Promise.all([
-      fetch('/data/dmrData.json').then((r) => r.json()),
-      fetch('/data/common/geneAnnotations.json').then((r) => r.json()),
-    ]).then(([dmr, annos]) => {
+      fetch('/data/dmrData.json').then((r) => { if (!r.ok) throw new Error('Failed to load DMR data'); return r.json(); }),
+      fetch('/data/common/geneAnnotations.json').then((r) => { if (!r.ok) throw new Error('Failed to load annotations'); return r.json(); }),
+      fetch('/data/common/epicGeneManifest.json').then((r) => r.ok ? r.json() : null).catch(() => null),
+    ]).then(([dmr, annos, manifest]) => {
       setMasterData(dmr as MasterDMRData);
       setAnnotationData(annos as GeneAnnotationMap);
+      if (manifest) setEpicManifest(manifest);
+      setLoading(false);
+    }).catch((err) => {
+      setLoadError(err.message || 'Failed to load data');
       setLoading(false);
     });
   }, []);
@@ -70,10 +85,17 @@ export default function Home() {
       const res = await fetch(`/data/probes/${encodeURIComponent(gene)}.json`);
       if (res.ok) {
         const data = await res.json() as GeneProbeData;
+        // LRU cache eviction
+        if (probeCacheKeys.current.length >= CACHE_LIMIT) {
+          const oldest = probeCacheKeys.current.shift()!;
+          delete probeCache.current[oldest];
+        }
         probeCache.current[gene] = data;
+        probeCacheKeys.current.push(gene);
         setSelectedTrackData(data);
       } else {
         probeCache.current[gene] = null;
+        probeCacheKeys.current.push(gene);
         setSelectedTrackData(null);
       }
     } catch {
@@ -217,20 +239,64 @@ export default function Home() {
 
   // ---- CSV Export ----
   const handleExportCSV = () => {
-    const headers = ['Gene', 'Chr', 'TotalProbes', 'PTSD_Related', 'FDR', 'DeltaBeta', 'Direction'];
-    const rows = filteredData.map((d: any) => [
-      d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', d.fdr, d.deltaBeta, d.direction,
-    ]);
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      [headers.join(','), ...rows.map((e: any) => e.join(','))].join('\n');
-    const link = document.createElement('a');
-    link.setAttribute('href', encodeURI(csvContent));
-    link.setAttribute('download', `DMR_List_${activeTab}_filtered.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (activeTab === 'cross') {
+      // Full cross-subtype export with all 4 subtype columns
+      const headers = ['Gene', 'Chr', 'TotalProbes', 'PTSD_Related', 'CrossFDR',
+        'SSS_DeltaBeta', 'SSS_FDR', 'SSS_Direction',
+        'ADS_DeltaBeta', 'ADS_FDR', 'ADS_Direction',
+        'ICF_DeltaBeta', 'ICF_FDR', 'ICF_Direction',
+        'ISS_DeltaBeta', 'ISS_FDR', 'ISS_Direction',
+      ];
+      const rows = filteredData.map((d: any) => {
+        const item = d.rawItem;
+        return [
+          d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', d.fdr,
+          item.subtypes?.SSS?.deltaBeta ?? '', item.subtypes?.SSS?.fdr ?? '', item.subtypes?.SSS?.direction ?? '',
+          item.subtypes?.ADS?.deltaBeta ?? '', item.subtypes?.ADS?.fdr ?? '', item.subtypes?.ADS?.direction ?? '',
+          item.subtypes?.ICF?.deltaBeta ?? '', item.subtypes?.ICF?.fdr ?? '', item.subtypes?.ICF?.direction ?? '',
+          item.subtypes?.ISS?.deltaBeta ?? '', item.subtypes?.ISS?.fdr ?? '', item.subtypes?.ISS?.direction ?? '',
+        ];
+      });
+      const csvContent =
+        'data:text/csv;charset=utf-8,' +
+        [headers.join(','), ...rows.map((e: any) => e.join(','))].join('\n');
+      const link = document.createElement('a');
+      link.setAttribute('href', encodeURI(csvContent));
+      link.setAttribute('download', `DMR_CrossSubtype_filtered.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      const headers = ['Gene', 'Chr', 'TotalProbes', 'PTSD_Related', 'FDR', 'DeltaBeta', 'Direction'];
+      const rows = filteredData.map((d: any) => [
+        d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', d.fdr, d.deltaBeta, d.direction,
+      ]);
+      const csvContent =
+        'data:text/csv;charset=utf-8,' +
+        [headers.join(','), ...rows.map((e: any) => e.join(','))].join('\n');
+      const link = document.createElement('a');
+      link.setAttribute('href', encodeURI(csvContent));
+      link.setAttribute('download', `DMR_${activeTab}_Unique_filtered.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
+
+  if (loadError) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-center p-8">
+          <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+            <span className="text-2xl">!</span>
+          </div>
+          <span className="text-red-700 text-sm font-semibold">Error Loading Data</span>
+          <p className="text-slate-500 text-xs max-w-sm">{loadError}</p>
+          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition">Retry</button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading || !masterData) {
     return (
@@ -284,9 +350,12 @@ export default function Home() {
           projectDescription="Key candidate genes identified across military & civilian trauma cohorts (Vet 450K & 850K EPIC array manifests). Click any landmark gene card to immediately view its genomic track plot."
           genes={FTC_KEY_GENES}
           selectedGene={selectedGene}
+          epicManifest={epicManifest}
           onSelectGene={(gene) => {
             setSelectedGene(gene);
             setShowTrack(true);
+            // Auto-scroll to genomic track
+            setTimeout(() => trackSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
           }}
         />
 
@@ -485,7 +554,7 @@ export default function Home() {
             <SubtypeComparisonChart geneData={selectedCrossItem} />
 
             {/* Probe-Level Genomic Track */}
-            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+            <div ref={trackSectionRef} className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2.5">
                   <MapPin className="w-4 h-4 text-slate-800" />

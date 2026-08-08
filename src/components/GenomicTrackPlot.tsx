@@ -487,8 +487,10 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         featureBounds.forEach(({ feature, min, max }) => {
           let x1 = posToX(min, cIdx);
           let x2 = posToX(max, cIdx);
-          if (x2 - x1 < 4) {
-            x1 -= 2; x2 += 2;
+          if (x2 - x1 < 12) {
+            const center = (x1 + x2) / 2;
+            x1 = center - 6;
+            x2 = center + 6;
           }
           x1 = Math.max(x1, colLeft);
           x2 = Math.min(x2, colLeft + colWidth);
@@ -708,8 +710,10 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       featureBounds.forEach(({ feature, min, max }) => {
         let x1 = posToX(min, 0);
         let x2 = posToX(max, 0);
-        if (x2 - x1 < 4) {
-          x1 -= 2; x2 += 2;
+        if (x2 - x1 < 12) {
+          const center = (x1 + x2) / 2;
+          x1 = center - 6;
+          x2 = center + 6;
         }
         x1 = Math.max(x1, leftMargin1);
         x2 = Math.min(x2, leftMargin1 + colWidth);
@@ -835,6 +839,16 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       ctx.fillText(item.label, lx + (item.type === 'feature' ? 22 : 24), ly + 4);
       lx += (item.type === 'feature' ? 22 : 24) + ctx.measureText(item.label).width + 20;
     }
+
+    // ---- EPIC Coverage Disclaimer ----
+    ctx.font = 'italic 9px Inter, system-ui, sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'center';
+    ctx.fillText(
+      'Feature regions reflect Illumina EPIC 850K probe coverage only. Absence of a region does not indicate absence of biological activity.',
+      effectiveWidth / 2,
+      ly + 22
+    );
   }, [
     geneData,
     dimensions,

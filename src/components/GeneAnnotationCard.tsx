@@ -101,14 +101,30 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
             )}
             
             {/* Database & External Resources */}
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <a
+                href={`https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=${gene}&highlight=`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-[11px] font-bold text-amber-800 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded border border-amber-200 transition"
+              >
+                UCSC Genome Browser <ExternalLink className="w-3 h-3" />
+              </a>
+              <a
+                href={`https://www.ewascatalog.org/search?query=${gene}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded border border-emerald-200 transition"
+              >
+                EWAS Catalog <ExternalLink className="w-3 h-3" />
+              </a>
               <a
                 href={`https://www.genecards.org/cgi-bin/carddisp.pl?gene=${gene}`}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded border border-slate-300 transition"
               >
-                GeneCards Profile <ExternalLink className="w-3 h-3" />
+                GeneCards <ExternalLink className="w-3 h-3" />
               </a>
               <a
                 href={`https://pubmed.ncbi.nlm.nih.gov/?term=${gene}+methylation+PTSD`}
@@ -116,7 +132,7 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
                 rel="noreferrer"
                 className="flex items-center gap-1.5 text-[11px] font-bold text-blue-800 hover:text-blue-950 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded border border-blue-200 transition"
               >
-                NCBI PubMed Query <ExternalLink className="w-3 h-3" />
+                PubMed <ExternalLink className="w-3 h-3" />
               </a>
             </div>
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { Flame, Activity, Dna, ArrowUpRight, Sparkles, ShieldCheck, Zap } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { Dna, ArrowUpRight, Sparkles } from 'lucide-react';
 
 export interface KeyGeneItem {
   gene: string;
@@ -9,9 +9,17 @@ export interface KeyGeneItem {
   categoryColor: string;
   categoryBg: string;
   finding: string;
-  statsLabel: string;
   direction: 'Hypermethylated' | 'Hypomethylated' | 'Mixed';
   pmid?: string;
+}
+
+export interface EpicManifestEntry {
+  chr: string;
+  totalProbes: number;
+  probesWithStats: number;
+  features: string[];
+  nCpgIslands: number;
+  cpgIslands: string[];
 }
 
 interface KeyResultsPanelProps {
@@ -20,6 +28,7 @@ interface KeyResultsPanelProps {
   genes: KeyGeneItem[];
   selectedGene: string | null;
   onSelectGene: (gene: string) => void;
+  epicManifest?: Record<string, EpicManifestEntry>;
 }
 
 export const FTC_KEY_GENES: KeyGeneItem[] = [
@@ -29,7 +38,6 @@ export const FTC_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#b91c1c',
     categoryBg: '#fef2f2',
     finding: 'Glucocorticoid receptor chaperone. Shows cross-subtype differential methylation in promoter CpG islands, driving altered stress sensitivity.',
-    statsLabel: '52 EPIC Probes | 3 CpG Islands',
     direction: 'Hypermethylated',
   },
   {
@@ -38,7 +46,6 @@ export const FTC_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#1d4ed8',
     categoryBg: '#eff6ff',
     finding: 'Aryl hydrocarbon receptor repressor. Canonical epigenetic landmark of environmental stress & trauma exposure with robust CpG island changes.',
-    statsLabel: '167 EPIC Probes | 8 CpG Islands',
     direction: 'Hypomethylated',
   },
   {
@@ -46,8 +53,7 @@ export const FTC_KEY_GENES: KeyGeneItem[] = [
     category: 'Glucocorticoid Receptor',
     categoryColor: '#6d28d9',
     categoryBg: '#f5f3ff',
-    finding: 'Central glucocorticoid receptor governing HPA-axis negative feedback inhibition and stress susceptibility in military & trauma cohorts.',
-    statsLabel: '89 EPIC Probes | 1 CpG Island',
+    finding: 'Central glucocorticoid receptor governing HPA-axis negative feedback inhibition and stress susceptibility in military & civilian trauma cohorts.',
     direction: 'Hypomethylated',
   },
   {
@@ -56,7 +62,6 @@ export const FTC_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#047857',
     categoryBg: '#ecfdf5',
     finding: 'Brain-derived neurotrophic factor. Key regulator of synaptic plasticity and hippocampal memory consolidation altered across PTSD clinical subtypes.',
-    statsLabel: '93 EPIC Probes | 4 CpG Islands',
     direction: 'Hypermethylated',
   },
   {
@@ -65,7 +70,6 @@ export const FTC_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#c2410c',
     categoryBg: '#fff7ed',
     finding: 'CRH Receptor 1. Primary central mediator of stress response, hyperarousal, and endocrine cascade in PTSD.',
-    statsLabel: '41 EPIC Probes | 1 CpG Island',
     direction: 'Hypermethylated',
   },
   {
@@ -74,16 +78,14 @@ export const FTC_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#0891b2',
     categoryBg: '#ecfeff',
     finding: 'Serotonin transporter gene (5-HTT). Epigenetic promoter modification associated with mood dysregulation and affective PTSD phenotypes.',
-    statsLabel: '31 EPIC Probes | 1 CpG Island',
     direction: 'Hypomethylated',
   },
   {
     gene: 'STAT5B',
     category: 'Immune-Endocrine Crosstalk',
     categoryColor: '#4f46e5',
-    categoryBg: '#eeef2ff',
+    categoryBg: '#eef2ff',
     finding: 'Signal transducer 5B. Key junction connecting growth hormone and neuroimmune inflammatory signaling in severe stress subtypes.',
-    statsLabel: '39 EPIC Probes | 1 CpG Island',
     direction: 'Hypermethylated',
   },
 ];
@@ -95,7 +97,6 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#7c3aed',
     categoryBg: '#f5f3ff',
     finding: 'Arginyl-tRNA protein transferase. Top treatment-responsive DMR showing consistent post-therapy methylation shift across MDMA, Ketamine, and CPT.',
-    statsLabel: '44 EPIC Probes | 1 CpG Island',
     direction: 'Hypomethylated',
   },
   {
@@ -104,7 +105,6 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#1d4ed8',
     categoryBg: '#eff6ff',
     finding: 'Aryl hydrocarbon receptor repressor. Canonical hallmark of trauma exposure & epigenetic aging showing highly significant cross-cohort therapy response (Meta FDR = 3.45e-7).',
-    statsLabel: '167 EPIC Probes | 8 CpG Islands | Meta FDR = 3.45e-7',
     direction: 'Hypermethylated',
   },
   {
@@ -113,7 +113,6 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#6d28d9',
     categoryBg: '#f5f3ff',
     finding: 'Central HPA axis receptor exhibiting significant cross-cohort treatment remethylation in meta-analysis (Meta FDR = 3.6e-5).',
-    statsLabel: '55 EPIC Probes | Meta FDR = 3.6e-5',
     direction: 'Hypermethylated',
   },
   {
@@ -122,7 +121,6 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#047857',
     categoryBg: '#ecfdf5',
     finding: 'Brain-derived neurotrophic factor. Key driver of fear extinction and neuroplasticity restoration following MDMA-assisted therapy (Meta FDR = 9.56e-6).',
-    statsLabel: '75 EPIC Probes | 4 CpG Islands | Meta FDR = 9.56e-6',
     direction: 'Hypermethylated',
   },
   {
@@ -131,7 +129,6 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#0891b2',
     categoryBg: '#ecfeff',
     finding: 'Homeobox B9. Developmental & epigenetic architecture gene demonstrating robust differential methylation following MDMA-assisted therapy.',
-    statsLabel: '22 EPIC Probes | Meta FDR < 1e-8',
     direction: 'Hypermethylated',
   },
   {
@@ -140,7 +137,6 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#059669',
     categoryBg: '#ecfdf5',
     finding: 'G-protein alpha subunit. Central neuroendocrine signaling gene with significant pre-to-post treatment methylation restoration in CD4+ T cells.',
-    statsLabel: '178 EPIC Probes | 1 CpG Island',
     direction: 'Hypomethylated',
   },
   {
@@ -149,7 +145,6 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     categoryColor: '#c2410c',
     categoryBg: '#fff7ed',
     finding: 'HPA axis chaperone evaluated across pre- and post-treatment timepoints, tracking glucocorticoid sensitivity recovery following MDMA therapy.',
-    statsLabel: '52 EPIC Probes | 3 CpG Islands',
     direction: 'Hypomethylated',
   },
 ];
@@ -160,7 +155,25 @@ export const KeyResultsPanel: React.FC<KeyResultsPanelProps> = ({
   genes,
   selectedGene,
   onSelectGene,
+  epicManifest,
 }) => {
+  // Build dynamic stats labels from the EPIC manifest
+  const dynamicStats = useMemo(() => {
+    const map: Record<string, string> = {};
+    if (!epicManifest) return map;
+    for (const item of genes) {
+      const entry = epicManifest[item.gene];
+      if (entry) {
+        const parts: string[] = [];
+        parts.push(`${entry.totalProbes} EPIC Probes`);
+        if (entry.nCpgIslands > 0) parts.push(`${entry.nCpgIslands} CpG Island${entry.nCpgIslands > 1 ? 's' : ''}`);
+        parts.push(`${entry.features.length} Feature Region${entry.features.length > 1 ? 's' : ''}`);
+        map[item.gene] = parts.join(' | ');
+      }
+    }
+    return map;
+  }, [epicManifest, genes]);
+
   return (
     <div className="bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 border border-slate-800 rounded-2xl p-6 text-white shadow-xl mb-8 relative overflow-hidden">
       {/* Subtle background glow */}
@@ -191,6 +204,7 @@ export const KeyResultsPanel: React.FC<KeyResultsPanelProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
         {genes.map((item) => {
           const isSelected = selectedGene === item.gene;
+          const statsLabel = dynamicStats[item.gene] || 'Loading...';
           return (
             <div
               key={item.gene}
@@ -228,9 +242,9 @@ export const KeyResultsPanel: React.FC<KeyResultsPanelProps> = ({
                 </p>
               </div>
 
-              {/* Footer row */}
+              {/* Footer row — DYNAMIC STATS */}
               <div className="pt-2.5 border-t border-slate-700/50 flex items-center justify-between text-[11px]">
-                <span className="text-slate-400 font-mono font-medium">{item.statsLabel}</span>
+                <span className="text-slate-400 font-mono font-medium">{statsLabel}</span>
                 <span
                   className={`font-bold px-1.5 py-0.5 rounded text-[10px] ${
                     item.direction === 'Hypermethylated'

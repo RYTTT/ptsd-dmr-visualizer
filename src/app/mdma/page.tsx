@@ -15,7 +15,7 @@ import { GeneAnnotationCard } from '@/components/GeneAnnotationCard';
 import { GeneProbeData } from '@/types/probe';
 import { GeneAnnotationMap } from '@/types/annotation';
 
-import { KeyResultsPanel, MDMA_KEY_GENES } from '@/components/KeyResultsPanel';
+import { KeyResultsPanel, MDMA_KEY_GENES, EpicManifestEntry } from '@/components/KeyResultsPanel';
 
 // ---- Types ----
 interface CohortStat {
@@ -85,22 +85,36 @@ export default function MdmaPage() {
   const [selectedTrackData, setSelectedTrackData] = useState<GeneProbeData | null>(null);
   const [trackLoading, setTrackLoading] = useState(false);
   const probeCache = useRef<Record<string, GeneProbeData | null>>({});
+  const probeCacheKeys = useRef<string[]>([]);
+  const CACHE_LIMIT = 100;
 
-  // Load data
+  // EPIC manifest for dynamic stats
+  const [epicManifest, setEpicManifest] = useState<Record<string, EpicManifestEntry> | undefined>(undefined);
+
+  // Auto-scroll ref
+  const trackSectionRef = useRef<HTMLDivElement>(null);
+
+  // Error state
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   useEffect(() => {
     Promise.all([
-      fetch('/data/mdma/dmrData.json').then((r) => r.json()),
-      fetch('/data/common/geneAnnotations.json').then((r) => r.json()).catch(() => null),
-    ]).then(([d, annot]) => {
+      fetch('/data/mdma/dmrData.json').then((r) => { if (!r.ok) throw new Error('Failed to load treatment DMR data'); return r.json(); }),
+      fetch('/data/common/geneAnnotations.json').then((r) => r.ok ? r.json() : null).catch(() => null),
+      fetch('/data/common/epicGeneManifest.json').then((r) => r.ok ? r.json() : null).catch(() => null),
+    ]).then(([d, annot, manifest]) => {
       setData(d as MdmaMasterData);
       setAnnotationData(annot as GeneAnnotationMap);
+      if (manifest) setEpicManifest(manifest);
       setLoading(false);
       const md = d as MdmaMasterData;
       if (md.crossCohort.length > 0) setSelectedGene(md.crossCohort[0].gene);
+    }).catch((err) => {
+      setLoadError(err.message || 'Failed to load data');
+      setLoading(false);
     });
   }, []);
 
-  // Fetch probe data
   const fetchProbeData = useCallback(async (gene: string) => {
     if (probeCache.current[gene] !== undefined) {
       setSelectedTrackData(probeCache.current[gene]);
@@ -111,10 +125,17 @@ export default function MdmaPage() {
       const res = await fetch(`/data/mdma/probes/${encodeURIComponent(gene)}.json`);
       if (res.ok) {
         const pd = (await res.json()) as GeneProbeData;
+        // LRU cache eviction
+        if (probeCacheKeys.current.length >= CACHE_LIMIT) {
+          const oldest = probeCacheKeys.current.shift()!;
+          delete probeCache.current[oldest];
+        }
         probeCache.current[gene] = pd;
+        probeCacheKeys.current.push(gene);
         setSelectedTrackData(pd);
       } else {
         probeCache.current[gene] = null;
+        probeCacheKeys.current.push(gene);
         setSelectedTrackData(null);
       }
     } catch {
@@ -251,6 +272,21 @@ export default function MdmaPage() {
     window.location.href = '/login';
   };
 
+  if (loadError) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-center p-8">
+          <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+            <span className="text-2xl">!</span>
+          </div>
+          <span className="text-red-700 text-sm font-semibold">Error Loading Data</span>
+          <p className="text-slate-500 text-xs max-w-sm">{loadError}</p>
+          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition">Retry</button>
+        </div>
+      </div>
+    );
+  }
+
   if (loading || !data) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -295,7 +331,11 @@ export default function MdmaPage() {
           projectDescription="Landmark treatment-responsive epigenetic loci identified across MDMA-assisted therapy, Ketamine, and CPT cohorts (IPW-adjusted, CD4+ T cells, 850K EPIC array). Click any landmark gene card to inspect its 3×2 pre/post genomic track plot."
           genes={MDMA_KEY_GENES}
           selectedGene={selectedGene}
-          onSelectGene={(gene) => setSelectedGene(gene)}
+          epicManifest={epicManifest}
+          onSelectGene={(gene) => {
+            setSelectedGene(gene);
+            setTimeout(() => trackSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+          }}
         />
 
         {/* Timepoint Toggle + Cohort Tabs */}
@@ -511,7 +551,7 @@ export default function MdmaPage() {
             )}
 
             {/* Probe Track */}
-            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+            <div ref={trackSectionRef} className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
               <div className="flex items-center space-x-2.5 mb-3">
                 <MapPin className="w-4 h-4 text-slate-800" />
                 <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Probe-Level Genomic Track</h3>
