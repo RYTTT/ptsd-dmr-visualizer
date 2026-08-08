@@ -146,17 +146,25 @@ export default function Home() {
     if (!masterData) return [];
     let list: any[] = [];
     if (activeTab === 'cross') {
-      list = masterData.crossSubtype.map((item) => ({
-        gene: item.gene,
-        chr: item.chr,
-        totalProbes: item.totalProbes,
-        isPtsd: item.isPtsd,
-        fdr: item.crossFdr,
-        deltaBeta: item.subtypes.SSS.deltaBeta,
-        direction: item.subtypes.SSS.direction,
-        negLogFdr: -Math.log10(Math.max(item.crossFdr, 1e-30)),
-        rawItem: item,
-      }));
+      list = masterData.crossSubtype.map((item) => {
+        const subs = item.subtypes;
+        const avgDeltaBeta = (subs.SSS.deltaBeta + subs.ADS.deltaBeta + subs.ICF.deltaBeta + subs.ISS.deltaBeta) / 4;
+        const signs = [subs.SSS.deltaBeta, subs.ADS.deltaBeta, subs.ICF.deltaBeta, subs.ISS.deltaBeta];
+        const allPos = signs.every((s) => s > 0);
+        const allNeg = signs.every((s) => s < 0);
+        const dir = allPos ? 'Hypermethylated' : allNeg ? 'Hypomethylated' : 'Mixed';
+        return {
+          gene: item.gene,
+          chr: item.chr,
+          totalProbes: item.totalProbes,
+          isPtsd: item.isPtsd,
+          fdr: item.crossFdr,
+          deltaBeta: avgDeltaBeta,
+          direction: dir,
+          negLogFdr: -Math.log10(Math.max(item.crossFdr, 1e-30)),
+          rawItem: item,
+        };
+      });
     } else {
       const uList =
         masterData.uniqueSubtypes[activeTab as keyof typeof masterData.uniqueSubtypes] || [];
