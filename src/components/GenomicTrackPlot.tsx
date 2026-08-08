@@ -55,6 +55,15 @@ const HYPO_COLOR = '#2563eb';
 const ISLAND_FILL = 'rgba(245, 158, 11, 0.28)';
 const ISLAND_STROKE = 'rgba(180, 83, 9, 0.75)';
 
+const FEATURE_COLORS: Record<string, string> = {
+  'TSS1500': '#f59e0b', // amber-500
+  'TSS200': '#ef4444', // red-500
+  '5\'UTR': '#8b5cf6', // violet-500
+  '1stExon': '#3b82f6', // blue-500
+  'Body': '#10b981', // emerald-500
+  '3\'UTR': '#06b6d4', // cyan-500
+};
+
 interface TooltipData {
   x: number;
   y: number;
@@ -101,7 +110,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
   // ---- DIMENSIONS ----
   const panelHeight = 175;
   const topMargin = isGrid ? 74 : 50;
-  const bottomMargin = 80;
+  const bottomMargin = 120;
   const leftMargin1 = isGrid ? 55 : 80;
   const rightMargin = 24;
   const panelGap = 26;
@@ -114,6 +123,23 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     const count = SUBTYPES.length || 1;
     return topMargin + count * panelHeight + (count - 1) * panelGap + bottomMargin;
   }, [SUBTYPES, isGrid, topMargin, panelHeight, panelGap, bottomMargin]);
+
+  const featureBounds = useMemo(() => {
+    const bounds: Record<string, { min: number; max: number }> = {};
+    for (const probe of geneData.probes) {
+      const feat = probe.feature;
+      if (!feat || feat === 'Unknown') continue;
+      if (!bounds[feat]) {
+        bounds[feat] = { min: probe.pos, max: probe.pos };
+      } else {
+        if (probe.pos < bounds[feat].min) bounds[feat].min = probe.pos;
+        if (probe.pos > bounds[feat].max) bounds[feat].max = probe.pos;
+      }
+    }
+    return Object.entries(bounds)
+      .map(([feature, { min, max }]) => ({ feature, min, max }))
+      .sort((a, b) => a.feature.localeCompare(b.feature));
+  }, [geneData.probes]);
 
   // ---- X-AXIS DOMAIN: INCLUDE BOTH PROBES AND CPG ISLANDS ----
   const { minPos, maxPos, posRange } = useMemo(() => {
@@ -450,10 +476,36 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       });
 
       // ---- X-Axis at bottom of grid (under Row 2) ----
-      const xAxisY = topMargin + 3 * panelHeight + 2 * panelGap + 12;
+      const xAxisY = topMargin + 3 * panelHeight + 2 * panelGap + 20;
 
       [0, 1].forEach((cIdx) => {
         const colLeft = cIdx === 0 ? leftMargin1 : leftMargin2;
+        
+        // Draw Feature Annotations above X-Axis
+        const featY = xAxisY - 10;
+        const featH = 6;
+        featureBounds.forEach(({ feature, min, max }) => {
+          let x1 = posToX(min, cIdx);
+          let x2 = posToX(max, cIdx);
+          if (x2 - x1 < 4) {
+            x1 -= 2; x2 += 2;
+          }
+          x1 = Math.max(x1, colLeft);
+          x2 = Math.min(x2, colLeft + colWidth);
+          const w = Math.max(x2 - x1, 2);
+
+          ctx.fillStyle = FEATURE_COLORS[feature] || '#94a3b8';
+          ctx.globalAlpha = 0.75;
+          ctx.beginPath();
+          if (typeof (ctx as any).roundRect === 'function') {
+            (ctx as any).roundRect(x1, featY, w, featH, 3);
+          } else {
+            ctx.rect(x1, featY, w, featH);
+          }
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1.0;
+
         ctx.strokeStyle = '#475569';
         ctx.lineWidth = 1.2;
         ctx.beginPath();
@@ -648,7 +700,33 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         }
       });
 
-      const xAxisY = topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + 14;
+      const xAxisY = topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + 20;
+      
+      // Draw Feature Annotations above X-Axis
+      const featY = xAxisY - 10;
+      const featH = 6;
+      featureBounds.forEach(({ feature, min, max }) => {
+        let x1 = posToX(min, 0);
+        let x2 = posToX(max, 0);
+        if (x2 - x1 < 4) {
+          x1 -= 2; x2 += 2;
+        }
+        x1 = Math.max(x1, leftMargin1);
+        x2 = Math.min(x2, leftMargin1 + colWidth);
+        const w = Math.max(x2 - x1, 2);
+
+        ctx.fillStyle = FEATURE_COLORS[feature] || '#94a3b8';
+        ctx.globalAlpha = 0.75;
+        ctx.beginPath();
+        if (typeof (ctx as any).roundRect === 'function') {
+          (ctx as any).roundRect(x1, featY, w, featH, 3);
+        } else {
+          ctx.rect(x1, featY, w, featH);
+        }
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1.0;
+
       ctx.strokeStyle = '#475569';
       ctx.lineWidth = 1.2;
       ctx.beginPath();
@@ -676,12 +754,13 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     }
 
     // ---- Legend (at bottom) ----
-    const xAxisY = isGrid
-      ? topMargin + 3 * panelHeight + 2 * panelGap + 12
-      : topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + 14;
-    const legendY = xAxisY + (isGrid ? 54 : 55);
-
+    const legendXAxisY = isGrid
+      ? topMargin + 3 * panelHeight + 2 * panelGap + 20
+      : topMargin + SUBTYPES.length * (panelHeight + panelGap) - panelGap + 20;
+    
     ctx.font = '11px Inter, system-ui, sans-serif';
+    
+    // Build legend items
     const legendItems = [
       { type: 'dot', color: HYPER_COLOR, label: 'Hypermethylated (logFC > 0)' },
       { type: 'dot', color: HYPO_COLOR, label: 'Hypomethylated (logFC < 0)' },
@@ -689,12 +768,30 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       { type: 'dash', color: '#ef4444', label: 'p = 0.05' },
       { type: 'dash', color: '#b91c1c', label: 'p = 0.01' },
     ];
+    
+    // Add present feature annotations to legend
+    featureBounds.forEach((fb) => {
+      legendItems.push({
+        type: 'feature',
+        color: FEATURE_COLORS[fb.feature] || '#94a3b8',
+        label: fb.feature
+      });
+    });
 
-    let lx = effectiveWidth / 2 - 320;
+    // Layout legend with wrapping
+    let lx = Math.max(leftMargin1, effectiveWidth / 2 - 380);
+    let ly = legendXAxisY + 50;
+
     for (const item of legendItems) {
+      const itemW = ctx.measureText(item.label).width + 36;
+      if (lx + itemW > effectiveWidth - rightMargin) {
+        lx = Math.max(leftMargin1, effectiveWidth / 2 - 380);
+        ly += 22; // Next row
+      }
+
       if (item.type === 'dot') {
         ctx.beginPath();
-        ctx.arc(lx + 6, legendY, 5, 0, Math.PI * 2);
+        ctx.arc(lx + 6, ly, 5, 0, Math.PI * 2);
         ctx.fillStyle = item.color!;
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
@@ -705,26 +802,38 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         ctx.stroke();
       } else if (item.type === 'island') {
         ctx.fillStyle = ISLAND_FILL;
-        ctx.fillRect(lx, legendY - 6, 18, 12);
+        ctx.fillRect(lx, ly - 6, 18, 12);
         ctx.strokeStyle = ISLAND_STROKE;
         ctx.lineWidth = 1;
         ctx.setLineDash([4, 3]);
-        ctx.strokeRect(lx, legendY - 6, 18, 12);
+        ctx.strokeRect(lx, ly - 6, 18, 12);
         ctx.setLineDash([]);
       } else if (item.type === 'dash') {
         ctx.strokeStyle = item.color!;
         ctx.lineWidth = 1.5;
         ctx.setLineDash([6, 4]);
         ctx.beginPath();
-        ctx.moveTo(lx, legendY);
-        ctx.lineTo(lx + 18, legendY);
+        ctx.moveTo(lx, ly);
+        ctx.lineTo(lx + 18, ly);
         ctx.stroke();
         ctx.setLineDash([]);
+      } else if (item.type === 'feature') {
+        ctx.fillStyle = item.color!;
+        ctx.globalAlpha = 0.75;
+        ctx.beginPath();
+        if (typeof (ctx as any).roundRect === 'function') {
+          (ctx as any).roundRect(lx, ly - 4, 16, 8, 2);
+        } else {
+          ctx.rect(lx, ly - 4, 16, 8);
+        }
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
       }
+      
       ctx.fillStyle = '#334155';
       ctx.textAlign = 'left';
-      ctx.fillText(item.label, lx + 24, legendY + 4);
-      lx += ctx.measureText(item.label).width + 46;
+      ctx.fillText(item.label, lx + (item.type === 'feature' ? 22 : 24), ly + 4);
+      lx += (item.type === 'feature' ? 22 : 24) + ctx.measureText(item.label).width + 20;
     }
   }, [
     geneData,
@@ -745,6 +854,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     panelHeight,
     panelGap,
     topMargin,
+    featureBounds,
   ]);
 
   // ---- Tooltip on hover ----
