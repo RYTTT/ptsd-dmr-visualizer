@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine, LabelList,
   ScatterChart, Scatter, ZAxis,
 } from 'recharts';
 import {
@@ -535,7 +535,51 @@ export default function MdmaPage() {
             )}
 
             {/* Bar Chart */}
-            {selectedGene && selectedGeneBarData && (
+            {selectedGene && selectedGeneBarData && (() => {
+              // Force symmetric Y-axis domain
+              const allVals = selectedGeneBarData.flatMap((d) => [d.deltaBeta_Pre, d.deltaBeta_FUP]);
+              const maxAbs = Math.max(...allVals.map(Math.abs), 0.01);
+              const pad = maxAbs * 1.35;
+              const yDomain = [-pad, pad];
+
+              const sigStars = (fdr: number) => {
+                if (fdr < 0.001) return '***';
+                if (fdr < 0.01) return '**';
+                if (fdr < 0.05) return '*';
+                return 'ns';
+              };
+
+              // Custom label for Pre bars
+              const renderPreLabel = (props: any) => {
+                const { x, y, width, index } = props;
+                if (index === undefined || !selectedGeneBarData[index]) return null;
+                const entry = selectedGeneBarData[index];
+                const sig = sigStars(entry.fdr_Pre);
+                const isPos = entry.deltaBeta_Pre >= 0;
+                const ly = isPos ? y - 5 : y + 15;
+                return (
+                  <text x={x + width / 2} y={ly} textAnchor="middle" fill={sig === 'ns' ? '#94a3b8' : '#475569'} fontSize={sig === 'ns' ? 8 : 10} fontWeight={sig === 'ns' ? 400 : 700} fontStyle={sig === 'ns' ? 'italic' : 'normal'}>
+                    {sig}
+                  </text>
+                );
+              };
+
+              // Custom label for FUP bars
+              const renderFupLabel = (props: any) => {
+                const { x, y, width, index } = props;
+                if (index === undefined || !selectedGeneBarData[index]) return null;
+                const entry = selectedGeneBarData[index];
+                const sig = sigStars(entry.fdr_FUP);
+                const isPos = entry.deltaBeta_FUP >= 0;
+                const ly = isPos ? y - 5 : y + 15;
+                return (
+                  <text x={x + width / 2} y={ly} textAnchor="middle" fill={sig === 'ns' ? '#94a3b8' : '#7c3aed'} fontSize={sig === 'ns' ? 8 : 10} fontWeight={sig === 'ns' ? 400 : 700} fontStyle={sig === 'ns' ? 'italic' : 'normal'}>
+                    {sig}
+                  </text>
+                );
+              };
+
+              return (
               <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
                 <div className="flex items-center justify-between mb-3">
                   <div>
@@ -555,10 +599,10 @@ export default function MdmaPage() {
                 </div>
                 <div className="h-60 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={selectedGeneBarData} margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
+                    <BarChart data={selectedGeneBarData} margin={{ top: 20, right: 20, bottom: 20, left: 10 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                       <XAxis dataKey="cohort" stroke="#64748b" fontSize={11} />
-                      <YAxis stroke="#64748b" fontSize={11} tickFormatter={(v) => v.toFixed(3)}
+                      <YAxis stroke="#64748b" fontSize={11} domain={yDomain} tickFormatter={(v: number) => v.toFixed(3)}
                         label={{ value: 'Mean Δβ (Top 3)', angle: -90, position: 'insideLeft', fill: '#475569', fontSize: 11 }} />
                       <Tooltip content={({ active, payload }) => {
                         if (active && payload && payload.length) {
@@ -570,12 +614,12 @@ export default function MdmaPage() {
                                 <div className="bg-slate-50 p-1.5 rounded border border-slate-200">
                                   <div className="text-[10px] text-slate-400 font-bold uppercase">Baseline (Pre)</div>
                                   <div>Δβ: <span className="font-mono font-bold">{d.deltaBeta_Pre > 0 ? `+${d.deltaBeta_Pre.toFixed(4)}` : d.deltaBeta_Pre.toFixed(4)}</span></div>
-                                  <div>FDR: <span className="font-mono">{d.fdr_Pre < 1e-15 ? '< 1e-15' : d.fdr_Pre.toExponential(2)}</span></div>
+                                  <div>FDR: <span className="font-mono">{d.fdr_Pre < 1e-15 ? '< 1e-15' : d.fdr_Pre.toExponential(2)}</span> <strong>{sigStars(d.fdr_Pre)}</strong></div>
                                 </div>
                                 <div className="bg-purple-50/50 p-1.5 rounded border border-purple-200">
                                   <div className="text-[10px] text-purple-700 font-bold uppercase">Follow-Up (Post)</div>
                                   <div>Δβ: <span className="font-mono font-bold text-purple-900">{d.deltaBeta_FUP > 0 ? `+${d.deltaBeta_FUP.toFixed(4)}` : d.deltaBeta_FUP.toFixed(4)}</span></div>
-                                  <div>FDR: <span className="font-mono">{d.fdr_FUP < 1e-15 ? '< 1e-15' : d.fdr_FUP.toExponential(2)}</span></div>
+                                  <div>FDR: <span className="font-mono">{d.fdr_FUP < 1e-15 ? '< 1e-15' : d.fdr_FUP.toExponential(2)}</span> <strong>{sigStars(d.fdr_FUP)}</strong></div>
                                 </div>
                               </div>
                             </div>
@@ -584,17 +628,27 @@ export default function MdmaPage() {
                         return null;
                       }} />
                       <ReferenceLine y={0} stroke="#94a3b8" strokeWidth={1.2} />
-                      <Bar dataKey="deltaBeta_Pre" name="Baseline (Pre)" fill="#94a3b8" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="deltaBeta_Pre" name="Baseline (Pre)" fill="#94a3b8" radius={[4, 4, 0, 0]}>
+                        <LabelList content={renderPreLabel} />
+                      </Bar>
                       <Bar dataKey="deltaBeta_FUP" name="Follow-Up (Post)" radius={[4, 4, 0, 0]}>
                         {selectedGeneBarData.map((entry, i) => (
                           <Cell key={i} fill={entry.color} />
                         ))}
+                        <LabelList content={renderFupLabel} />
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
+                <div className="flex items-center justify-center gap-4 mt-1 text-[10px] text-slate-500 border-t border-slate-100 pt-2">
+                  <span><strong className="text-slate-900">***</strong> FDR &lt; 0.001</span>
+                  <span><strong className="text-slate-900">**</strong> FDR &lt; 0.01</span>
+                  <span><strong className="text-slate-900">*</strong> FDR &lt; 0.05</span>
+                  <span><em className="text-slate-400">ns</em> not significant</span>
+                </div>
               </div>
-            )}
+              );
+            })()}
 
             {/* Probe Track */}
             <div ref={trackSectionRef} className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
