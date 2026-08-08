@@ -1,22 +1,68 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GeneAnnotation } from '../types/annotation';
-import { BookOpen, BrainCircuit, ExternalLink, Tag } from 'lucide-react';
+import { BookOpen, BrainCircuit, ExternalLink, Tag, ArrowRight, FlaskConical, Shield } from 'lucide-react';
+
+interface CrossProjectInfo {
+  ptsd: { type: string; fdr: number; direction: string };
+  mdma: { type: string; fdr: number; deltaBeta: number; direction: string };
+}
 
 interface AnnotationCardProps {
   gene: string;
   annotation: GeneAnnotation | null;
+  /** Which project context we're in — affects cross-project bridge direction */
+  project?: 'ptsd' | 'mdma';
 }
+
+let crossProjectCache: Record<string, CrossProjectInfo> | null = null;
 
 export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
   gene,
   annotation,
+  project = 'ptsd',
 }) => {
+  const [crossInfo, setCrossInfo] = useState<CrossProjectInfo | null | undefined>(undefined);
+
+  useEffect(() => {
+    const load = async () => {
+      if (!crossProjectCache) {
+        try {
+          const r = await fetch('/data/common/crossProjectGenes.json');
+          crossProjectCache = r.ok ? await r.json() : {};
+        } catch {
+          crossProjectCache = {};
+        }
+      }
+      setCrossInfo(crossProjectCache?.[gene] ?? null);
+    };
+    load();
+  }, [gene]);
+
+  const crossLinkHref = project === 'ptsd' ? '/mdma' : '/ptsd';
+  const crossLinkLabel = project === 'ptsd' ? 'Treatment Response Atlas' : 'PTSD DMR Atlas';
+  const crossLinkIcon = project === 'ptsd' ? FlaskConical : Shield;
+  const CrossIcon = crossLinkIcon;
+
+  const crossFdr = crossInfo ? (project === 'ptsd' ? crossInfo.mdma.fdr : crossInfo.ptsd.fdr) : null;
+  const crossDirection = crossInfo ? (project === 'ptsd' ? crossInfo.mdma.direction : crossInfo.ptsd.direction) : null;
+
   if (!annotation) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl p-4 text-xs text-slate-500 shadow-xs">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 text-xs text-slate-500 shadow-xs space-y-3">
         <p className="italic">Standard genomic annotation available. Literature psychiatric profile pending.</p>
+        {crossInfo && (
+          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-200">
+            <CrossIcon className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span className="text-emerald-800 font-semibold text-[11px]">
+              Also significant in {crossLinkLabel} (FDR {crossFdr! < 1e-15 ? '< 1e-15' : crossFdr!.toExponential(2)}, {crossDirection})
+            </span>
+            <a href={crossLinkHref} className="ml-auto text-emerald-700 hover:text-emerald-900 flex items-center gap-0.5 text-[11px] font-bold whitespace-nowrap">
+              View <ArrowRight className="w-3 h-3" />
+            </a>
+          </div>
+        )}
       </div>
     );
   }
@@ -36,11 +82,42 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
         </h4>
       </div>
 
+      {/* Cross-Project Bridge Banner */}
+      {crossInfo && (
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200">
+          <div className="p-1.5 rounded-md bg-emerald-100 text-emerald-700 shrink-0">
+            <CrossIcon className="w-3.5 h-3.5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Cross-Project Signal</div>
+            <div className="text-xs text-emerald-900 font-medium">
+              Also significant in {crossLinkLabel}
+              <span className="ml-2 font-mono text-emerald-700">
+                FDR {crossFdr! < 1e-15 ? '< 1e-15' : crossFdr!.toExponential(2)}
+              </span>
+              <span className={`ml-2 px-1.5 py-0.5 text-[10px] rounded font-bold ${
+                crossDirection === 'Hypermethylated' ? 'bg-red-100 text-red-700' :
+                crossDirection === 'Hypomethylated' ? 'bg-blue-100 text-blue-700' :
+                'bg-amber-100 text-amber-700'
+              }`}>
+                {crossDirection}
+              </span>
+            </div>
+          </div>
+          <a
+            href={crossLinkHref}
+            className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-100 hover:bg-emerald-200 px-2.5 py-1.5 rounded-lg border border-emerald-300 transition whitespace-nowrap"
+          >
+            View <ArrowRight className="w-3 h-3" />
+          </a>
+        </div>
+      )}
+
       {/* Biological Function Summary */}
       <div className="text-xs text-slate-800 leading-relaxed bg-slate-50 border border-slate-200 p-3.5 rounded-lg">
         <p className="font-bold text-slate-900 mb-1 flex items-center gap-1.5">
           <BrainCircuit className="w-4 h-4 text-slate-700" />
-          Biological & Epigenetic Function:
+          Biological &amp; Epigenetic Function:
         </p>
         <p className="text-slate-700 leading-normal">{annotation.summary}</p>
       </div>
@@ -49,7 +126,7 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
       <div>
         <h5 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
           <Tag className="w-3.5 h-3.5 text-amber-600" />
-          Associated Psychiatric & Psychological Disorders:
+          Associated Psychiatric &amp; Psychological Disorders:
         </h5>
         <div className="flex flex-wrap gap-1.5">
           {annotation.psychDisorders.map((disorder, idx) => (

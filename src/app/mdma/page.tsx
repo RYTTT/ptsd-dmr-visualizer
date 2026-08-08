@@ -486,7 +486,7 @@ export default function MdmaPage() {
 
           {/* RIGHT */}
           <div className="lg:col-span-8 space-y-5">
-            {selectedGene && <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} />}
+            {selectedGene && <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} project="mdma" />}
 
             {/* Bar Chart */}
             {selectedGene && selectedGeneBarData && (

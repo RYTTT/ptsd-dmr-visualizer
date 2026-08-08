@@ -22,6 +22,7 @@ import {
   MapPin,
 } from 'lucide-react';
 import { KeyResultsPanel, FTC_KEY_GENES, EpicManifestEntry } from '@/components/KeyResultsPanel';
+import { PathwayEnrichmentPanel } from '@/components/PathwayEnrichmentPanel';
 
 export default function Home() {
   // ---- Data loading state ----
@@ -419,7 +420,15 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ===== MAIN SIDE-BY-SIDE SPLIT LAYOUT ===== */}
+        {/* ===== OVERVIEW: Volcano + Pathway panels, collapsible above the table ===== */}
+        <DmrVolcanoPlot
+          data={filteredData}
+          onSelectGene={(g) => setSelectedGene(g)}
+          selectedGene={selectedGene}
+        />
+        <div className="mb-6 mt-4">
+          <PathwayEnrichmentPanel activeTab={activeTab} onSelectGene={(g) => { setSelectedGene(g); setTimeout(() => trackSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); }} />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
           {/* LEFT COLUMN (4 Cols): DMR Registry Table (Compact, Top-level Gene Selector) */}
           <div className="lg:col-span-4 flex flex-col">
@@ -547,7 +556,7 @@ export default function Home() {
           <div className="lg:col-span-8 space-y-6">
             {/* Selected Gene Literature & Biological Annotation Card */}
             {selectedGene && (
-              <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} />
+              <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} project="ptsd" />
             )}
 
             {/* Subtype Comparison Bar Chart */}
@@ -559,7 +568,7 @@ export default function Home() {
                 <div className="flex items-center space-x-2.5">
                   <MapPin className="w-4 h-4 text-slate-800" />
                   <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                    Probe-Level Genomic Track (Nature Standard)
+                    CpG Locus Map — {selectedGene || 'Select Gene'}
                   </h3>
                 </div>
                 <div className="flex items-center gap-2">
@@ -596,15 +605,6 @@ export default function Home() {
               )}
             </div>
           </div>
-        </div>
-
-        {/* ===== BOTTOM SECTION: Full Volcano Effect Size Overview ===== */}
-        <div className="mb-6">
-          <DmrVolcanoPlot
-            data={filteredData}
-            onSelectGene={(g) => setSelectedGene(g)}
-            selectedGene={selectedGene}
-          />
         </div>
       </main>
     </div>

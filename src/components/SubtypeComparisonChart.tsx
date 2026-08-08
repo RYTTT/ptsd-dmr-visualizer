@@ -45,7 +45,7 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
     {
       subtype: 'ICF (Cognitive)',
       deltaBeta: geneData.subtypes.ICF.deltaBeta,
-      fdr: dummyFdr(geneData.subtypes.ICF.fdr),
+      fdr: geneData.subtypes.ICF.fdr,
       direction: geneData.subtypes.ICF.direction,
       color: '#7c3aed',
     },
@@ -58,9 +58,6 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
     },
   ];
 
-  function dummyFdr(val: number) {
-    return val;
-  }
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
