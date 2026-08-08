@@ -29,135 +29,104 @@ const SUBTYPE_COLORS: Record<string, string> = {
   ISS: '#059669',
 };
 
-// Custom shape component for rendering exact 0-anchored bars with non-overlapping labels
+/**
+ * Custom bar shape that draws from the zero line.
+ * Uses `background` (the full category slot rectangle) + symmetric yDomain
+ * to compute pixel positions — does NOT rely on yAxis which Recharts
+ * doesn't pass to custom shapes.
+ */
 const CustomBarShape = (props: any) => {
-  const { x, width, payload, yAxis } = props;
-  if (!payload || !yAxis || typeof yAxis.scale !== 'function') return null;
+  const { x, width, payload, background } = props;
+  if (!payload || !background) return null;
 
-  const y0 = yAxis.scale(0); // SVG Y pixel for 0 reference line
+  const plotTop = background.y as number;
+  const plotH = background.height as number;
+  const domainMax = payload._yDomainMax as number;
+
+  // scale: pixels per data-unit. Domain is [-domainMax, +domainMax]
+  const scale = plotH / (2 * domainMax);
+  // y0: pixel Y of the zero line (center of symmetric domain)
+  const y0 = plotTop + plotH / 2;
+  // Convert a data value to SVG pixel Y
+  const toY = (v: number) => y0 - v * scale;
+
   const isMixed = payload.isMixed;
-  const sig = payload.sig;
-  const color = payload.color;
+  const sig = payload.sig as string;
   const isNs = sig === 'ns';
   const opacity = isNs ? 0.35 : 1;
 
   if (isMixed) {
-    const posVal = payload.avgPosLogFC ?? 0;
-    const negVal = payload.avgNegLogFC ?? 0;
+    const posVal: number = payload.avgPosLogFC ?? 0;
+    const negVal: number = payload.avgNegLogFC ?? 0;
 
-    const yPos = posVal > 0 ? yAxis.scale(posVal) : y0;
-    const yNeg = negVal < 0 ? yAxis.scale(negVal) : y0;
+    const yPos = toY(posVal);
+    const yNeg = toY(negVal);
 
-    const posHeight = Math.max(0, y0 - yPos);
-    const negHeight = Math.max(0, yNeg - y0);
+    const posH = Math.max(0, y0 - yPos);
+    const negH = Math.max(0, yNeg - y0);
 
-    // Exact label Y positions to guarantee ZERO overlap
-    const yUp = posHeight > 0 ? yPos - 4 : y0;
-    const ySig = posHeight > 0 ? yUp - 12 : y0 - 6;
-    const yDown = negHeight > 0 ? yNeg + 13 : y0 + 13;
+    // Label positions:
+    //   ySig  at fixed top of plot (never overlaps)
+    //   yUp   just above red bar
+    //   yDown just below blue bar
+    const ySig = plotTop - 2; // fixed at top of chart area
+    const yUp = posH > 0 ? yPos - 4 : y0 - 4;
+    const yDown = negH > 0 ? yNeg + 14 : y0 + 14;
 
     return (
       <g>
-        {/* Positive Hyper Bar (Red, goes UP from 0 line) */}
-        {posHeight > 0 && (
-          <rect
-            x={x}
-            y={yPos}
-            width={width}
-            height={posHeight}
-            fill="#dc2626"
-            rx={3}
-            ry={3}
-            opacity={opacity}
-          />
+        {/* Red hyper bar: UP from zero */}
+        {posH > 0 && (
+          <rect x={x} y={yPos} width={width} height={posH}
+            fill="#dc2626" rx={3} ry={3} opacity={opacity} />
         )}
-
-        {/* Negative Hypo Bar (Blue, goes DOWN from 0 line) */}
-        {negHeight > 0 && (
-          <rect
-            x={x}
-            y={y0}
-            width={width}
-            height={negHeight}
-            fill="#2563eb"
-            rx={3}
-            ry={3}
-            opacity={opacity}
-          />
+        {/* Blue hypo bar: DOWN from zero */}
+        {negH > 0 && (
+          <rect x={x} y={y0} width={width} height={negH}
+            fill="#2563eb" rx={3} ry={3} opacity={opacity} />
         )}
-
-        {/* Upward probe count label ↑nPos */}
-        {payload.nPos > 0 && posHeight > 0 && (
-          <text
-            x={x + width / 2}
-            y={yUp}
-            textAnchor="middle"
-            fill="#dc2626"
-            fontSize={10}
-            fontWeight={700}
-          >
+        {/* ↑n label */}
+        {payload.nPos > 0 && posH > 0 && (
+          <text x={x + width / 2} y={yUp} textAnchor="middle"
+            fill="#dc2626" fontSize={10} fontWeight={700}>
             ↑{payload.nPos}
           </text>
         )}
-
-        {/* Downward probe count label ↓nNeg */}
-        {payload.nNeg > 0 && negHeight > 0 && (
-          <text
-            x={x + width / 2}
-            y={yDown}
-            textAnchor="middle"
-            fill="#2563eb"
-            fontSize={10}
-            fontWeight={700}
-          >
+        {/* ↓n label */}
+        {payload.nNeg > 0 && negH > 0 && (
+          <text x={x + width / 2} y={yDown} textAnchor="middle"
+            fill="#2563eb" fontSize={10} fontWeight={700}>
             ↓{payload.nNeg}
           </text>
         )}
-
-        {/* Significance stars *** at top of category column */}
-        <text
-          x={x + width / 2}
-          y={ySig}
-          textAnchor="middle"
+        {/* Significance stars at top */}
+        <text x={x + width / 2} y={ySig} textAnchor="middle"
           fill={isNs ? '#94a3b8' : '#0f172a'}
-          fontSize={isNs ? 9 : 11}
-          fontWeight={isNs ? 400 : 700}
-        >
+          fontSize={isNs ? 9 : 11} fontWeight={isNs ? 400 : 700}
+          fontStyle={isNs ? 'italic' : 'normal'}>
           {sig}
         </text>
       </g>
     );
   }
 
-  // Concordant Subtype Bar
-  const val = payload.deltaBeta;
-  const yVal = yAxis.scale(val);
+  // ---- Concordant bar (single direction) ----
+  const val = payload.deltaBeta as number;
+  const yVal = toY(val);
   const isPos = val >= 0;
 
   const barY = isPos ? yVal : y0;
-  const barHeight = Math.max(1, Math.abs(y0 - yVal));
-  const labelY = isPos ? barY - 6 : yVal + 14;
+  const barH = Math.max(1, Math.abs(y0 - yVal));
+  const labelY = plotTop - 2; // fixed at top, same as Mixed
 
   return (
     <g>
-      <rect
-        x={x}
-        y={barY}
-        width={width}
-        height={barHeight}
-        fill={color}
-        rx={3}
-        ry={3}
-        opacity={opacity}
-      />
-      <text
-        x={x + width / 2}
-        y={labelY}
-        textAnchor="middle"
+      <rect x={x} y={barY} width={width} height={barH}
+        fill={payload.color} rx={3} ry={3} opacity={opacity} />
+      <text x={x + width / 2} y={labelY} textAnchor="middle"
         fill={isNs ? '#94a3b8' : '#0f172a'}
-        fontSize={isNs ? 9 : 11}
-        fontWeight={isNs ? 400 : 700}
-      >
+        fontSize={isNs ? 9 : 11} fontWeight={isNs ? 400 : 700}
+        fontStyle={isNs ? 'italic' : 'normal'}>
         {sig}
       </text>
     </g>
@@ -177,12 +146,21 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
 
   const subtypeKeys = ['SSS', 'ADS', 'ICF', 'ISS'] as const;
 
-  // Build chart data
+  // Compute yDomain first so we can pass it into each data entry
+  const yDomainMax = useMemo(() => {
+    const allVals = subtypeKeys.flatMap((sub) => {
+      const s = geneData.subtypes[sub];
+      return [s.deltaBeta, s.avgPosLogFC ?? 0, s.avgNegLogFC ?? 0];
+    });
+    const maxAbs = Math.max(...allVals.map(Math.abs), 0.02);
+    return maxAbs * 1.55; // 55% padding for labels
+  }, [geneData]);
+
+  // Build chart data — include _yDomainMax so CustomBarShape can compute pixel positions
   const chartData = subtypeKeys.map((sub) => {
     const s = geneData.subtypes[sub];
     return {
       subtype: sub,
-      subtypeKey: sub,
       deltaBeta: s.deltaBeta,
       fdr: s.fdr,
       direction: s.direction,
@@ -193,22 +171,11 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
       avgNegLogFC: s.avgNegLogFC ?? null,
       nPos: s.nPosTop3 ?? 0,
       nNeg: s.nNegTop3 ?? 0,
+      _yDomainMax: yDomainMax,
     };
   });
 
   const hasMixed = chartData.some((d) => d.isMixed);
-
-  // Force symmetric Y-axis domain around zero with ample padding for top/bottom labels
-  const yDomain = useMemo(() => {
-    const allVals = chartData.flatMap((d) => [
-      d.deltaBeta,
-      d.avgPosLogFC ?? 0,
-      d.avgNegLogFC ?? 0,
-    ]);
-    const maxAbs = Math.max(...allVals.map(Math.abs), 0.02);
-    const pad = maxAbs * 1.55; // 55% padding to ensure labels never clip
-    return [-pad, pad];
-  }, [chartData]);
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
@@ -234,15 +201,15 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
         </div>
       </div>
 
-      <div className="h-68 w-full">
+      <div className="h-72 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 32, right: 20, bottom: 30, left: 10 }}>
+          <BarChart data={chartData} margin={{ top: 30, right: 20, bottom: 25, left: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
             <XAxis dataKey="subtype" stroke="#64748b" fontSize={11} />
             <YAxis
               stroke="#64748b"
               fontSize={11}
-              domain={yDomain}
+              domain={[-yDomainMax, yDomainMax]}
               tickFormatter={(v: number) => v.toFixed(2)}
               label={{
                 value: 'Top-3 Avg Δβ',
@@ -307,10 +274,11 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
             />
             <ReferenceLine y={0} stroke="#64748b" strokeWidth={1.5} />
 
-            {/* Custom SVG shape renderer handles all bars and non-overlapping labels */}
+            {/* Custom SVG shape uses `background` slot to compute zero line */}
             <Bar
               dataKey="deltaBeta"
               shape={<CustomBarShape />}
+              background={{ fill: 'transparent' }}
             />
           </BarChart>
         </ResponsiveContainer>
@@ -326,7 +294,7 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
           <span className="border-l border-slate-200 pl-4 flex items-center gap-2">
             <span className="text-red-600 font-bold">↑ Red = Hyper</span>
             <span className="text-blue-600 font-bold">↓ Blue = Hypo</span>
-            <span className="text-amber-700 font-semibold">(Mixed = opposing CpG directions split from zero)</span>
+            <span className="text-amber-700 font-semibold">(Mixed = opposing CpG directions)</span>
           </span>
         )}
       </div>
