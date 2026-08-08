@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { KeyResultsPanel, FTC_KEY_GENES, EpicManifestEntry } from '@/components/KeyResultsPanel';
 import { PathwayEnrichmentPanel } from '@/components/PathwayEnrichmentPanel';
+import { GeneStoryButton } from '@/components/GeneStoryButton';
 
 export default function Home() {
   // ---- Data loading state ----
@@ -556,7 +557,14 @@ export default function Home() {
           <div className="lg:col-span-8 space-y-6">
             {/* Selected Gene Literature & Biological Annotation Card */}
             {selectedGene && (
-              <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} project="ptsd" />
+              <>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} project="ptsd" />
+                  </div>
+                  <GeneStoryButton gene={selectedGene} annotation={selectedAnnotation} project="ptsd" epicManifest={epicManifest} />
+                </div>
+              </>
             )}
 
             {/* Subtype Comparison Bar Chart */}

@@ -16,6 +16,7 @@ import { GeneProbeData } from '@/types/probe';
 import { GeneAnnotationMap } from '@/types/annotation';
 
 import { KeyResultsPanel, MDMA_KEY_GENES, EpicManifestEntry } from '@/components/KeyResultsPanel';
+import { GeneStoryButton } from '@/components/GeneStoryButton';
 
 // ---- Types ----
 interface CohortStat {
@@ -416,7 +417,45 @@ export default function MdmaPage() {
           </div>
         </div>
 
-        {/* Main Layout */}
+        {/* ===== OVERVIEW: Volcano promoted above the table ===== */}
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs mb-6">
+          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4">
+            Volcano Plot — {activeTab === 'cross' ? 'Common' : `${activeTab}-Unique`} ({timepoint === 'Pre' ? 'Baseline' : 'Follow-Up'}) — {filteredData.length} DMRs
+          </h3>
+          <div className="h-72 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <ScatterChart margin={{ top: 10, right: 30, bottom: 30, left: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis type="number" dataKey="deltaBeta" name="Δβ" stroke="#64748b" fontSize={11}
+                  label={{ value: 'Mean Δβ (Effect Size)', position: 'insideBottom', offset: -15, fill: '#475569', fontSize: 11 }} />
+                <YAxis type="number" dataKey="negLogP" name="-log₁₀(FDR)" stroke="#64748b" fontSize={11}
+                  label={{ value: '-log₁₀(FDR)', angle: -90, position: 'insideLeft', fill: '#475569', fontSize: 11 }} />
+                <ZAxis range={[20, 20]} />
+                <Tooltip content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const d = payload[0].payload;
+                    return (
+                      <div className="bg-white border border-slate-300 p-2.5 rounded shadow-lg text-xs space-y-0.5">
+                        <div className="font-bold">{d.gene}</div>
+                        <div>Δβ: <span className="font-mono">{d.deltaBeta.toFixed(4)}</span></div>
+                        <div>-log₁₀FDR: <span className="font-mono">{d.negLogP.toFixed(2)}</span></div>
+                      </div>
+                    );
+                  }
+                  return null;
+                }} />
+                <Scatter data={volcanoData} onClick={(d: any) => { if (d?.gene) setSelectedGene(d.gene); }} cursor="pointer">
+                  {volcanoData.map((entry, idx) => (
+                    <Cell key={idx}
+                      fill={entry.gene === selectedGene ? '#f59e0b' : entry.direction === 'Hypermethylated' ? '#dc2626' : '#2563eb'}
+                      opacity={entry.gene === selectedGene ? 1 : 0.6} />
+                  ))}
+                </Scatter>
+              </ScatterChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-6">
           {/* LEFT: Registry Table */}
           <div className="lg:col-span-4 flex flex-col">
@@ -486,7 +525,14 @@ export default function MdmaPage() {
 
           {/* RIGHT */}
           <div className="lg:col-span-8 space-y-5">
-            {selectedGene && <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} project="mdma" />}
+            {selectedGene && (
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
+                  <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} project="mdma" />
+                </div>
+                <GeneStoryButton gene={selectedGene} annotation={selectedAnnotation} project="mdma" epicManifest={epicManifest} />
+              </div>
+            )}
 
             {/* Bar Chart */}
             {selectedGene && selectedGeneBarData && (
@@ -554,7 +600,7 @@ export default function MdmaPage() {
             <div ref={trackSectionRef} className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
               <div className="flex items-center space-x-2.5 mb-3">
                 <MapPin className="w-4 h-4 text-slate-800" />
-                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Probe-Level Genomic Track</h3>
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">CpG Locus Map — {selectedGene || 'Select Gene'}</h3>
               </div>
               {trackLoading ? (
                 <div className="text-center py-8 flex flex-col items-center gap-2">
@@ -572,44 +618,6 @@ export default function MdmaPage() {
           </div>
         </div>
 
-        {/* Volcano Plot */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs mb-6">
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4">
-            Volcano Plot — {activeTab === 'cross' ? 'Common' : `${activeTab}-Unique`} ({timepoint === 'Pre' ? 'Baseline' : 'Follow-Up'}) — {filteredData.length} DMRs
-          </h3>
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart margin={{ top: 10, right: 30, bottom: 30, left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis type="number" dataKey="deltaBeta" name="Δβ" stroke="#64748b" fontSize={11}
-                  label={{ value: 'Mean Δβ (Effect Size)', position: 'insideBottom', offset: -15, fill: '#475569', fontSize: 11 }} />
-                <YAxis type="number" dataKey="negLogP" name="-log₁₀(FDR)" stroke="#64748b" fontSize={11}
-                  label={{ value: '-log₁₀(FDR)', angle: -90, position: 'insideLeft', fill: '#475569', fontSize: 11 }} />
-                <ZAxis range={[20, 20]} />
-                <Tooltip content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const d = payload[0].payload;
-                    return (
-                      <div className="bg-white border border-slate-300 p-2.5 rounded shadow-lg text-xs space-y-0.5">
-                        <div className="font-bold">{d.gene}</div>
-                        <div>Δβ: <span className="font-mono">{d.deltaBeta.toFixed(4)}</span></div>
-                        <div>-log₁₀FDR: <span className="font-mono">{d.negLogP.toFixed(2)}</span></div>
-                      </div>
-                    );
-                  }
-                  return null;
-                }} />
-                <Scatter data={volcanoData} onClick={(d: any) => { if (d?.gene) setSelectedGene(d.gene); }} cursor="pointer">
-                  {volcanoData.map((entry, idx) => (
-                    <Cell key={idx}
-                      fill={entry.gene === selectedGene ? '#f59e0b' : entry.direction === 'Hypermethylated' ? '#dc2626' : '#2563eb'}
-                      opacity={entry.gene === selectedGene ? 1 : 0.6} />
-                  ))}
-                </Scatter>
-              </ScatterChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
       </main>
     </div>
   );
