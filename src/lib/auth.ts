@@ -18,19 +18,34 @@ export interface AuthConfig {
   secret: string;
 }
 
+const DEMO_AUTH_CONFIG: AuthConfig = {
+  username: 'Ruoting',
+  password: 'dmr2026',
+  secret: 'vercel-demo-only-dmr-secret-2026-change-me',
+};
+
 /**
- * Production intentionally has no built-in credentials. Development fallbacks
- * preserve the existing local workflow without making deployed instances
- * guessable.
+ * A complete custom configuration always wins. Local development and Vercel
+ * deployments without any AUTH_* variables use the documented demo account.
+ * Partial custom configurations fail closed instead of mixing custom and demo
+ * credentials.
  */
 export function getAuthConfig(): AuthConfig | null {
   const production = process.env.NODE_ENV === 'production';
-  const username = process.env.AUTH_USERNAME || (production ? '' : 'Ruoting');
-  const password = process.env.AUTH_PASSWORD || (production ? '' : 'dmr2026');
-  const secret = process.env.AUTH_SECRET || (production ? '' : 'development-only-dmr-secret-change-me');
+  const vercelDemo = process.env.VERCEL === '1';
+  const username = process.env.AUTH_USERNAME?.trim() ?? '';
+  const password = process.env.AUTH_PASSWORD ?? '';
+  const secret = process.env.AUTH_SECRET ?? '';
+  const configuredValues = [username, password, secret].filter(Boolean).length;
 
-  if (!username || !password || secret.length < 32) return null;
-  return { username, password, secret };
+  if (configuredValues === 3) {
+    if (secret.length < 32) return null;
+    return { username, password, secret };
+  }
+
+  if (configuredValues > 0) return null;
+  if (!production || vercelDemo) return DEMO_AUTH_CONFIG;
+  return null;
 }
 
 function encodeBase64Url(bytes: Uint8Array): string {

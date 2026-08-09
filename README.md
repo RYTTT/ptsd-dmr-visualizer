@@ -18,10 +18,14 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Authentication configuration
 
-Production deployments fail closed unless all three server-only variables are
-configured. Copy `.env.example`, set a strong username/password, and generate a
-random `AUTH_SECRET` of at least 32 characters. Never expose these values with a
-`NEXT_PUBLIC_` prefix.
+Vercel deployments with no `AUTH_*` variables use the public demonstration
+account `Ruoting` / `dmr2026`. Local development uses the same account. This
+fallback is intended only for non-sensitive demonstrations.
+
+For private deployments, configure all three server-only variables. A complete
+configuration overrides the demo account; a partial configuration fails closed.
+Generate a random `AUTH_SECRET` of at least 32 characters, and never expose these
+values with a `NEXT_PUBLIC_` prefix.
 
 ```bash
 AUTH_USERNAME=...
@@ -29,8 +33,9 @@ AUTH_PASSWORD=...
 AUTH_SECRET=...
 ```
 
-Local development retains the original demo credentials when these variables
-are absent. Production does not.
+Production environments other than Vercel fail closed when these variables are
+absent. Do not deploy restricted or unpublished data with the public demo
+credentials enabled.
 
 ## Data architecture
 

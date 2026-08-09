@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Eye, EyeOff, Loader2, LockKeyhole, Dna, ShieldCheck } from 'lucide-react';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('Ruoting');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -60,10 +60,22 @@ export default function LoginPage() {
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900">
-                Sign in to continue
+                Demo sign in
               </h2>
-              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">Use the credentials provided by the research team.</p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+                Use the shared demonstration account below.
+              </p>
             </div>
+          </div>
+
+          <div className="mb-5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-950">
+            <p className="font-semibold">Demo credentials</p>
+            <p className="mt-1">
+              Username <code className="font-mono font-semibold">Ruoting</code>
+              <span aria-hidden="true"> · </span>
+              <span className="sr-only">, </span>
+              Password <code className="font-mono font-semibold">dmr2026</code>
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -150,7 +162,7 @@ export default function LoginPage() {
 
           <div className="mt-6 flex items-start gap-2 border-t border-slate-100 pt-5 text-xs leading-relaxed text-slate-500">
             <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
-            <p>This system contains restricted, unpublished research data. Contact the principal investigator if you need access.</p>
+            <p>This shared account is for demonstration only. Configure private credentials before deploying restricted or unpublished data.</p>
           </div>
         </div>
       </div>
