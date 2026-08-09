@@ -71,6 +71,16 @@ fallback is appropriate; falsy fallback (`||`) is not used for measurements.
 Missing is never labeled “not significant.” “Not significant” is reserved for
 an observed FDR at or above the displayed threshold.
 
+The probe-level genomic track uses the uncorrected `*_P` field on a
+`−log10(P)` scale, with reference lines at nominal P = 0.05, 0.01, and 0.001.
+These thresholds are descriptive and do **not** control a multiple-testing
+error rate. The plot therefore pairs nominal P with probe-level Δβ and advises
+independent validation; it does not use `*_FDR` to position or emphasize probe
+points. The display scale is fixed at `−log10(P) = 0–8`; smaller P values are
+drawn at the upper boundary while their exact values remain in the tooltip and
+accessible table. This cap keeps the three reference thresholds legible and
+the vertical scale comparable across genes.
+
 ## Direction rule
 
 Subtype-level PTSD `direction` values are authoritative probe-summary

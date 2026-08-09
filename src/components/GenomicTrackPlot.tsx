@@ -55,8 +55,10 @@ const HYPO_COLOR = '#2563eb';
 const NEUTRAL_COLOR = '#64748b';
 const ISLAND_FILL = 'rgba(245, 158, 11, 0.28)';
 const ISLAND_STROKE = 'rgba(180, 83, 9, 0.75)';
-const FDR_05_COLOR = '#475569';
-const FDR_01_COLOR = '#94a3b8';
+const P_05_COLOR = '#475569';
+const P_01_COLOR = '#7c3aed';
+const P_001_COLOR = '#b45309';
+const MAX_DISPLAY_NEG_LOG_P = 8;
 
 const FEATURE_COLORS: Record<string, string> = {
   'TSS1500': '#f59e0b', // amber-500
@@ -127,7 +129,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
   // ---- DIMENSIONS ----
   const panelHeight = 175;
   const topMargin = isGrid ? 74 : 50;
-  const bottomMargin = 120;
+  const bottomMargin = 165;
   const leftMargin1 = isGrid ? 55 : 80;
   const rightMargin = 24;
   const panelGap = 26;
@@ -165,20 +167,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     return { minPos: min - pad, maxPos: max + pad, posRange: max - min + 2 * pad };
   }, [geneData]);
 
-  const maxNegLogP = useMemo(() => {
-    let maxFinite = 2;
-    let hasZero = false;
-    for (const probe of geneData.probes) {
-      for (const sub of SUBTYPES) {
-        const fdrKey = `${sub.key}_FDR` as keyof ProbeEntry;
-        const fdr = probe[fdrKey];
-        if (!isProbability(fdr)) continue;
-        if (fdr === 0) hasZero = true;
-        else maxFinite = Math.max(maxFinite, -Math.log10(fdr));
-      }
-    }
-    return Math.ceil((hasZero ? maxFinite + 1 : maxFinite) * 1.15);
-  }, [geneData, SUBTYPES]);
+  const maxNegLogP = MAX_DISPLAY_NEG_LOG_P;
 
   const displayChr = geneData.chr.toLowerCase().startsWith('chr') ? geneData.chr : `chr${geneData.chr}`;
 
@@ -186,15 +175,14 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     return geneData.probes.flatMap((probe) => SUBTYPES.flatMap((subtype) => {
       const deltaBeta = probe[`${subtype.key}_logFC`];
       const nominalP = probe[`${subtype.key}_P`];
-      const fdr = probe[`${subtype.key}_FDR`];
       const numericDeltaBeta = typeof deltaBeta === 'number' ? deltaBeta : null;
       const numericP = isProbability(nominalP) ? nominalP : null;
-      const numericFdr = isProbability(fdr) ? fdr : null;
-      if (numericDeltaBeta == null && numericP == null && numericFdr == null) return [];
-      return [{ probe: probe.probe, pos: probe.pos, feature: probe.feature || 'Unannotated', comparison: subtype.label, deltaBeta: numericDeltaBeta, nominalP: numericP, fdr: numericFdr }];
+      if (numericDeltaBeta == null && numericP == null) return [];
+      return [{ probe: probe.probe, pos: probe.pos, feature: probe.feature || 'Unannotated', comparison: subtype.label, deltaBeta: numericDeltaBeta, nominalP: numericP }];
     }));
   }, [geneData.probes, SUBTYPES]);
-  const hasZeroFdr = accessibleRows.some((row) => row.fdr === 0);
+  const hasZeroP = accessibleRows.some((row) => row.nominalP === 0);
+  const hasClippedP = accessibleRows.some((row) => row.nominalP != null && row.nominalP > 0 && -Math.log10(row.nominalP) > maxNegLogP);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -265,7 +253,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.font = 'bold 16px Inter, system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(
-      `${geneData.gene} — CpG Probe-Level FDR`,
+      `${geneData.gene} — CpG probe nominal P`,
       effectiveWidth / 2,
       24
     );
@@ -390,13 +378,17 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             if (y < areaTop - 1 || y > areaBot + 1) continue;
 
             if (tick === 1.301) {
-              ctx.strokeStyle = FDR_05_COLOR;
+              ctx.strokeStyle = P_05_COLOR;
               ctx.lineWidth = 1.2;
               ctx.setLineDash([6, 4]);
             } else if (tick === 2) {
-              ctx.strokeStyle = FDR_01_COLOR;
+              ctx.strokeStyle = P_01_COLOR;
               ctx.lineWidth = 1;
               ctx.setLineDash([4, 4]);
+            } else if (tick === 3) {
+              ctx.strokeStyle = P_001_COLOR;
+              ctx.lineWidth = 1.2;
+              ctx.setLineDash([2, 3]);
             } else if (tick === 0) {
               ctx.strokeStyle = '#94a3b8';
               ctx.lineWidth = 1;
@@ -416,13 +408,17 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             ctx.font = '9px Inter, system-ui, sans-serif';
             ctx.textAlign = 'right';
             if (tick === 1.301) {
-              ctx.fillStyle = FDR_05_COLOR;
+              ctx.fillStyle = P_05_COLOR;
               ctx.font = 'bold 9px Inter, system-ui, sans-serif';
-              ctx.fillText('FDR=.05', colLeft - 5, y + 3);
+              ctx.fillText('P=.05', colLeft - 5, y + 3);
             } else if (tick === 2) {
-              ctx.fillStyle = FDR_01_COLOR;
+              ctx.fillStyle = P_01_COLOR;
               ctx.font = 'bold 9px Inter, system-ui, sans-serif';
-              ctx.fillText('FDR=.01', colLeft - 5, y + 3);
+              ctx.fillText('P=.01', colLeft - 5, y + 3);
+            } else if (tick === 3) {
+              ctx.fillStyle = P_001_COLOR;
+              ctx.font = 'bold 9px Inter, system-ui, sans-serif';
+              ctx.fillText('P=.001', colLeft - 5, y + 3);
             } else if (tick > 0) {
               ctx.fillStyle = '#94a3b8';
               ctx.fillText(tick.toFixed(0), colLeft - 5, y + 3);
@@ -430,7 +426,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           }
 
           // Probe lollipops
-          const pKey = `${colSlot.key}_FDR` as keyof ProbeEntry;
+          const pKey = `${colSlot.key}_P` as keyof ProbeEntry;
           const lfcKey = `${colSlot.key}_logFC` as keyof ProbeEntry;
 
           const sortedProbes = [...geneData.probes].sort((a, b) => {
@@ -444,24 +440,25 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             ctx.fillStyle = '#64748b';
             ctx.font = 'italic 10px Inter, system-ui, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('No probe FDR available', colLeft + colWidth / 2, areaTop + areaH / 2);
+            ctx.fillText('No nominal probe P values available', colLeft + colWidth / 2, areaTop + areaH / 2);
           }
 
           for (const probe of drawableProbes) {
-            const fdr = probe[pKey];
+            const nominalP = probe[pKey];
             const logFC = probe[lfcKey] as number | null;
-            if (!isProbability(fdr)) continue;
+            if (!isProbability(nominalP)) continue;
 
-            const nlp = probabilityScore(fdr, maxNegLogP);
+            const nlp = probabilityScore(nominalP, maxNegLogP);
             const x = posToX(probe.pos, cIdx);
             const yBase = valToY(0, panelTop);
             const yTop = valToY(Math.min(nlp, maxNegLogP), panelTop);
             const dotColor = logFC == null || logFC === 0 ? NEUTRAL_COLOR : logFC > 0 ? HYPER_COLOR : HYPO_COLOR;
-            const isSig05 = fdr < 0.05;
-            const isSig01 = fdr < 0.01;
+            const isSig05 = nominalP < 0.05;
+            const isSig01 = nominalP < 0.01;
+            const isSig001 = nominalP < 0.001;
 
             ctx.strokeStyle = dotColor;
-            ctx.lineWidth = isSig05 ? 1.8 : 1.1;
+            ctx.lineWidth = isSig001 ? 2.2 : isSig05 ? 1.8 : 1.1;
             ctx.globalAlpha = isSig05 ? 0.65 : 0.3;
             ctx.beginPath();
             ctx.moveTo(x, yBase);
@@ -469,7 +466,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             ctx.stroke();
             ctx.globalAlpha = 1;
 
-            const radius = isSig01 ? 5 : isSig05 ? 3.5 : 2.2;
+            const radius = isSig001 ? 6 : isSig01 ? 5 : isSig05 ? 3.5 : 2.2;
             ctx.beginPath();
             ctx.arc(x, yTop, radius, 0, Math.PI * 2);
             ctx.fillStyle = dotColor;
@@ -606,13 +603,17 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           if (y < areaTop - 1 || y > areaBot + 1) continue;
 
           if (tick === 1.301) {
-            ctx.strokeStyle = FDR_05_COLOR;
+            ctx.strokeStyle = P_05_COLOR;
             ctx.lineWidth = 1.2;
             ctx.setLineDash([6, 4]);
           } else if (tick === 2) {
-            ctx.strokeStyle = FDR_01_COLOR;
+            ctx.strokeStyle = P_01_COLOR;
             ctx.lineWidth = 1;
             ctx.setLineDash([4, 4]);
+          } else if (tick === 3) {
+            ctx.strokeStyle = P_001_COLOR;
+            ctx.lineWidth = 1.2;
+            ctx.setLineDash([2, 3]);
           } else if (tick === 0) {
             ctx.strokeStyle = '#94a3b8';
             ctx.lineWidth = 1;
@@ -631,20 +632,24 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           ctx.font = '10px Inter, system-ui, sans-serif';
           ctx.textAlign = 'right';
           if (tick === 1.301) {
-            ctx.fillStyle = FDR_05_COLOR;
+            ctx.fillStyle = P_05_COLOR;
             ctx.font = 'bold 10px Inter, system-ui, sans-serif';
-            ctx.fillText('FDR=.05', leftMargin1 - 10, y + 4);
+            ctx.fillText('P=.05', leftMargin1 - 10, y + 4);
           } else if (tick === 2) {
-            ctx.fillStyle = FDR_01_COLOR;
+            ctx.fillStyle = P_01_COLOR;
             ctx.font = 'bold 10px Inter, system-ui, sans-serif';
-            ctx.fillText('FDR=.01', leftMargin1 - 10, y + 4);
+            ctx.fillText('P=.01', leftMargin1 - 10, y + 4);
+          } else if (tick === 3) {
+            ctx.fillStyle = P_001_COLOR;
+            ctx.font = 'bold 10px Inter, system-ui, sans-serif';
+            ctx.fillText('P=.001', leftMargin1 - 10, y + 4);
           } else if (tick > 0) {
             ctx.fillStyle = '#94a3b8';
             ctx.fillText(tick.toFixed(0), leftMargin1 - 10, y + 4);
           }
         }
 
-        const pKey = `${sub.key}_FDR` as keyof ProbeEntry;
+        const pKey = `${sub.key}_P` as keyof ProbeEntry;
         const lfcKey = `${sub.key}_logFC` as keyof ProbeEntry;
 
         const sortedProbes = [...geneData.probes].sort((a, b) => {
@@ -658,24 +663,25 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           ctx.fillStyle = '#64748b';
           ctx.font = 'italic 11px Inter, system-ui, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText('No probe FDR available', leftMargin1 + colWidth / 2, areaTop + areaH / 2);
+          ctx.fillText('No nominal probe P values available', leftMargin1 + colWidth / 2, areaTop + areaH / 2);
         }
 
         for (const probe of drawableProbes) {
-          const fdr = probe[pKey];
+          const nominalP = probe[pKey];
           const logFC = probe[lfcKey] as number | null;
-          if (!isProbability(fdr)) continue;
+          if (!isProbability(nominalP)) continue;
 
-          const nlp = probabilityScore(fdr, maxNegLogP);
+          const nlp = probabilityScore(nominalP, maxNegLogP);
           const x = posToX(probe.pos, 0);
           const yBase = valToY(0, panelTop);
           const yTop = valToY(Math.min(nlp, maxNegLogP), panelTop);
           const dotColor = logFC == null || logFC === 0 ? NEUTRAL_COLOR : logFC > 0 ? HYPER_COLOR : HYPO_COLOR;
-          const isSig05 = fdr < 0.05;
-          const isSig01 = fdr < 0.01;
+          const isSig05 = nominalP < 0.05;
+          const isSig01 = nominalP < 0.01;
+          const isSig001 = nominalP < 0.001;
 
           ctx.strokeStyle = dotColor;
-          ctx.lineWidth = isSig05 ? 2 : 1.2;
+          ctx.lineWidth = isSig001 ? 2.4 : isSig05 ? 2 : 1.2;
           ctx.globalAlpha = isSig05 ? 0.65 : 0.3;
           ctx.beginPath();
           ctx.moveTo(x, yBase);
@@ -683,7 +689,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           ctx.stroke();
           ctx.globalAlpha = 1;
 
-          const radius = isSig01 ? 5.5 : isSig05 ? 4 : 2.5;
+          const radius = isSig001 ? 6.5 : isSig01 ? 5.5 : isSig05 ? 4 : 2.5;
 
           ctx.beginPath();
           ctx.arc(x, yTop, radius, 0, Math.PI * 2);
@@ -754,7 +760,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.fillStyle = '#475569';
     ctx.font = '11px Inter, system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('−log₁₀(probe FDR)', 0, 0);
+    ctx.fillText('−log₁₀(nominal probe P)', 0, 0);
     ctx.restore();
 
     // ---- Legend (at bottom) ----
@@ -770,8 +776,9 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       { type: 'dot', color: HYPO_COLOR, label: 'Lower methylation (Δβ < 0)' },
       { type: 'dot', color: NEUTRAL_COLOR, label: 'Effect unavailable or zero' },
       { type: 'island', label: 'CpG Island Region' },
-      { type: 'dash', color: FDR_05_COLOR, label: 'FDR = 0.05' },
-      { type: 'dash', color: FDR_01_COLOR, label: 'FDR = 0.01' },
+      { type: 'dash', color: P_05_COLOR, label: 'Nominal P = 0.05' },
+      { type: 'dash', color: P_01_COLOR, label: 'Nominal P = 0.01' },
+      { type: 'dash', color: P_001_COLOR, label: 'Nominal P = 0.001' },
     ];
     
     // Add present feature annotations to legend
@@ -842,7 +849,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.fillStyle = '#94a3b8';
     ctx.textAlign = 'center';
     ctx.fillText(
-      'Vertical scale uses probe-level FDR. Nominal P values are in the tooltip. Feature ticks are probe annotations, not continuous gene regions.',
+      'Nominal P thresholds are uncorrected; −log₁₀(P) is capped at 8.',
       effectiveWidth / 2,
       ly + 22
     );
@@ -896,12 +903,12 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             if (my < panelTop - 5 || my > panelTop + panelHeight + 5) return;
 
             const slot = rConfig.cols[cIdx];
-            const pKey = `${slot.key}_FDR` as keyof ProbeEntry;
+            const pKey = `${slot.key}_P` as keyof ProbeEntry;
 
             for (const probe of geneData.probes) {
-              const fdr = probe[pKey];
-              if (!isProbability(fdr)) continue;
-              const nlp = probabilityScore(fdr, maxNegLogP);
+              const nominalP = probe[pKey];
+              if (!isProbability(nominalP)) continue;
+              const nlp = probabilityScore(nominalP, maxNegLogP);
               const x = posToX(probe.pos, cIdx);
               const y = valToY(Math.min(nlp, maxNegLogP), panelTop);
               const dist = Math.sqrt((mx - x) ** 2 + (my - y) ** 2);
@@ -917,12 +924,12 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         for (let idx = 0; idx < SUBTYPES.length; idx++) {
           const sub = SUBTYPES[idx];
           const panelTop = topMargin + idx * (panelHeight + panelGap);
-          const pKey = `${sub.key}_FDR` as keyof ProbeEntry;
+          const pKey = `${sub.key}_P` as keyof ProbeEntry;
 
           for (const probe of geneData.probes) {
-            const fdr = probe[pKey];
-            if (!isProbability(fdr)) continue;
-            const nlp = probabilityScore(fdr, maxNegLogP);
+            const nominalP = probe[pKey];
+            if (!isProbability(nominalP)) continue;
+            const nlp = probabilityScore(nominalP, maxNegLogP);
             const x = posToX(probe.pos, 0);
             const y = valToY(Math.min(nlp, maxNegLogP), panelTop);
             const dist = Math.sqrt((mx - x) ** 2 + (my - y) ** 2);
@@ -960,7 +967,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         style={{ width: '100%', height: totalHeight }}
         className="rounded-lg cursor-crosshair border border-slate-200 shadow-sm"
         role="img"
-        aria-label={`${geneData.gene} probe track on ${displayChr}. Vertical axis is negative log10 probe-level FDR; point color gives methylation-effect direction. Exact values are available in the table following the chart.`}
+        aria-label={`${geneData.gene} probe track on ${displayChr}. Vertical axis is negative log10 uncorrected probe-level P value, with thresholds at P less than 0.05, 0.01, and 0.001; point color gives methylation-effect direction. Exact values are available in the table following the chart.`}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setTooltip(null)}
       />
@@ -1001,7 +1008,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
               CpG Island: {tooltip.probe.cpgIsland}
             </div>
           )}
-          <div className="border-t border-slate-100 pt-1.5 grid grid-cols-3 gap-x-3 text-[11px]">
+          <div className="border-t border-slate-100 pt-1.5 grid grid-cols-2 gap-x-3 text-[11px]">
             <div>
               <span className="text-slate-400 block mb-0.5">Δβ</span>
               <div className="font-mono font-bold">
@@ -1017,19 +1024,10 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
               </div>
             </div>
             <div>
-              <span className="text-slate-400 block mb-0.5">P-value</span>
+              <span className="text-slate-400 block mb-0.5">Nominal P</span>
               <div className="font-mono font-bold text-slate-900">
                 {(() => {
                   const v = tooltip.probe[`${tooltip.subtype}_P` as keyof ProbeEntry] as number | null;
-                  return formatProbability(v);
-                })()}
-              </div>
-            </div>
-            <div>
-              <span className="text-slate-400 block mb-0.5">FDR</span>
-              <div className="font-mono font-bold text-slate-900">
-                {(() => {
-                  const v = tooltip.probe[`${tooltip.subtype}_FDR` as keyof ProbeEntry] as number | null;
                   return formatProbability(v);
                 })()}
               </div>
@@ -1042,13 +1040,14 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         <div className="max-h-96 overflow-auto border-t border-slate-200">
           <table className="w-full whitespace-nowrap text-left text-xs">
             <caption className="sr-only">Available probe statistics for {geneData.gene} on {displayChr}</caption>
-            <thead className="sticky top-0 bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Probe</th><th className="px-3 py-2">Position (bp)</th><th className="px-3 py-2">Feature</th><th className="px-3 py-2">Comparison</th><th className="px-3 py-2">Δβ</th><th className="px-3 py-2">Nominal P</th><th className="px-3 py-2">FDR</th></tr></thead>
-            <tbody>{accessibleRows.map((row) => <tr key={`${row.probe}-${row.comparison}`} className="border-t border-slate-200"><td className="px-3 py-2 font-mono font-semibold">{row.probe}</td><td className="px-3 py-2 font-mono">{row.pos.toLocaleString()}</td><td className="px-3 py-2">{row.feature}</td><td className="px-3 py-2">{row.comparison}</td><td className="px-3 py-2 font-mono">{row.deltaBeta == null ? 'Unavailable' : `${row.deltaBeta > 0 ? '+' : ''}${row.deltaBeta.toFixed(4)}`}</td><td className="px-3 py-2 font-mono">{formatProbability(row.nominalP)}</td><td className="px-3 py-2 font-mono">{formatProbability(row.fdr)}</td></tr>)}</tbody>
+            <thead className="sticky top-0 bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Probe</th><th className="px-3 py-2">Position (bp)</th><th className="px-3 py-2">Feature</th><th className="px-3 py-2">Comparison</th><th className="px-3 py-2">Δβ</th><th className="px-3 py-2">Nominal P</th><th className="px-3 py-2">Threshold tier</th></tr></thead>
+            <tbody>{accessibleRows.map((row) => <tr key={`${row.probe}-${row.comparison}`} className="border-t border-slate-200"><td className="px-3 py-2 font-mono font-semibold">{row.probe}</td><td className="px-3 py-2 font-mono">{row.pos.toLocaleString()}</td><td className="px-3 py-2">{row.feature}</td><td className="px-3 py-2">{row.comparison}</td><td className="px-3 py-2 font-mono">{row.deltaBeta == null ? 'Unavailable' : `${row.deltaBeta > 0 ? '+' : ''}${row.deltaBeta.toFixed(4)}`}</td><td className="px-3 py-2 font-mono">{formatProbability(row.nominalP)}</td><td className="px-3 py-2">{row.nominalP == null ? 'Unavailable' : row.nominalP < 0.001 ? 'P < 0.001' : row.nominalP < 0.01 ? 'P < 0.01' : row.nominalP < 0.05 ? 'P < 0.05' : 'P ≥ 0.05'}</td></tr>)}</tbody>
           </table>
         </div>
       </details>
-      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">Probe records are listed only when at least one statistic is available. Missing statistics are not converted to zero or “not significant.” Δβ is a methylation-proportion difference; confidence intervals and standard errors are not present in the probe dataset.</p>
-      {hasZeroFdr && <p className="mt-1 text-[10px] font-medium text-amber-800">One or more stored FDR values equal numeric zero (underflow/rounding). They are reported as zero in the table and plotted at the upper display boundary, not interpreted as literally zero probability.</p>}
+      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">The probe figure uses uncorrected P values. Thresholds at P &lt; 0.05, P &lt; 0.01, and P &lt; 0.001 are descriptive and do not control the high-throughput multiple-testing error rate. Interpret them with Δβ and independent validation. Missing statistics are not converted to zero or “not significant”; confidence intervals and standard errors are not present in the probe dataset.</p>
+      {hasClippedP && <p className="mt-1 text-[10px] font-medium text-slate-600">Nominal P values below 1×10⁻⁸ are plotted at the fixed upper boundary (−log₁₀P = 8) so the three reference thresholds remain legible. Exact P values remain available in the tooltip and table.</p>}
+      {hasZeroP && <p className="mt-1 text-[10px] font-medium text-amber-800">One or more stored nominal P values equal numeric zero (underflow/rounding). They are reported as zero in the table and plotted at the upper display boundary, not interpreted as literally zero probability.</p>}
     </div>
   );
 };
