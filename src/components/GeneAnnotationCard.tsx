@@ -1,13 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GeneAnnotation } from '../types/annotation';
+import type { CrossProjectInfo, GeneAnnotation } from '../types/annotation';
+import { getGeneMetadata } from '@/lib/commonDatabase';
 import { BookOpen, BrainCircuit, ExternalLink, Tag, ArrowRight, FlaskConical, Shield } from 'lucide-react';
-
-interface CrossProjectInfo {
-  ptsd: { type: string; fdr: number; direction: string };
-  mdma: { type: string; fdr: number; deltaBeta: number; direction: string };
-}
 
 interface AnnotationCardProps {
   gene: string;
@@ -15,8 +11,6 @@ interface AnnotationCardProps {
   /** Which project context we're in — affects cross-project bridge direction */
   project?: 'ptsd' | 'mdma';
 }
-
-let crossProjectCache: Record<string, CrossProjectInfo> | null = null;
 
 export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
   gene,
@@ -26,18 +20,11 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
   const [crossInfo, setCrossInfo] = useState<CrossProjectInfo | null | undefined>(undefined);
 
   useEffect(() => {
-    const load = async () => {
-      if (!crossProjectCache) {
-        try {
-          const r = await fetch('/data/common/crossProjectGenes.json');
-          crossProjectCache = r.ok ? await r.json() : {};
-        } catch {
-          crossProjectCache = {};
-        }
-      }
-      setCrossInfo(crossProjectCache?.[gene] ?? null);
-    };
-    load();
+    let cancelled = false;
+    getGeneMetadata(gene)
+      .then((metadata) => { if (!cancelled) setCrossInfo(metadata.crossProject); })
+      .catch(() => { if (!cancelled) setCrossInfo(null); });
+    return () => { cancelled = true; };
   }, [gene]);
 
   const crossLinkHref = project === 'ptsd' ? '/mdma' : '/ptsd';
@@ -51,12 +38,12 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
   if (!annotation) {
     return (
       <div className="bg-white border border-slate-200 rounded-xl p-4 text-xs text-slate-500 shadow-xs space-y-3">
-        <p className="italic">Standard genomic annotation available. Literature psychiatric profile pending.</p>
+        <p className="italic">No curated biological or psychiatric literature annotation is available for this gene. Use the statistical and probe views for project-specific evidence.</p>
         {crossInfo && (
           <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-200">
             <CrossIcon className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             <span className="text-emerald-800 font-semibold text-[11px]">
-              Also significant in {crossLinkLabel} (FDR {crossFdr! < 1e-15 ? '< 1e-15' : crossFdr!.toExponential(2)}, {crossDirection})
+              Stored overlap in {crossLinkLabel} (FDR {crossFdr! < 1e-15 ? '< 1×10⁻¹⁵' : crossFdr!.toExponential(2)}; summary direction: {crossDirection})
             </span>
             <a href={crossLinkHref} className="ml-auto text-emerald-700 hover:text-emerald-900 flex items-center gap-0.5 text-[11px] font-bold whitespace-nowrap">
               View <ArrowRight className="w-3 h-3" />
@@ -89,9 +76,9 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
             <CrossIcon className="w-3.5 h-3.5" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Cross-Project Signal</div>
+            <div className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Cross-project statistical overlap</div>
             <div className="text-xs text-emerald-900 font-medium">
-              Also significant in {crossLinkLabel}
+              Stored significant record in {crossLinkLabel}
               <span className="ml-2 font-mono text-emerald-700">
                 FDR {crossFdr! < 1e-15 ? '< 1e-15' : crossFdr!.toExponential(2)}
               </span>
@@ -113,11 +100,13 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
         </div>
       )}
 
+      {crossInfo && <p className="-mt-2 text-[10px] leading-relaxed text-slate-500">Cross-project badges reproduce the stored project-level summary. “Mixed” denotes opposing selected-probe directions; overlap does not establish replication, mediation, or causality.</p>}
+
       {/* Biological Function Summary */}
       <div className="text-xs text-slate-800 leading-relaxed bg-slate-50 border border-slate-200 p-3.5 rounded-lg">
         <p className="font-bold text-slate-900 mb-1 flex items-center gap-1.5">
           <BrainCircuit className="w-4 h-4 text-slate-700" />
-          Biological &amp; Epigenetic Function:
+          Curated biological context
         </p>
         <p className="text-slate-700 leading-normal">{annotation.summary}</p>
       </div>
@@ -126,7 +115,7 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
       <div>
         <h5 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
           <Tag className="w-3.5 h-3.5 text-amber-600" />
-          Associated Psychiatric &amp; Psychological Disorders:
+          Reported psychiatric literature associations
         </h5>
         <div className="flex flex-wrap gap-1.5">
           {annotation.psychDisorders.map((disorder, idx) => (
@@ -157,7 +146,7 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
               <div>
                 <h5 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                   <BookOpen className="w-3.5 h-3.5 text-slate-700" />
-                  Key Peer-Reviewed PubMed Literature:
+                  Curated PubMed references
                 </h5>
                 <ul className="space-y-1.5">
                   {peerReviewedRefs.map((ref, idx) => (

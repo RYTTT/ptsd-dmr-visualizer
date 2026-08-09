@@ -7,6 +7,8 @@ export interface ProbeEntry {
   [key: string]: string | number | null;
 }
 
+export type ProbeStatisticSuffix = 'logFC' | 'P' | 'FDR';
+
 export interface CpGIsland {
   name: string;
   start: number;

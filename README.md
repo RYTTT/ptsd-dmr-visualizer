@@ -16,7 +16,38 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Authentication configuration
+
+Production deployments fail closed unless all three server-only variables are
+configured. Copy `.env.example`, set a strong username/password, and generate a
+random `AUTH_SECRET` of at least 32 characters. Never expose these values with a
+`NEXT_PUBLIC_` prefix.
+
+```bash
+AUTH_USERNAME=...
+AUTH_PASSWORD=...
+AUTH_SECRET=...
+```
+
+Local development retains the original demo credentials when these variables
+are absent. Production does not.
+
+## Data architecture
+
+Large common annotation maps remain server-side and are parsed once per server
+process. The browser requests compact, validated per-gene DTOs from
+`/api/data/genes`; probe shards are loaded on demand with concurrent-request
+deduplication and a bounded LRU cache.
+
+## Scientific interpretation
+
+Read the versioned [scientific data dictionary and display methods](docs/scientific-data-dictionary-v1.md)
+before interpreting or exporting results. It defines pooled versus
+timepoint-specific views, missing-value handling, direction rules, P/FDR fields,
+and the distinct probe denominators. It also lists upstream methods and
+provenance metadata that are not present in the shipped dataset.
+
+You can start editing the landing page in `src/app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 

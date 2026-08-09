@@ -9,7 +9,6 @@ export interface KeyGeneItem {
   categoryColor: string;
   categoryBg: string;
   finding: string;
-  direction: 'Hypermethylated' | 'Hypomethylated' | 'Mixed';
   pmid?: string;
 }
 
@@ -37,56 +36,49 @@ export const FTC_KEY_GENES: KeyGeneItem[] = [
     category: 'HPA Axis Regulator',
     categoryColor: '#b91c1c',
     categoryBg: '#fef2f2',
-    finding: 'Glucocorticoid receptor chaperone. Shows cross-subtype differential methylation in promoter CpG islands, driving altered stress sensitivity.',
-    direction: 'Hypermethylated',
+    finding: 'Glucocorticoid-receptor chaperone and stress-biology candidate. In these data, the cross-subtype signal is predominantly negative, with mixed probe directions in SSS.',
   },
   {
     gene: 'AHRR',
     category: 'Environmental / Stress Locus',
     categoryColor: '#1d4ed8',
     categoryBg: '#eff6ff',
-    finding: 'Aryl hydrocarbon receptor repressor. Canonical epigenetic landmark of environmental stress & trauma exposure with robust CpG island changes.',
-    direction: 'Hypomethylated',
+    finding: 'Aryl hydrocarbon receptor repressor and exposure-sensitive locus. Interpret alongside smoking and other environmental covariates; subtype-level probe directions are not fully concordant.',
   },
   {
     gene: 'NR3C1',
     category: 'Glucocorticoid Receptor',
     categoryColor: '#6d28d9',
     categoryBg: '#f5f3ff',
-    finding: 'Central glucocorticoid receptor governing HPA-axis negative feedback inhibition and stress susceptibility in military & civilian trauma cohorts.',
-    direction: 'Hypomethylated',
+    finding: 'Glucocorticoid receptor involved in HPA-axis feedback. The cross-subtype DMR is significant, but the top probes have opposing directions in every subtype.',
   },
   {
     gene: 'BDNF',
     category: 'Neuroplasticity Factor',
     categoryColor: '#047857',
     categoryBg: '#ecfdf5',
-    finding: 'Brain-derived neurotrophic factor. Key regulator of synaptic plasticity and hippocampal memory consolidation altered across PTSD clinical subtypes.',
-    direction: 'Hypermethylated',
+    finding: 'Neurotrophic factor involved in synaptic plasticity. The cross-subtype DMR is significant, with mixed top-probe directions; direction should be assessed probe by probe.',
   },
   {
     gene: 'CRHR1',
     category: 'Corticotropin Receptor',
     categoryColor: '#c2410c',
     categoryBg: '#fff7ed',
-    finding: 'CRH Receptor 1. Primary central mediator of stress response, hyperarousal, and endocrine cascade in PTSD.',
-    direction: 'Hypermethylated',
+    finding: 'Corticotropin-releasing hormone receptor relevant to stress signaling. Included as biological context; confirm its statistical status in the active result table.',
   },
   {
     gene: 'SLC6A4',
     category: 'Serotonin Transporter',
     categoryColor: '#0891b2',
     categoryBg: '#ecfeff',
-    finding: 'Serotonin transporter gene (5-HTT). Epigenetic promoter modification associated with mood dysregulation and affective PTSD phenotypes.',
-    direction: 'Hypomethylated',
+    finding: 'Serotonin transporter with prior psychiatric epigenetics literature. Included as biological context; this card alone is not evidence of a project-level DMR.',
   },
   {
     gene: 'STAT5B',
     category: 'Immune-Endocrine Crosstalk',
     categoryColor: '#4f46e5',
     categoryBg: '#eef2ff',
-    finding: 'Signal transducer 5B. Key junction connecting growth hormone and neuroimmune inflammatory signaling in severe stress subtypes.',
-    direction: 'Hypermethylated',
+    finding: 'Signal transducer connecting endocrine and immune pathways. Included as biological context; verify cohort, effect direction, and FDR in the result views.',
   },
 ];
 
@@ -96,56 +88,49 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     category: 'Treatment DMR Anchor',
     categoryColor: '#7c3aed',
     categoryBg: '#f5f3ff',
-    finding: 'Arginyl-tRNA protein transferase. Top treatment-responsive DMR showing consistent post-therapy methylation shift across MDMA, Ketamine, and CPT.',
-    direction: 'Hypomethylated',
+    finding: 'Protein arginylation locus prioritized for inspection in the pooled cross-cohort results. Compare cohort estimates before interpreting direction or consistency.',
   },
   {
     gene: 'AHRR',
     category: 'Trauma & Epigenetic Aging Locus',
     categoryColor: '#1d4ed8',
     categoryBg: '#eff6ff',
-    finding: 'Aryl hydrocarbon receptor repressor. Canonical hallmark of trauma exposure & epigenetic aging showing highly significant cross-cohort therapy response (Meta FDR = 3.45e-7).',
-    direction: 'Hypermethylated',
+    finding: 'Exposure-sensitive locus prioritized for pooled-result inspection. Cohort estimates can differ in direction and require smoking and environmental-confounder context.',
   },
   {
     gene: 'NR3C1',
     category: 'Glucocorticoid Receptor',
     categoryColor: '#6d28d9',
     categoryBg: '#f5f3ff',
-    finding: 'Central HPA axis receptor exhibiting significant cross-cohort treatment remethylation in meta-analysis (Meta FDR = 3.6e-5).',
-    direction: 'Hypermethylated',
+    finding: 'HPA-axis receptor prioritized for pooled-result inspection. Compare pooled effect size with individual cohort estimates before biological interpretation.',
   },
   {
     gene: 'BDNF',
-    category: 'Neuroplasticity Recovery',
+    category: 'Neuroplasticity Candidate',
     categoryColor: '#047857',
     categoryBg: '#ecfdf5',
-    finding: 'Brain-derived neurotrophic factor. Key driver of fear extinction and neuroplasticity restoration following MDMA-assisted therapy (Meta FDR = 9.56e-6).',
-    direction: 'Hypermethylated',
+    finding: 'Neuroplasticity candidate included for pooled-result inspection. Observational methylation differences do not establish a driver of clinical recovery.',
   },
   {
     gene: 'HOXB9',
     category: 'Chromatin Remodeling',
     categoryColor: '#0891b2',
     categoryBg: '#ecfeff',
-    finding: 'Homeobox B9. Developmental & epigenetic architecture gene demonstrating robust differential methylation following MDMA-assisted therapy.',
-    direction: 'Hypermethylated',
+    finding: 'Developmental transcription factor included for pooled-result inspection. Review cohort/timepoint availability before interpreting generalizability.',
   },
   {
     gene: 'GNAS',
     category: 'cAMP Neuroendocrine Signaling',
     categoryColor: '#059669',
     categoryBg: '#ecfdf5',
-    finding: 'G-protein alpha subunit. Central neuroendocrine signaling gene with significant pre-to-post treatment methylation restoration in CD4+ T cells.',
-    direction: 'Hypomethylated',
+    finding: 'G-protein signaling locus included for pooled-result inspection. “Restoration” requires a prespecified healthy reference and longitudinal contrast.',
   },
   {
     gene: 'FKBP5',
-    category: 'HPA Recovery Marker',
+    category: 'HPA-axis Candidate',
     categoryColor: '#c2410c',
     categoryBg: '#fff7ed',
-    finding: 'HPA axis chaperone evaluated across pre- and post-treatment timepoints, tracking glucocorticoid sensitivity recovery following MDMA therapy.',
-    direction: 'Hypomethylated',
+    finding: 'HPA-axis chaperone included for pooled-result inspection. Methylation estimates alone should not be presented as evidence of clinical recovery.',
   },
 ];
 
@@ -165,9 +150,10 @@ export const KeyResultsPanel: React.FC<KeyResultsPanelProps> = ({
       const entry = epicManifest[item.gene];
       if (entry) {
         const parts: string[] = [];
-        parts.push(`${entry.totalProbes} EPIC Probes`);
-        if (entry.nCpgIslands > 0) parts.push(`${entry.nCpgIslands} CpG Island${entry.nCpgIslands > 1 ? 's' : ''}`);
-        parts.push(`${entry.features.length} Feature Region${entry.features.length > 1 ? 's' : ''}`);
+        parts.push(`${entry.totalProbes} EPIC probes mapped`);
+        parts.push(`${entry.probesWithStats} with compiled statistics`);
+        if (entry.nCpgIslands > 0) parts.push(`${entry.nCpgIslands} CpG island annotation${entry.nCpgIslands > 1 ? 's' : ''}`);
+        parts.push(`${entry.features.length} feature categor${entry.features.length === 1 ? 'y' : 'ies'}`);
         map[item.gene] = parts.join(' | ');
       }
     }
@@ -187,7 +173,7 @@ export const KeyResultsPanel: React.FC<KeyResultsPanelProps> = ({
             <div className="p-1.5 bg-amber-500/20 text-amber-400 rounded-lg border border-amber-500/30">
               <Sparkles className="w-4 h-4" />
             </div>
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Key Study Findings</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Curated loci to inspect</span>
           </div>
           <h2 className="text-xl font-extrabold text-white tracking-tight">{projectTitle}</h2>
           <p className="text-xs text-slate-400 mt-1 max-w-3xl font-medium leading-relaxed">
@@ -196,7 +182,7 @@ export const KeyResultsPanel: React.FC<KeyResultsPanelProps> = ({
         </div>
         <div className="flex items-center gap-2 bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-xl text-xs text-slate-300 font-semibold self-start md:self-auto">
           <Dna className="w-4 h-4 text-blue-400" />
-          <span>{genes.length} Key Landmark Genes</span>
+          <span>{genes.length} candidate loci</span>
         </div>
       </div>
 
@@ -204,12 +190,14 @@ export const KeyResultsPanel: React.FC<KeyResultsPanelProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
         {genes.map((item) => {
           const isSelected = selectedGene === item.gene;
-          const statsLabel = dynamicStats[item.gene] || 'Loading...';
+          const statsLabel = dynamicStats[item.gene] || 'Manifest summary unavailable';
           return (
-            <div
+            <button
+              type="button"
               key={item.gene}
               onClick={() => onSelectGene(item.gene)}
-              className={`group cursor-pointer rounded-xl p-4 transition-all duration-200 border relative flex flex-col justify-between ${
+              aria-pressed={isSelected}
+              className={`group cursor-pointer rounded-xl p-4 text-left transition-all duration-200 border relative flex flex-col justify-between ${
                 isSelected
                   ? 'bg-slate-800 border-amber-400 shadow-lg shadow-amber-500/10 ring-1 ring-amber-400'
                   : 'bg-slate-800/60 hover:bg-slate-800 border-slate-700/60 hover:border-slate-600'
@@ -243,19 +231,11 @@ export const KeyResultsPanel: React.FC<KeyResultsPanelProps> = ({
               </div>
 
               {/* Footer row — DYNAMIC STATS */}
-              <div className="pt-2.5 border-t border-slate-700/50 flex items-center justify-between text-[11px]">
-                <span className="text-slate-400 font-mono font-medium">{statsLabel}</span>
-                <span
-                  className={`font-bold px-1.5 py-0.5 rounded text-[10px] ${
-                    item.direction === 'Hypermethylated'
-                      ? 'bg-red-950/60 text-red-300 border border-red-800/40'
-                      : 'bg-blue-950/60 text-blue-300 border border-blue-800/40'
-                  }`}
-                >
-                  {item.direction === 'Hypermethylated' ? 'Hyper' : 'Hypo'}
-                </span>
+              <div className="flex flex-col gap-2 border-t border-slate-700/50 pt-2.5 text-[11px]">
+                <span className="font-mono font-medium leading-relaxed text-slate-400">{statsLabel}</span>
+                <span className="self-end text-[10px] font-semibold text-slate-300">Open result views</span>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>

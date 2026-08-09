@@ -33,13 +33,12 @@ export const MetricsOverview: React.FC<MetricsProps> = ({
   const cards = [
     {
       id: 'cross',
-      title: 'Cross-Subtype Common',
+      title: 'Cross-subtype DMRs',
       count: crossCount,
       ptsdCount: crossPtsdCount,
       icon: Layers,
-      accentColor: 'border-blue-600 text-blue-700 bg-blue-50',
       badgeBg: 'bg-blue-100 text-blue-800',
-      description: 'Shared DMRs (sig in ≥3 subtypes)',
+      description: 'Gene-level summaries reported across ≥3 subtypes by the upstream pipeline',
     },
     {
       id: 'SSS',
@@ -47,7 +46,6 @@ export const MetricsOverview: React.FC<MetricsProps> = ({
       count: sssCount,
       ptsdCount: sssPtsdCount,
       icon: Flame,
-      accentColor: 'border-rose-600 text-rose-700 bg-rose-50',
       badgeBg: 'bg-rose-100 text-rose-800',
       description: 'Severe Stress Subtype exclusive',
     },
@@ -57,7 +55,6 @@ export const MetricsOverview: React.FC<MetricsProps> = ({
       count: adsCount,
       ptsdCount: adsPtsdCount,
       icon: Droplets,
-      accentColor: 'border-sky-600 text-sky-700 bg-sky-50',
       badgeBg: 'bg-sky-100 text-sky-800',
       description: 'Affective/Depressive exclusive',
     },
@@ -67,7 +64,6 @@ export const MetricsOverview: React.FC<MetricsProps> = ({
       count: icfCount,
       ptsdCount: icfPtsdCount,
       icon: Brain,
-      accentColor: 'border-purple-600 text-purple-700 bg-purple-50',
       badgeBg: 'bg-purple-100 text-purple-800',
       description: 'Cognitive Function exclusive',
     },
@@ -77,7 +73,6 @@ export const MetricsOverview: React.FC<MetricsProps> = ({
       count: issCount,
       ptsdCount: issPtsdCount,
       icon: Zap,
-      accentColor: 'border-emerald-600 text-emerald-700 bg-emerald-50',
       badgeBg: 'bg-emerald-100 text-emerald-800',
       description: 'Intermediate Stress exclusive',
     },
@@ -98,6 +93,8 @@ export const MetricsOverview: React.FC<MetricsProps> = ({
                 ? `bg-white border-slate-900 shadow-md ring-1 ring-slate-900/10`
                 : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 shadow-xs'
             }`}
+            aria-pressed={isActive}
+            aria-label={`${card.title}: ${card.count} gene-level DMR summaries, including ${card.ptsdCount} genes on the curated PTSD-related list`}
           >
             {/* Top Indicator Bar */}
             {isActive && <div className="absolute top-0 left-0 right-0 h-1 bg-slate-900" />}
@@ -115,16 +112,18 @@ export const MetricsOverview: React.FC<MetricsProps> = ({
               <span className="text-2xl font-extrabold text-slate-900 tracking-tight">
                 {card.count.toLocaleString()}
               </span>
-              <span className="text-xs text-slate-500 font-medium">DMRs</span>
+              <span className="text-xs text-slate-500 font-medium">DMR genes</span>
             </div>
 
-            <div className="mt-2.5 flex items-center justify-between border-t border-slate-100 pt-2">
+            <p className="mt-1 min-h-7 text-[10px] leading-snug text-slate-500">{card.description}</p>
+
+            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2">
               <span className="text-[11px] text-slate-500 flex items-center gap-1">
                 <Target className="w-3 h-3 text-amber-600" />
-                PTSD Genes
+                PTSD-related list
               </span>
               <span className="text-xs font-bold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
-                {card.ptsdCount}
+                {card.ptsdCount} ({card.count > 0 ? ((card.ptsdCount / card.count) * 100).toFixed(1) : '0.0'}%)
               </span>
             </div>
           </button>

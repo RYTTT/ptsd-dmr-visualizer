@@ -29,7 +29,7 @@ const TREATMENT_GRID_ROWS = [
     label: 'MDMA-AT',
     cols: [
       { key: 'MDMA_Pre', title: 'MDMA — Baseline (Pre)', color: '#7c3aed', bg: '#f5f3ff' },
-      { key: 'MDMA_FUP', title: 'MDMA — Follow-Up (Post)', color: '#7c3aed', bg: '#ede9fe' },
+      { key: 'MDMA_FUP', title: 'MDMA — Follow-up (FUP)', color: '#7c3aed', bg: '#ede9fe' },
     ],
   },
   {
@@ -37,7 +37,7 @@ const TREATMENT_GRID_ROWS = [
     label: 'Ketamine',
     cols: [
       { key: 'Ketamine_Pre', title: 'Ketamine — Baseline (Pre)', color: '#0891b2', bg: '#ecfeff' },
-      { key: 'Ketamine_FUP', title: 'Ketamine — Follow-Up (Post)', color: '#0891b2', bg: '#cffafe' },
+      { key: 'Ketamine_FUP', title: 'Ketamine — Follow-up (FUP)', color: '#0891b2', bg: '#cffafe' },
     ],
   },
   {
@@ -45,15 +45,18 @@ const TREATMENT_GRID_ROWS = [
     label: 'CPT',
     cols: [
       { key: 'CPT_Pre', title: 'CPT — Baseline (Pre)', color: '#059669', bg: '#ecfdf5' },
-      { key: 'CPT_FUP', title: 'CPT — Follow-Up (Post)', color: '#059669', bg: '#d1fae5' },
+      { key: 'CPT_FUP', title: 'CPT — Follow-up (FUP)', color: '#059669', bg: '#d1fae5' },
     ],
   },
 ];
 
 const HYPER_COLOR = '#dc2626';
 const HYPO_COLOR = '#2563eb';
+const NEUTRAL_COLOR = '#64748b';
 const ISLAND_FILL = 'rgba(245, 158, 11, 0.28)';
 const ISLAND_STROKE = 'rgba(180, 83, 9, 0.75)';
+const FDR_05_COLOR = '#475569';
+const FDR_01_COLOR = '#94a3b8';
 
 const FEATURE_COLORS: Record<string, string> = {
   'TSS1500': '#f59e0b', // amber-500
@@ -69,6 +72,20 @@ interface TooltipData {
   y: number;
   probe: ProbeEntry;
   subtype: string;
+}
+
+function isProbability(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1;
+}
+
+function probabilityScore(value: number, zeroScore: number): number {
+  return value === 0 ? zeroScore : -Math.log10(value);
+}
+
+function formatProbability(value: number | null): string {
+  if (value == null) return 'Unavailable';
+  if (value === 0) return '0 (below numeric precision)';
+  return value < 0.001 ? value.toExponential(2) : value.toFixed(3);
 }
 
 export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
@@ -124,22 +141,13 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     return topMargin + count * panelHeight + (count - 1) * panelGap + bottomMargin;
   }, [SUBTYPES, isGrid, topMargin, panelHeight, panelGap, bottomMargin]);
 
-  const featureBounds = useMemo(() => {
-    const bounds: Record<string, { min: number; max: number }> = {};
-    for (const probe of geneData.probes) {
-      const feat = probe.feature;
-      if (!feat || feat === 'Unknown') continue;
-      if (!bounds[feat]) {
-        bounds[feat] = { min: probe.pos, max: probe.pos };
-      } else {
-        if (probe.pos < bounds[feat].min) bounds[feat].min = probe.pos;
-        if (probe.pos > bounds[feat].max) bounds[feat].max = probe.pos;
-      }
-    }
-    return Object.entries(bounds)
-      .map(([feature, { min, max }]) => ({ feature, min, max }))
-      .sort((a, b) => a.feature.localeCompare(b.feature));
+  const featureAnnotations = useMemo(() => {
+    return geneData.probes
+      .filter((probe) => probe.pos > 0 && probe.feature && probe.feature !== 'Unknown')
+      .map((probe) => ({ feature: probe.feature, pos: probe.pos }));
   }, [geneData.probes]);
+
+  const featureLegend = useMemo(() => [...new Set(featureAnnotations.map((item) => item.feature))].sort(), [featureAnnotations]);
 
   // ---- X-AXIS DOMAIN: INCLUDE BOTH PROBES AND CPG ISLANDS ----
   const { minPos, maxPos, posRange } = useMemo(() => {
@@ -158,19 +166,35 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
   }, [geneData]);
 
   const maxNegLogP = useMemo(() => {
-    let maxVal = 2;
+    let maxFinite = 2;
+    let hasZero = false;
     for (const probe of geneData.probes) {
       for (const sub of SUBTYPES) {
-        const pKey = `${sub.key}_P` as keyof ProbeEntry;
-        const pVal = probe[pKey] as number | null;
-        if (pVal && pVal > 0) {
-          const nlp = -Math.log10(pVal);
-          if (nlp > maxVal) maxVal = nlp;
-        }
+        const fdrKey = `${sub.key}_FDR` as keyof ProbeEntry;
+        const fdr = probe[fdrKey];
+        if (!isProbability(fdr)) continue;
+        if (fdr === 0) hasZero = true;
+        else maxFinite = Math.max(maxFinite, -Math.log10(fdr));
       }
     }
-    return Math.min(Math.ceil(maxVal * 1.15), 32);
+    return Math.ceil((hasZero ? maxFinite + 1 : maxFinite) * 1.15);
   }, [geneData, SUBTYPES]);
+
+  const displayChr = geneData.chr.toLowerCase().startsWith('chr') ? geneData.chr : `chr${geneData.chr}`;
+
+  const accessibleRows = useMemo(() => {
+    return geneData.probes.flatMap((probe) => SUBTYPES.flatMap((subtype) => {
+      const deltaBeta = probe[`${subtype.key}_logFC`];
+      const nominalP = probe[`${subtype.key}_P`];
+      const fdr = probe[`${subtype.key}_FDR`];
+      const numericDeltaBeta = typeof deltaBeta === 'number' ? deltaBeta : null;
+      const numericP = isProbability(nominalP) ? nominalP : null;
+      const numericFdr = isProbability(fdr) ? fdr : null;
+      if (numericDeltaBeta == null && numericP == null && numericFdr == null) return [];
+      return [{ probe: probe.probe, pos: probe.pos, feature: probe.feature || 'Unannotated', comparison: subtype.label, deltaBeta: numericDeltaBeta, nominalP: numericP, fdr: numericFdr }];
+    }));
+  }, [geneData.probes, SUBTYPES]);
+  const hasZeroFdr = accessibleRows.some((row) => row.fdr === 0);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -189,7 +213,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     return () => observer.disconnect();
   }, [totalHeight]);
 
-  const effectiveWidth = dimensions.width > 0 ? dimensions.width : (isGrid ? 850 : 700);
+  const effectiveWidth = Math.max(dimensions.width > 0 ? dimensions.width : (isGrid ? 850 : 700), isGrid ? 660 : 360);
 
   // Column metrics for Grid mode vs 1D mode
   const colWidth = useMemo(() => {
@@ -241,14 +265,14 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.font = 'bold 16px Inter, system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(
-      `${geneData.gene} — CpG Probe-Level Methylation Significance`,
+      `${geneData.gene} — CpG Probe-Level FDR`,
       effectiveWidth / 2,
       24
     );
     ctx.font = '12px Inter, system-ui, sans-serif';
     ctx.fillStyle = '#64748b';
     ctx.fillText(
-      `Chr ${geneData.chr} | ${geneData.totalProbes} CpG Probes | Range: ${minPos.toLocaleString()} – ${maxPos.toLocaleString()} bp`,
+      `${displayChr} | ${geneData.probes.length} probe records / ${geneData.totalProbes} EPIC probes mapped | Display range: ${Math.round(minPos).toLocaleString()}–${Math.round(maxPos).toLocaleString()} bp`,
       effectiveWidth / 2,
       42
     );
@@ -267,11 +291,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       ctx.strokeStyle = '#cbd5e1';
       ctx.lineWidth = 1;
       ctx.beginPath();
-      if (typeof (ctx as any).roundRect === 'function') {
-        (ctx as any).roundRect(leftMargin1 - 2, headerY, colWidth + 4, headerH, 4);
-      } else {
-        ctx.rect(leftMargin1 - 2, headerY, colWidth + 4, headerH);
-      }
+      ctx.roundRect(leftMargin1 - 2, headerY, colWidth + 4, headerH, 4);
       ctx.fill();
       ctx.stroke();
 
@@ -285,11 +305,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       ctx.strokeStyle = '#c4b5fd';
       ctx.lineWidth = 1;
       ctx.beginPath();
-      if (typeof (ctx as any).roundRect === 'function') {
-        (ctx as any).roundRect(leftMargin2 - 2, headerY, colWidth + 4, headerH, 4);
-      } else {
-        ctx.rect(leftMargin2 - 2, headerY, colWidth + 4, headerH);
-      }
+      ctx.roundRect(leftMargin2 - 2, headerY, colWidth + 4, headerH, 4);
       ctx.fill();
       ctx.stroke();
 
@@ -354,11 +370,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
                   ctx.strokeStyle = 'rgba(217, 119, 6, 0.8)';
                   ctx.lineWidth = 1;
                   ctx.beginPath();
-                  if (typeof (ctx as any).roundRect === 'function') {
-                    (ctx as any).roundRect(centerX - badgeW / 2, panelTop + 3, badgeW, badgeH, 3);
-                  } else {
-                    ctx.rect(centerX - badgeW / 2, panelTop + 3, badgeW, badgeH);
-                  }
+                  ctx.roundRect(centerX - badgeW / 2, panelTop + 3, badgeW, badgeH, 3);
                   ctx.fill();
                   ctx.stroke();
 
@@ -378,11 +390,11 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             if (y < areaTop - 1 || y > areaBot + 1) continue;
 
             if (tick === 1.301) {
-              ctx.strokeStyle = '#ef4444';
+              ctx.strokeStyle = FDR_05_COLOR;
               ctx.lineWidth = 1.2;
               ctx.setLineDash([6, 4]);
             } else if (tick === 2) {
-              ctx.strokeStyle = '#b91c1c';
+              ctx.strokeStyle = FDR_01_COLOR;
               ctx.lineWidth = 1;
               ctx.setLineDash([4, 4]);
             } else if (tick === 0) {
@@ -404,13 +416,13 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             ctx.font = '9px Inter, system-ui, sans-serif';
             ctx.textAlign = 'right';
             if (tick === 1.301) {
-              ctx.fillStyle = '#ef4444';
+              ctx.fillStyle = FDR_05_COLOR;
               ctx.font = 'bold 9px Inter, system-ui, sans-serif';
-              ctx.fillText('p=.05', colLeft - 5, y + 3);
+              ctx.fillText('FDR=.05', colLeft - 5, y + 3);
             } else if (tick === 2) {
-              ctx.fillStyle = '#b91c1c';
+              ctx.fillStyle = FDR_01_COLOR;
               ctx.font = 'bold 9px Inter, system-ui, sans-serif';
-              ctx.fillText('p=.01', colLeft - 5, y + 3);
+              ctx.fillText('FDR=.01', colLeft - 5, y + 3);
             } else if (tick > 0) {
               ctx.fillStyle = '#94a3b8';
               ctx.fillText(tick.toFixed(0), colLeft - 5, y + 3);
@@ -418,7 +430,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           }
 
           // Probe lollipops
-          const pKey = `${colSlot.key}_P` as keyof ProbeEntry;
+          const pKey = `${colSlot.key}_FDR` as keyof ProbeEntry;
           const lfcKey = `${colSlot.key}_logFC` as keyof ProbeEntry;
 
           const sortedProbes = [...geneData.probes].sort((a, b) => {
@@ -426,20 +438,27 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             const pb = (b[pKey] as number | null) ?? 1;
             return pb - pa;
           });
+          const drawableProbes = sortedProbes.filter((probe) => isProbability(probe[pKey]));
 
-          for (const probe of sortedProbes) {
-            const pVal = probe[pKey] as number | null;
+          if (drawableProbes.length === 0) {
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'italic 10px Inter, system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('No probe FDR available', colLeft + colWidth / 2, areaTop + areaH / 2);
+          }
+
+          for (const probe of drawableProbes) {
+            const fdr = probe[pKey];
             const logFC = probe[lfcKey] as number | null;
-            if (!pVal || pVal <= 0) continue;
+            if (!isProbability(fdr)) continue;
 
-            const nlp = -Math.log10(pVal);
+            const nlp = probabilityScore(fdr, maxNegLogP);
             const x = posToX(probe.pos, cIdx);
             const yBase = valToY(0, panelTop);
             const yTop = valToY(Math.min(nlp, maxNegLogP), panelTop);
-            const isHyper = logFC && logFC > 0;
-            const dotColor = isHyper ? HYPER_COLOR : HYPO_COLOR;
-            const isSig05 = nlp > 1.301;
-            const isSig01 = nlp > 2;
+            const dotColor = logFC == null || logFC === 0 ? NEUTRAL_COLOR : logFC > 0 ? HYPER_COLOR : HYPO_COLOR;
+            const isSig05 = fdr < 0.05;
+            const isSig01 = fdr < 0.01;
 
             ctx.strokeStyle = dotColor;
             ctx.lineWidth = isSig05 ? 1.8 : 1.1;
@@ -450,7 +469,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             ctx.stroke();
             ctx.globalAlpha = 1;
 
-            let radius = isSig01 ? 5 : isSig05 ? 3.5 : 2.2;
+            const radius = isSig01 ? 5 : isSig05 ? 3.5 : 2.2;
             ctx.beginPath();
             ctx.arc(x, yTop, radius, 0, Math.PI * 2);
             ctx.fillStyle = dotColor;
@@ -484,27 +503,11 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         // Draw Feature Annotations above X-Axis
         const featY = xAxisY - 10;
         const featH = 6;
-        featureBounds.forEach(({ feature, min, max }) => {
-          let x1 = posToX(min, cIdx);
-          let x2 = posToX(max, cIdx);
-          if (x2 - x1 < 12) {
-            const center = (x1 + x2) / 2;
-            x1 = center - 6;
-            x2 = center + 6;
-          }
-          x1 = Math.max(x1, colLeft);
-          x2 = Math.min(x2, colLeft + colWidth);
-          const w = Math.max(x2 - x1, 2);
-
+        featureAnnotations.forEach(({ feature, pos }) => {
+          const x = Math.max(colLeft, Math.min(posToX(pos, cIdx), colLeft + colWidth));
           ctx.fillStyle = FEATURE_COLORS[feature] || '#94a3b8';
           ctx.globalAlpha = 0.75;
-          ctx.beginPath();
-          if (typeof (ctx as any).roundRect === 'function') {
-            (ctx as any).roundRect(x1, featY, w, featH, 3);
-          } else {
-            ctx.rect(x1, featY, w, featH);
-          }
-          ctx.fill();
+          ctx.fillRect(x - 2, featY, 4, featH);
         });
         ctx.globalAlpha = 1.0;
 
@@ -584,11 +587,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
                 ctx.strokeStyle = 'rgba(217, 119, 6, 0.8)';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                if (typeof (ctx as any).roundRect === 'function') {
-                  (ctx as any).roundRect(centerX - badgeW / 2, panelTop + 4, badgeW, badgeH, 3);
-                } else {
-                  ctx.rect(centerX - badgeW / 2, panelTop + 4, badgeW, badgeH);
-                }
+                ctx.roundRect(centerX - badgeW / 2, panelTop + 4, badgeW, badgeH, 3);
                 ctx.fill();
                 ctx.stroke();
 
@@ -607,11 +606,11 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           if (y < areaTop - 1 || y > areaBot + 1) continue;
 
           if (tick === 1.301) {
-            ctx.strokeStyle = '#ef4444';
+            ctx.strokeStyle = FDR_05_COLOR;
             ctx.lineWidth = 1.2;
             ctx.setLineDash([6, 4]);
           } else if (tick === 2) {
-            ctx.strokeStyle = '#b91c1c';
+            ctx.strokeStyle = FDR_01_COLOR;
             ctx.lineWidth = 1;
             ctx.setLineDash([4, 4]);
           } else if (tick === 0) {
@@ -632,20 +631,20 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           ctx.font = '10px Inter, system-ui, sans-serif';
           ctx.textAlign = 'right';
           if (tick === 1.301) {
-            ctx.fillStyle = '#ef4444';
+            ctx.fillStyle = FDR_05_COLOR;
             ctx.font = 'bold 10px Inter, system-ui, sans-serif';
-            ctx.fillText('p=.05', leftMargin1 - 10, y + 4);
+            ctx.fillText('FDR=.05', leftMargin1 - 10, y + 4);
           } else if (tick === 2) {
-            ctx.fillStyle = '#b91c1c';
+            ctx.fillStyle = FDR_01_COLOR;
             ctx.font = 'bold 10px Inter, system-ui, sans-serif';
-            ctx.fillText('p=.01', leftMargin1 - 10, y + 4);
+            ctx.fillText('FDR=.01', leftMargin1 - 10, y + 4);
           } else if (tick > 0) {
             ctx.fillStyle = '#94a3b8';
             ctx.fillText(tick.toFixed(0), leftMargin1 - 10, y + 4);
           }
         }
 
-        const pKey = `${sub.key}_P` as keyof ProbeEntry;
+        const pKey = `${sub.key}_FDR` as keyof ProbeEntry;
         const lfcKey = `${sub.key}_logFC` as keyof ProbeEntry;
 
         const sortedProbes = [...geneData.probes].sort((a, b) => {
@@ -653,20 +652,27 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           const pb = (b[pKey] as number | null) ?? 1;
           return pb - pa;
         });
+        const drawableProbes = sortedProbes.filter((probe) => isProbability(probe[pKey]));
 
-        for (const probe of sortedProbes) {
-          const pVal = probe[pKey] as number | null;
+        if (drawableProbes.length === 0) {
+          ctx.fillStyle = '#64748b';
+          ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('No probe FDR available', leftMargin1 + colWidth / 2, areaTop + areaH / 2);
+        }
+
+        for (const probe of drawableProbes) {
+          const fdr = probe[pKey];
           const logFC = probe[lfcKey] as number | null;
-          if (!pVal || pVal <= 0) continue;
+          if (!isProbability(fdr)) continue;
 
-          const nlp = -Math.log10(pVal);
+          const nlp = probabilityScore(fdr, maxNegLogP);
           const x = posToX(probe.pos, 0);
           const yBase = valToY(0, panelTop);
           const yTop = valToY(Math.min(nlp, maxNegLogP), panelTop);
-          const isHyper = logFC && logFC > 0;
-          const dotColor = isHyper ? HYPER_COLOR : HYPO_COLOR;
-          const isSig05 = nlp > 1.301;
-          const isSig01 = nlp > 2;
+          const dotColor = logFC == null || logFC === 0 ? NEUTRAL_COLOR : logFC > 0 ? HYPER_COLOR : HYPO_COLOR;
+          const isSig05 = fdr < 0.05;
+          const isSig01 = fdr < 0.01;
 
           ctx.strokeStyle = dotColor;
           ctx.lineWidth = isSig05 ? 2 : 1.2;
@@ -677,7 +683,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           ctx.stroke();
           ctx.globalAlpha = 1;
 
-          let radius = isSig01 ? 5.5 : isSig05 ? 4 : 2.5;
+          const radius = isSig01 ? 5.5 : isSig05 ? 4 : 2.5;
 
           ctx.beginPath();
           ctx.arc(x, yTop, radius, 0, Math.PI * 2);
@@ -707,27 +713,11 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       // Draw Feature Annotations above X-Axis
       const featY = xAxisY - 10;
       const featH = 6;
-      featureBounds.forEach(({ feature, min, max }) => {
-        let x1 = posToX(min, 0);
-        let x2 = posToX(max, 0);
-        if (x2 - x1 < 12) {
-          const center = (x1 + x2) / 2;
-          x1 = center - 6;
-          x2 = center + 6;
-        }
-        x1 = Math.max(x1, leftMargin1);
-        x2 = Math.min(x2, leftMargin1 + colWidth);
-        const w = Math.max(x2 - x1, 2);
-
+      featureAnnotations.forEach(({ feature, pos }) => {
+        const x = Math.max(leftMargin1, Math.min(posToX(pos, 0), leftMargin1 + colWidth));
         ctx.fillStyle = FEATURE_COLORS[feature] || '#94a3b8';
         ctx.globalAlpha = 0.75;
-        ctx.beginPath();
-        if (typeof (ctx as any).roundRect === 'function') {
-          (ctx as any).roundRect(x1, featY, w, featH, 3);
-        } else {
-          ctx.rect(x1, featY, w, featH);
-        }
-        ctx.fill();
+        ctx.fillRect(x - 2, featY, 4, featH);
       });
       ctx.globalAlpha = 1.0;
 
@@ -757,6 +747,16 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       ctx.fillText('Genomic Position (bp)', effectiveWidth / 2, xAxisY + 38);
     }
 
+    // Shared vertical-axis title
+    ctx.save();
+    ctx.translate(12, topMargin + (totalHeight - topMargin - bottomMargin) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#475569';
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('−log₁₀(probe FDR)', 0, 0);
+    ctx.restore();
+
     // ---- Legend (at bottom) ----
     const legendXAxisY = isGrid
       ? topMargin + 3 * panelHeight + 2 * panelGap + 20
@@ -766,19 +766,20 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     
     // Build legend items
     const legendItems = [
-      { type: 'dot', color: HYPER_COLOR, label: 'Hypermethylated (logFC > 0)' },
-      { type: 'dot', color: HYPO_COLOR, label: 'Hypomethylated (logFC < 0)' },
+      { type: 'dot', color: HYPER_COLOR, label: 'Higher methylation (Δβ > 0)' },
+      { type: 'dot', color: HYPO_COLOR, label: 'Lower methylation (Δβ < 0)' },
+      { type: 'dot', color: NEUTRAL_COLOR, label: 'Effect unavailable or zero' },
       { type: 'island', label: 'CpG Island Region' },
-      { type: 'dash', color: '#ef4444', label: 'p = 0.05' },
-      { type: 'dash', color: '#b91c1c', label: 'p = 0.01' },
+      { type: 'dash', color: FDR_05_COLOR, label: 'FDR = 0.05' },
+      { type: 'dash', color: FDR_01_COLOR, label: 'FDR = 0.01' },
     ];
     
     // Add present feature annotations to legend
-    featureBounds.forEach((fb) => {
+    featureLegend.forEach((feature) => {
       legendItems.push({
         type: 'feature',
-        color: FEATURE_COLORS[fb.feature] || '#94a3b8',
-        label: fb.feature
+        color: FEATURE_COLORS[feature] || '#94a3b8',
+        label: feature
       });
     });
 
@@ -825,11 +826,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         ctx.fillStyle = item.color!;
         ctx.globalAlpha = 0.75;
         ctx.beginPath();
-        if (typeof (ctx as any).roundRect === 'function') {
-          (ctx as any).roundRect(lx, ly - 4, 16, 8, 2);
-        } else {
-          ctx.rect(lx, ly - 4, 16, 8);
-        }
+        ctx.roundRect(lx, ly - 4, 16, 8, 2);
         ctx.fill();
         ctx.globalAlpha = 1.0;
       }
@@ -845,7 +842,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.fillStyle = '#94a3b8';
     ctx.textAlign = 'center';
     ctx.fillText(
-      'Feature regions reflect Illumina EPIC 850K probe coverage only. Absence of a region does not indicate absence of biological activity.',
+      'Vertical scale uses probe-level FDR. Nominal P values are in the tooltip. Feature ticks are probe annotations, not continuous gene regions.',
       effectiveWidth / 2,
       ly + 22
     );
@@ -868,7 +865,10 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     panelHeight,
     panelGap,
     topMargin,
-    featureBounds,
+    featureAnnotations,
+    featureLegend,
+    displayChr,
+    bottomMargin,
   ]);
 
   // ---- Tooltip on hover ----
@@ -896,12 +896,12 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             if (my < panelTop - 5 || my > panelTop + panelHeight + 5) return;
 
             const slot = rConfig.cols[cIdx];
-            const pKey = `${slot.key}_P` as keyof ProbeEntry;
+            const pKey = `${slot.key}_FDR` as keyof ProbeEntry;
 
             for (const probe of geneData.probes) {
-              const pVal = probe[pKey] as number | null;
-              if (!pVal || pVal <= 0) continue;
-              const nlp = -Math.log10(pVal);
+              const fdr = probe[pKey];
+              if (!isProbability(fdr)) continue;
+              const nlp = probabilityScore(fdr, maxNegLogP);
               const x = posToX(probe.pos, cIdx);
               const y = valToY(Math.min(nlp, maxNegLogP), panelTop);
               const dist = Math.sqrt((mx - x) ** 2 + (my - y) ** 2);
@@ -917,12 +917,12 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         for (let idx = 0; idx < SUBTYPES.length; idx++) {
           const sub = SUBTYPES[idx];
           const panelTop = topMargin + idx * (panelHeight + panelGap);
-          const pKey = `${sub.key}_P` as keyof ProbeEntry;
+          const pKey = `${sub.key}_FDR` as keyof ProbeEntry;
 
           for (const probe of geneData.probes) {
-            const pVal = probe[pKey] as number | null;
-            if (!pVal || pVal <= 0) continue;
-            const nlp = -Math.log10(pVal);
+            const fdr = probe[pKey];
+            if (!isProbability(fdr)) continue;
+            const nlp = probabilityScore(fdr, maxNegLogP);
             const x = posToX(probe.pos, 0);
             const y = valToY(Math.min(nlp, maxNegLogP), panelTop);
             const dist = Math.sqrt((mx - x) ** 2 + (my - y) ** 2);
@@ -953,11 +953,14 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
   );
 
   return (
-    <div ref={containerRef} className="relative w-full overflow-hidden">
+    <div ref={containerRef} className="relative w-full overflow-x-auto">
+      {accessibleRows.length === 0 && <p role="status" className="mb-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-center text-xs text-slate-500">No probe-level statistics are available for this gene in the configured comparisons. Manifest probe annotations may still be shown.</p>}
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: totalHeight }}
         className="rounded-lg cursor-crosshair border border-slate-200 shadow-sm"
+        role="img"
+        aria-label={`${geneData.gene} probe track on ${displayChr}. Vertical axis is negative log10 probe-level FDR; point color gives methylation-effect direction. Exact values are available in the table following the chart.`}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setTooltip(null)}
       />
@@ -966,7 +969,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         <div
           className="absolute z-50 pointer-events-none bg-white border border-slate-300 rounded-xl p-3.5 shadow-xl text-xs space-y-1.5 max-w-[300px]"
           style={{
-            left: Math.min(tooltip.x + 14, dimensions.width - 310),
+            left: Math.max(8, Math.min(tooltip.x + 14, dimensions.width - 310)),
             top: Math.max(tooltip.y - 60, 0),
           }}
         >
@@ -1000,7 +1003,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           )}
           <div className="border-t border-slate-100 pt-1.5 grid grid-cols-3 gap-x-3 text-[11px]">
             <div>
-              <span className="text-slate-400 block mb-0.5">logFC</span>
+              <span className="text-slate-400 block mb-0.5">Δβ</span>
               <div className="font-mono font-bold">
                 {(() => {
                   const v = tooltip.probe[`${tooltip.subtype}_logFC` as keyof ProbeEntry] as number | null;
@@ -1018,7 +1021,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
               <div className="font-mono font-bold text-slate-900">
                 {(() => {
                   const v = tooltip.probe[`${tooltip.subtype}_P` as keyof ProbeEntry] as number | null;
-                  return v != null ? (v < 1e-10 ? v.toExponential(1) : v.toExponential(2)) : '—';
+                  return formatProbability(v);
                 })()}
               </div>
             </div>
@@ -1027,13 +1030,25 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
               <div className="font-mono font-bold text-slate-900">
                 {(() => {
                   const v = tooltip.probe[`${tooltip.subtype}_FDR` as keyof ProbeEntry] as number | null;
-                  return v != null ? (v < 1e-10 ? v.toExponential(1) : v.toExponential(2)) : '—';
+                  return formatProbability(v);
                 })()}
               </div>
             </div>
           </div>
         </div>
       )}
+      <details className="mt-3 min-w-full rounded-lg border border-slate-200 bg-slate-50">
+        <summary className="cursor-pointer px-3 py-2 text-xs font-semibold text-slate-700">Accessible probe-statistics table ({accessibleRows.length.toLocaleString()} available probe–comparison records)</summary>
+        <div className="max-h-96 overflow-auto border-t border-slate-200">
+          <table className="w-full whitespace-nowrap text-left text-xs">
+            <caption className="sr-only">Available probe statistics for {geneData.gene} on {displayChr}</caption>
+            <thead className="sticky top-0 bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Probe</th><th className="px-3 py-2">Position (bp)</th><th className="px-3 py-2">Feature</th><th className="px-3 py-2">Comparison</th><th className="px-3 py-2">Δβ</th><th className="px-3 py-2">Nominal P</th><th className="px-3 py-2">FDR</th></tr></thead>
+            <tbody>{accessibleRows.map((row) => <tr key={`${row.probe}-${row.comparison}`} className="border-t border-slate-200"><td className="px-3 py-2 font-mono font-semibold">{row.probe}</td><td className="px-3 py-2 font-mono">{row.pos.toLocaleString()}</td><td className="px-3 py-2">{row.feature}</td><td className="px-3 py-2">{row.comparison}</td><td className="px-3 py-2 font-mono">{row.deltaBeta == null ? 'Unavailable' : `${row.deltaBeta > 0 ? '+' : ''}${row.deltaBeta.toFixed(4)}`}</td><td className="px-3 py-2 font-mono">{formatProbability(row.nominalP)}</td><td className="px-3 py-2 font-mono">{formatProbability(row.fdr)}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </details>
+      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">Probe records are listed only when at least one statistic is available. Missing statistics are not converted to zero or “not significant.” Δβ is a methylation-proportion difference; confidence intervals and standard errors are not present in the probe dataset.</p>
+      {hasZeroFdr && <p className="mt-1 text-[10px] font-medium text-amber-800">One or more stored FDR values equal numeric zero (underflow/rounding). They are reported as zero in the table and plotted at the upper display boundary, not interpreted as literally zero probability.</p>}
     </div>
   );
 };

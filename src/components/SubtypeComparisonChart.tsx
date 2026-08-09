@@ -1,303 +1,206 @@
 import React, { useMemo } from 'react';
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  ReferenceLine,
 } from 'recharts';
-import { CrossSubtypeDMR } from '../types/dmr';
+import {
+  SUBTYPE_KEYS,
+  type Direction,
+  type SelectedPtsdResult,
+  type SubtypeKey,
+  type SubtypeStat,
+} from '../types/dmr';
 
 interface ComparisonProps {
-  geneData: CrossSubtypeDMR | null;
+  geneData: SelectedPtsdResult | null;
 }
 
-function sigStars(fdr: number): string {
-  if (fdr < 0.001) return '***';
-  if (fdr < 0.01) return '**';
-  if (fdr < 0.05) return '*';
-  return 'ns';
+interface ComparisonDatum {
+  subtype: SubtypeKey;
+  deltaBeta: number;
+  fdr: number;
+  direction: Direction;
+  fdrLabel: string;
+  avgPositiveDeltaBeta: number | null;
+  avgNegativeDeltaBeta: number | null;
+  nPositive: number;
+  nNegative: number;
+  domainMax: number;
 }
 
-const SUBTYPE_COLORS: Record<string, string> = {
-  SSS: '#e11d48',
-  ADS: '#2563eb',
-  ICF: '#7c3aed',
-  ISS: '#059669',
-};
+interface CustomBarShapeProps {
+  x?: number;
+  width?: number;
+  payload?: ComparisonDatum;
+  background?: { y?: number; height?: number };
+}
 
-/**
- * Custom bar shape that draws from the zero line.
- * Uses `background` (the full category slot rectangle) + symmetric yDomain
- * to compute pixel positions — does NOT rely on yAxis which Recharts
- * doesn't pass to custom shapes.
- */
-const CustomBarShape = (props: any) => {
+function formatProbability(value: number): string {
+  if (value === 0) return '0 (below numeric precision)';
+  return value < 0.001 ? value.toExponential(2) : value.toFixed(3);
+}
+
+function toDatum(subtype: SubtypeKey, stat: SubtypeStat): Omit<ComparisonDatum, 'domainMax'> {
+  return {
+    subtype,
+    deltaBeta: stat.deltaBeta,
+    fdr: stat.fdr,
+    direction: stat.direction,
+    fdrLabel: stat.fdr < 0.05 ? 'FDR < .05' : 'FDR ≥ .05',
+    avgPositiveDeltaBeta: stat.avgPosLogFC ?? null,
+    avgNegativeDeltaBeta: stat.avgNegLogFC ?? null,
+    nPositive: stat.nPosTop3 ?? 0,
+    nNegative: stat.nNegTop3 ?? 0,
+  };
+}
+
+function DirectionBar(props: CustomBarShapeProps) {
   const { x, width, payload, background } = props;
-  if (!payload || !background) return null;
+  if (x == null || width == null || !payload || background?.y == null || background.height == null) return null;
 
-  const plotTop = background.y as number;
-  const plotH = background.height as number;
-  const domainMax = payload._yDomainMax as number;
+  const plotTop = background.y;
+  const plotHeight = background.height;
+  const zeroY = plotTop + plotHeight / 2;
+  const toY = (value: number) => zeroY - value * (plotHeight / (2 * payload.domainMax));
+  const isNotSignificant = payload.fdr >= 0.05;
+  const opacity = isNotSignificant ? 0.45 : 0.95;
+  const labelColor = isNotSignificant ? '#64748b' : '#0f172a';
+  const labelY = plotTop - 3;
+  const canSplitMixed =
+    payload.direction === 'Mixed' &&
+    payload.avgPositiveDeltaBeta != null &&
+    payload.avgNegativeDeltaBeta != null;
 
-  // scale: pixels per data-unit. Domain is [-domainMax, +domainMax]
-  const scale = plotH / (2 * domainMax);
-  // y0: pixel Y of the zero line (center of symmetric domain)
-  const y0 = plotTop + plotH / 2;
-  // Convert a data value to SVG pixel Y
-  const toY = (v: number) => y0 - v * scale;
-
-  const isMixed = payload.isMixed;
-  const sig = payload.sig as string;
-  const isNs = sig === 'ns';
-  const opacity = isNs ? 0.35 : 1;
-
-  if (isMixed) {
-    const posVal: number = payload.avgPosLogFC ?? 0;
-    const negVal: number = payload.avgNegLogFC ?? 0;
-
-    const yPos = toY(posVal);
-    const yNeg = toY(negVal);
-
-    const posH = Math.max(0, y0 - yPos);
-    const negH = Math.max(0, yNeg - y0);
-
-    // Label positions:
-    //   ySig  at fixed top of plot (never overlaps)
-    //   yUp   just above red bar
-    //   yDown just below blue bar
-    const ySig = plotTop - 2; // fixed at top of chart area
-    const yUp = posH > 0 ? yPos - 4 : y0 - 4;
-    const yDown = negH > 0 ? yNeg + 14 : y0 + 14;
-
+  if (canSplitMixed) {
+    const positiveY = toY(payload.avgPositiveDeltaBeta!);
+    const negativeY = toY(payload.avgNegativeDeltaBeta!);
+    const positiveHeight = Math.max(0, zeroY - positiveY);
+    const negativeHeight = Math.max(0, negativeY - zeroY);
     return (
       <g>
-        {/* Red hyper bar: UP from zero */}
-        {posH > 0 && (
-          <rect x={x} y={yPos} width={width} height={posH}
-            fill="#dc2626" rx={3} ry={3} opacity={opacity} />
-        )}
-        {/* Blue hypo bar: DOWN from zero */}
-        {negH > 0 && (
-          <rect x={x} y={y0} width={width} height={negH}
-            fill="#2563eb" rx={3} ry={3} opacity={opacity} />
-        )}
-        {/* ↑n label */}
-        {payload.nPos > 0 && posH > 0 && (
-          <text x={x + width / 2} y={yUp} textAnchor="middle"
-            fill="#dc2626" fontSize={10} fontWeight={700}>
-            ↑{payload.nPos}
-          </text>
-        )}
-        {/* ↓n label */}
-        {payload.nNeg > 0 && negH > 0 && (
-          <text x={x + width / 2} y={yDown} textAnchor="middle"
-            fill="#2563eb" fontSize={10} fontWeight={700}>
-            ↓{payload.nNeg}
-          </text>
-        )}
-        {/* Significance stars at top */}
-        <text x={x + width / 2} y={ySig} textAnchor="middle"
-          fill={isNs ? '#94a3b8' : '#0f172a'}
-          fontSize={isNs ? 9 : 11} fontWeight={isNs ? 400 : 700}
-          fontStyle={isNs ? 'italic' : 'normal'}>
-          {sig}
-        </text>
+        {positiveHeight > 0 && <rect x={x} y={positiveY} width={width} height={positiveHeight} fill="#b91c1c" rx={3} opacity={opacity} />}
+        {negativeHeight > 0 && <rect x={x} y={zeroY} width={width} height={negativeHeight} fill="#1d4ed8" rx={3} opacity={opacity} />}
+        {payload.nPositive > 0 && positiveHeight > 0 && <text x={x + width / 2} y={positiveY - 4} textAnchor="middle" fill="#991b1b" fontSize={10} fontWeight={700}>↑{payload.nPositive}</text>}
+        {payload.nNegative > 0 && negativeHeight > 0 && <text x={x + width / 2} y={negativeY + 13} textAnchor="middle" fill="#1e40af" fontSize={10} fontWeight={700}>↓{payload.nNegative}</text>}
+        <text x={x + width / 2} y={labelY} textAnchor="middle" fill={labelColor} fontSize={9} fontWeight={600}>{payload.fdrLabel}</text>
       </g>
     );
   }
 
-  // ---- Concordant bar (single direction) ----
-  const val = payload.deltaBeta as number;
-  const yVal = toY(val);
-  const isPos = val >= 0;
-
-  const barY = isPos ? yVal : y0;
-  const barH = Math.max(1, Math.abs(y0 - yVal));
-  const labelY = plotTop - 2; // fixed at top, same as Mixed
-
+  const valueY = toY(payload.deltaBeta);
+  const barY = payload.deltaBeta >= 0 ? valueY : zeroY;
+  const barHeight = Math.max(1, Math.abs(zeroY - valueY));
+  const fill = payload.direction === 'Hypermethylated' ? '#b91c1c' : payload.direction === 'Hypomethylated' ? '#1d4ed8' : '#b45309';
   return (
     <g>
-      <rect x={x} y={barY} width={width} height={barH}
-        fill={payload.color} rx={3} ry={3} opacity={opacity} />
-      <text x={x + width / 2} y={labelY} textAnchor="middle"
-        fill={isNs ? '#94a3b8' : '#0f172a'}
-        fontSize={isNs ? 9 : 11} fontWeight={isNs ? 400 : 700}
-        fontStyle={isNs ? 'italic' : 'normal'}>
-        {sig}
-      </text>
+      <rect x={x} y={barY} width={width} height={barHeight} fill={fill} rx={3} opacity={opacity} />
+      <text x={x + width / 2} y={labelY} textAnchor="middle" fill={labelColor} fontSize={9} fontWeight={600}>{payload.fdrLabel}</text>
     </g>
   );
-};
+}
 
 export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) => {
+  const chartData = useMemo(() => {
+    if (!geneData) return [];
+    const raw = geneData.kind === 'cross-subtype'
+      ? SUBTYPE_KEYS.map((subtype) => toDatum(subtype, geneData.result.subtypes[subtype]))
+      : [toDatum(geneData.subtype, geneData.result)];
+    const values = raw.flatMap((datum) => [datum.deltaBeta, datum.avgPositiveDeltaBeta ?? 0, datum.avgNegativeDeltaBeta ?? 0]);
+    const domainMax = Math.max(...values.map(Math.abs), 0.02) * 1.55;
+    return raw.map((datum) => ({ ...datum, domainMax }));
+  }, [geneData]);
+
   if (!geneData) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs flex flex-col items-center justify-center text-center h-full min-h-[280px]">
-        <span className="text-slate-400 text-xs">
-          Select or click a gene to compare its effect size (Δβ) profile across the 4 subtypes.
-        </span>
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs flex min-h-[280px] h-full items-center justify-center text-center">
+        <p className="max-w-md text-xs text-slate-500">Select a DMR to view its observed top-three-probe methylation summary. Subtype-unique results show only the selected subtype; unavailable subtypes are not replaced with zeros.</p>
       </div>
     );
   }
 
-  const subtypeKeys = ['SSS', 'ADS', 'ICF', 'ISS'] as const;
-
-  // Compute yDomain first so we can pass it into each data entry
-  const yDomainMax = useMemo(() => {
-    const allVals = subtypeKeys.flatMap((sub) => {
-      const s = geneData.subtypes[sub];
-      return [s.deltaBeta, s.avgPosLogFC ?? 0, s.avgNegLogFC ?? 0];
-    });
-    const maxAbs = Math.max(...allVals.map(Math.abs), 0.02);
-    return maxAbs * 1.55; // 55% padding for labels
-  }, [geneData]);
-
-  // Build chart data — include _yDomainMax so CustomBarShape can compute pixel positions
-  const chartData = subtypeKeys.map((sub) => {
-    const s = geneData.subtypes[sub];
-    return {
-      subtype: sub,
-      deltaBeta: s.deltaBeta,
-      fdr: s.fdr,
-      direction: s.direction,
-      sig: sigStars(s.fdr),
-      color: SUBTYPE_COLORS[sub],
-      isMixed: s.direction === 'Mixed',
-      avgPosLogFC: s.avgPosLogFC ?? null,
-      avgNegLogFC: s.avgNegLogFC ?? null,
-      nPos: s.nPosTop3 ?? 0,
-      nNeg: s.nNegTop3 ?? 0,
-      _yDomainMax: yDomainMax,
-    };
-  });
-
-  const hasMixed = chartData.some((d) => d.isMixed);
+  const result = geneData.result;
+  const isCrossSubtype = geneData.kind === 'cross-subtype';
+  const summaryFdr = isCrossSubtype ? geneData.result.crossFdr : geneData.result.fdr;
+  const domainMax = chartData[0]?.domainMax ?? 0.1;
+  const hasMixed = chartData.some((datum) => datum.direction === 'Mixed');
+  const titleId = `subtype-comparison-${result.gene.replace(/[^a-zA-Z0-9_-]/g, '')}`;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-      <div className="flex items-center justify-between mb-3">
+    <section className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs" aria-labelledby={titleId}>
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
         <div>
-          <div className="flex items-center space-x-2">
-            <h3 className="text-base font-bold text-slate-900">{geneData.gene}</h3>
-            {geneData.isPtsd && (
-              <span className="px-2 py-0.5 text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300 rounded">
-                PTSD Target Gene
-              </span>
-            )}
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 id={titleId} className="text-base font-bold text-slate-900">{result.gene}</h3>
+            <span className="rounded border border-slate-300 bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-700">
+              {isCrossSubtype ? `Cross-subtype (${geneData.result.nSubtypesSig}/4 called significant upstream)` : `${geneData.subtype} subtype-unique`}
+            </span>
+            {result.isPtsd && <span className="rounded border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-900">Curated PTSD-related list</span>}
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Cross-Subtype Top-3 Effect Size (Δβ) Profile | {geneData.chr} ({geneData.totalProbes} CpGs)
-          </p>
+          <p className="mt-1 text-xs text-slate-500">Mean of the three probes selected by the DMR pipeline | {result.chr} | {result.totalProbes} probes tested in the DMR analysis</p>
         </div>
-        <div className="text-right">
-          <div className="text-[11px] text-slate-500 font-medium">Combined Cross FDR</div>
-          <div className="text-sm font-bold font-mono text-slate-900">
-            {geneData.crossFdr < 1e-15 ? '< 1e-15' : geneData.crossFdr.toExponential(2)}
-          </div>
+        <div className="sm:text-right">
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{isCrossSubtype ? 'Cross-subtype FDR' : `${geneData.subtype} DMR FDR`}</div>
+          <div className="font-mono text-sm font-bold text-slate-900">{formatProbability(summaryFdr)}</div>
         </div>
       </div>
 
-      <div className="h-72 w-full">
+      <div className="h-72 w-full" role="img" aria-label={`${result.gene} methylation difference chart. ${isCrossSubtype ? 'Four observed subtype estimates are shown.' : `Only the observed ${geneData.subtype} subtype-unique estimate is shown.`}`}>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 30, right: 20, bottom: 25, left: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-            <XAxis dataKey="subtype" stroke="#64748b" fontSize={11} />
-            <YAxis
-              stroke="#64748b"
-              fontSize={11}
-              domain={[-yDomainMax, yDomainMax]}
-              tickFormatter={(v: number) => v.toFixed(2)}
-              label={{
-                value: 'Top-3 Avg Δβ',
-                angle: -90,
-                position: 'insideLeft',
-                fill: '#475569',
-                fontSize: 11,
-              }}
-            />
-            <Tooltip
-              content={({ active, payload }) => {
-                if (active && payload && payload.length) {
-                  const data = payload[0].payload;
-                  return (
-                    <div className="bg-white border border-slate-300 p-3 rounded-xl shadow-xl text-xs space-y-1.5 min-w-[200px] z-50">
-                      <div className="font-extrabold text-slate-900 text-sm border-b border-slate-100 pb-1 flex items-center justify-between">
-                        <span>{data.subtype} Subtype</span>
-                        <span className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${
-                          data.direction === 'Hypermethylated' ? 'bg-red-50 text-red-700' :
-                          data.direction === 'Hypomethylated' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
-                        }`}>
-                          {data.direction}
-                        </span>
-                      </div>
-
-                      {data.isMixed ? (
-                        <div className="space-y-1 bg-slate-50 p-2 rounded border border-slate-200 text-[11px]">
-                          <div className="flex justify-between gap-3">
-                            <span className="text-red-600 font-bold">↑ Hyper ({data.nPos} CpGs):</span>
-                            <span className="font-mono font-bold text-red-700">+{(data.avgPosLogFC ?? 0).toFixed(4)}</span>
-                          </div>
-                          <div className="flex justify-between gap-3">
-                            <span className="text-blue-600 font-bold">↓ Hypo ({data.nNeg} CpGs):</span>
-                            <span className="font-mono font-bold text-blue-700">{(data.avgNegLogFC ?? 0).toFixed(4)}</span>
-                          </div>
-                          <div className="text-slate-400 text-[10px] pt-0.5 border-t border-slate-200">
-                            Net Avg Δβ: {data.deltaBeta.toFixed(4)} (cancellation)
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex justify-between gap-4">
-                          <span className="text-slate-500">Avg Δβ:</span>
-                          <span className="font-mono font-bold text-slate-900">
-                            {data.deltaBeta > 0 ? `+${data.deltaBeta.toFixed(4)}` : data.deltaBeta.toFixed(4)}
-                          </span>
-                        </div>
-                      )}
-
-                      <div className="flex justify-between gap-4 pt-0.5">
-                        <span className="text-slate-500">Subtype FDR:</span>
-                        <span className="font-mono text-slate-800 font-bold">{data.fdr < 1e-15 ? '< 1e-15' : data.fdr.toExponential(2)}</span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-slate-500">Significance:</span>
-                        <span className="font-bold text-slate-900">{data.sig}</span>
-                      </div>
+          <BarChart accessibilityLayer data={chartData} margin={{ top: 34, right: 20, bottom: 28, left: 12 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis dataKey="subtype" stroke="#64748b" fontSize={11} label={{ value: 'PTSD subtype', position: 'bottom', offset: 4, fill: '#475569', fontSize: 11 }} />
+            <YAxis stroke="#64748b" fontSize={11} domain={[-domainMax, domainMax]} tickFormatter={(value: number) => value.toFixed(2)} label={{ value: 'Mean top-three Δβ', angle: -90, position: 'insideLeft', fill: '#475569', fontSize: 11 }} />
+            <Tooltip content={({ active, payload }) => {
+              if (!active || !payload?.length) return null;
+              const datum = payload[0].payload as ComparisonDatum;
+              return (
+                <div className="min-w-[220px] space-y-1.5 rounded-xl border border-slate-300 bg-white p-3 text-xs shadow-xl">
+                  <div className="flex items-center justify-between gap-3 border-b border-slate-100 pb-1">
+                    <strong className="text-sm text-slate-900">{datum.subtype} subtype</strong>
+                    <span className="rounded border border-slate-300 bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-800">{datum.direction}</span>
+                  </div>
+                  <div className="flex justify-between gap-4"><span className="text-slate-500">Mean top-three Δβ</span><span className="font-mono font-bold">{datum.deltaBeta > 0 ? '+' : ''}{datum.deltaBeta.toFixed(4)}</span></div>
+                  <div className="flex justify-between gap-4"><span className="text-slate-500">DMR FDR</span><span className="font-mono font-bold">{formatProbability(datum.fdr)}</span></div>
+                  {datum.direction === 'Mixed' && datum.avgPositiveDeltaBeta != null && datum.avgNegativeDeltaBeta != null && (
+                    <div className="space-y-1 rounded border border-amber-200 bg-amber-50 p-2 text-[11px]">
+                      <div className="flex justify-between gap-3"><span>Positive probes ({datum.nPositive})</span><span className="font-mono font-bold text-red-800">+{datum.avgPositiveDeltaBeta.toFixed(4)}</span></div>
+                      <div className="flex justify-between gap-3"><span>Negative probes ({datum.nNegative})</span><span className="font-mono font-bold text-blue-800">{datum.avgNegativeDeltaBeta.toFixed(4)}</span></div>
+                      <p className="text-amber-900">Mixed is assigned from opposing directions among the selected probes; the signed mean does not override that classification.</p>
                     </div>
-                  );
-                }
-                return null;
-              }}
-            />
-            <ReferenceLine y={0} stroke="#64748b" strokeWidth={1.5} />
-
-            {/* Custom SVG shape uses `background` slot to compute zero line */}
-            <Bar
-              dataKey="deltaBeta"
-              shape={<CustomBarShape />}
-              background={{ fill: 'transparent' }}
-            />
+                  )}
+                </div>
+              );
+            }} />
+            <ReferenceLine y={0} stroke="#475569" strokeWidth={1.5} />
+            <Bar dataKey="deltaBeta" shape={<DirectionBar />} background={{ fill: 'transparent' }} />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-4 mt-2 text-[10px] text-slate-500 border-t border-slate-100 pt-2.5 flex-wrap">
-        <span><strong className="text-slate-900">***</strong> FDR &lt; 0.001</span>
-        <span><strong className="text-slate-900">**</strong> FDR &lt; 0.01</span>
-        <span><strong className="text-slate-900">*</strong> FDR &lt; 0.05</span>
-        <span><em className="text-slate-400">ns</em> not significant</span>
-        {hasMixed && (
-          <span className="border-l border-slate-200 pl-4 flex items-center gap-2">
-            <span className="text-red-600 font-bold">↑ Red = Hyper</span>
-            <span className="text-blue-600 font-bold">↓ Blue = Hypo</span>
-            <span className="text-amber-700 font-semibold">(Mixed = opposing CpG directions)</span>
-          </span>
-        )}
+      <div className="mt-2 flex flex-wrap items-center justify-center gap-4 border-t border-slate-100 pt-2 text-[10px] text-slate-600">
+        <span><span className="mr-1 inline-block h-2.5 w-3 rounded-sm bg-red-700" />Higher methylation</span>
+        <span><span className="mr-1 inline-block h-2.5 w-3 rounded-sm bg-blue-700" />Lower methylation</span>
+        {hasMixed && <span><span className="mr-1 inline-block h-2.5 w-3 rounded-sm bg-amber-700" />Mixed/opposing selected probes</span>}
+        <span>Reduced opacity: FDR ≥ 0.05</span>
       </div>
-    </div>
+
+      <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50">
+        <summary className="cursor-pointer px-3 py-2 text-xs font-semibold text-slate-700">Accessible data table</summary>
+        <div className="overflow-x-auto border-t border-slate-200">
+          <table className="w-full text-left text-xs">
+            <caption className="sr-only">Observed subtype estimates for {result.gene}</caption>
+            <thead className="bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Subtype</th><th className="px-3 py-2">Mean top-three Δβ</th><th className="px-3 py-2">Direction</th><th className="px-3 py-2">DMR FDR</th></tr></thead>
+            <tbody>{chartData.map((datum) => <tr key={datum.subtype} className="border-t border-slate-200"><td className="px-3 py-2 font-semibold">{datum.subtype}</td><td className="px-3 py-2 font-mono">{datum.deltaBeta.toFixed(4)}</td><td className="px-3 py-2">{datum.direction}</td><td className="px-3 py-2 font-mono">{formatProbability(datum.fdr)}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </details>
+      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">Δβ is a methylation-proportion difference, not a fold change. No confidence intervals or standard errors are available in this dataset. FDR indicates multiple-testing adjustment; threshold categories should not be interpreted as graded effect strength.</p>
+    </section>
   );
 };

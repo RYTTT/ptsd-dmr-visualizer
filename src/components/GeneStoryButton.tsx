@@ -1,12 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { BookText, X, ExternalLink, ArrowRight } from 'lucide-react';
-
-interface CrossProjectInfo {
-  ptsd: { type: string; fdr: number; direction: string };
-  mdma: { type: string; fdr: number; deltaBeta: number; direction: string };
-}
+import React, { useState, useEffect, useMemo, useId, useRef } from 'react';
+import { BookText, X, ExternalLink } from 'lucide-react';
+import { getGeneMetadata } from '@/lib/commonDatabase';
+import type { CrossProjectInfo } from '@/types/annotation';
+import type { SelectedPtsdResult, SelectedTreatmentResult } from '@/types/dmr';
 
 interface EpicManifestEntry {
   chr: string;
@@ -32,9 +30,18 @@ interface GeneStoryProps {
   epicManifest?: Record<string, EpicManifestEntry>;
   /** Cross-project lookup loaded externally — if null, component will load itself */
   crossProjectData?: Record<string, CrossProjectInfo> | null;
+  /** Exact active statistical result; omitted when this is only an annotation/manifest story. */
+  result?: SelectedPtsdResult | SelectedTreatmentResult | null;
 }
 
-let cpCache: Record<string, CrossProjectInfo> | null = null;
+function formatProbability(value: number): string {
+  if (value === 0) return '0 (below numeric precision)';
+  return value < 0.001 ? value.toExponential(2) : value.toFixed(3);
+}
+
+function formatDeltaBeta(value: number): string {
+  return `${value > 0 ? '+' : ''}${value.toFixed(4)}`;
+}
 
 export const GeneStoryButton: React.FC<GeneStoryProps> = ({
   gene,
@@ -42,25 +49,63 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
   project,
   epicManifest,
   crossProjectData,
+  result,
 }) => {
   const [open, setOpen] = useState(false);
-  const [crossData, setCrossData] = useState<Record<string, CrossProjectInfo> | null>(
-    crossProjectData ?? cpCache ?? null
+  const dialogTitleId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [crossInfo, setCrossInfo] = useState<CrossProjectInfo | null | undefined>(
+    crossProjectData?.[gene],
   );
+  const hasProvidedCrossInfo = Boolean(crossProjectData && Object.hasOwn(crossProjectData, gene));
+  const effectiveCrossInfo = hasProvidedCrossInfo ? crossProjectData?.[gene] ?? null : crossInfo;
 
   useEffect(() => {
-    if (crossData) return;
-    fetch('/data/common/crossProjectGenes.json')
-      .then((r) => r.ok ? r.json() : {})
-      .then((d) => { cpCache = d; setCrossData(d); })
-      .catch(() => setCrossData({}));
-  }, [crossData]);
+    if (hasProvidedCrossInfo) return;
+    let cancelled = false;
+    getGeneMetadata(gene)
+      .then((metadata) => { if (!cancelled) setCrossInfo(metadata.crossProject); })
+      .catch(() => { if (!cancelled) setCrossInfo(null); });
+    return () => { cancelled = true; };
+  }, [gene, hasProvidedCrossInfo]);
+
+  useEffect(() => {
+    if (!open) return;
+    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    closeButtonRef.current?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab' || !dialogRef.current) return;
+      const focusable = Array.from(dialogRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      previouslyFocused?.focus();
+    };
+  }, [open]);
 
   const story = useMemo(() => {
     if (!gene) return null;
 
     const manifest = epicManifest?.[gene];
-    const cross = crossData?.[gene];
+    const cross = effectiveCrossInfo;
     const paragraphs: string[] = [];
 
     // Paragraph 1: Gene identity & clinical relevance
@@ -70,7 +115,7 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
       );
     } else {
       paragraphs.push(
-        `${gene} is a differentially methylated region identified in our multi-cohort analysis. Detailed psychiatric literature annotation is pending for this locus.`
+          `${gene} is available for inspection in this atlas. A curated psychiatric literature annotation is not yet available for this locus; consult the active statistical result before treating it as a DMR.`
       );
     }
 
@@ -78,19 +123,42 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
     if (manifest) {
       const featureList = manifest.features.length > 0 ? manifest.features.join(', ') : 'no annotated features';
       paragraphs.push(
-        `On the Illumina EPIC 850K array, ${gene} is covered by ${manifest.totalProbes} probes across ${manifest.features.length} genomic feature region${manifest.features.length !== 1 ? 's' : ''} (${featureList}). ${manifest.nCpgIslands > 0 ? `${manifest.nCpgIslands} CpG island${manifest.nCpgIslands > 1 ? 's' : ''} ${manifest.nCpgIslands > 1 ? 'are' : 'is'} annotated within this locus (${manifest.cpgIslands.join('; ')}).` : 'No CpG islands are annotated within the probe footprint for this gene.'}`
+        `The EPIC manifest maps ${manifest.totalProbes} probes to ${gene}; ${manifest.probesWithStats} have records in the compiled statistical inventory. The mapped probes span ${manifest.features.length} annotated feature categor${manifest.features.length === 1 ? 'y' : 'ies'} (${featureList}). ${manifest.nCpgIslands > 0 ? `${manifest.nCpgIslands} CpG island annotation${manifest.nCpgIslands > 1 ? 's' : ''} overlap the mapped probe footprint (${manifest.cpgIslands.join('; ')}).` : 'No CpG island annotation overlaps the mapped probe footprint.'}`
       );
     }
 
-    // Paragraph 3: Cross-project bridge narrative
+    // Paragraph 3: exact active result scope
+    if (result) {
+      if (result.kind === 'cross-subtype') {
+        const directions = Object.entries(result.result.subtypes).map(([subtype, stat]) => `${subtype}: ${stat.direction}, Δβ ${formatDeltaBeta(stat.deltaBeta)}, FDR ${formatProbability(stat.fdr)}`).join('; ');
+        paragraphs.push(
+          `The active result is a cross-subtype PTSD DMR (${result.result.nSubtypesSig} of 4 subtype results are flagged significant by the upstream pipeline; the flagging threshold is not supplied; cross-subtype FDR ${formatProbability(result.result.crossFdr)}). Subtype estimates are ${directions}. “Mixed” means the selected probes have opposing directions; a negative or positive signed mean does not make a mixed result concordant.`
+        );
+      } else if (result.kind === 'subtype-unique') {
+        paragraphs.push(
+          `The active result is unique to the ${result.subtype} result set: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, FDR ${formatProbability(result.result.fdr)}. Other subtype values are unavailable in this selection and are not treated as zero or non-significant.`
+        );
+      } else if (result.kind === 'pooled-cross-cohort') {
+        paragraphs.push(
+          `The active treatment result is the pooled cross-cohort analysis: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, FDR ${formatProbability(result.result.fdr)}. This pooled result has no Baseline or Follow-up scope and does not imply that every cohort or timepoint is individually significant.`
+        );
+      } else {
+        const timepointLabel = result.timepoint === 'Pre' ? 'Baseline' : 'Follow-up';
+        paragraphs.push(
+          `The active treatment result is unique to ${result.cohort} at ${timepointLabel}: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, FDR ${formatProbability(result.result.fdr)}. It should not be generalized to the other cohorts or to the pooled cross-cohort result.`
+        );
+      }
+    }
+
+    // Cross-project bridge narrative
     if (cross) {
       if (project === 'ptsd') {
         paragraphs.push(
-          `Notably, ${gene} is also significant in the Treatment Response Atlas (MDMA/Ketamine/CPT), where it shows ${cross.mdma.direction.toLowerCase()} (${cross.mdma.type === 'cross' ? 'cross-cohort meta-analysis' : `${cross.mdma.type}-unique`}, FDR = ${cross.mdma.fdr < 1e-15 ? '< 1e-15' : cross.mdma.fdr.toExponential(2)}). This cross-project convergence — dysregulated in PTSD and responsive to treatment — suggests ${gene} may be a mechanistically relevant epigenetic target for trauma therapy.`
+          `${gene} also meets the stored significance criterion in the Treatment Response Atlas (MDMA/Ketamine/CPT), with a summary direction of ${cross.mdma.direction.toLowerCase()} (${cross.mdma.type === 'cross' ? 'cross-cohort analysis' : `${cross.mdma.type}-specific analysis`}, FDR ${cross.mdma.fdr < 1e-15 ? '< 1×10⁻¹⁵' : cross.mdma.fdr.toExponential(2)}). This cross-project overlap is hypothesis-generating; it does not establish treatment responsiveness, mediation, or a therapeutic target.`
         );
       } else {
         paragraphs.push(
-          `Notably, ${gene} is also significant in the PTSD Subtype DMR Atlas, where it shows ${cross.ptsd.direction.toLowerCase()} (${cross.ptsd.type === 'cross' ? 'cross-subtype common' : `${cross.ptsd.type}-unique`}, FDR = ${cross.ptsd.fdr < 1e-15 ? '< 1e-15' : cross.ptsd.fdr.toExponential(2)}). The observation that this locus is both dysregulated in PTSD and modified by treatment supports its potential as a mechanistic epigenetic marker of trauma and recovery.`
+          `${gene} also meets the stored significance criterion in the PTSD Subtype DMR Atlas, with a summary direction of ${cross.ptsd.direction.toLowerCase()} (${cross.ptsd.type === 'cross' ? 'cross-subtype analysis' : `${cross.ptsd.type}-specific analysis`}, FDR ${cross.ptsd.fdr < 1e-15 ? '< 1×10⁻¹⁵' : cross.ptsd.fdr.toExponential(2)}). The overlap is hypothesis-generating and does not establish a mechanistic marker of trauma or recovery.`
         );
       }
     }
@@ -98,18 +166,20 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
     // Paragraph 4: Psychiatric associations
     if (annotation?.psychDisorders && annotation.psychDisorders.length > 0) {
       paragraphs.push(
-        `In the published epigenetic literature, ${gene} has been associated with: ${annotation.psychDisorders.join(', ')}.`
+        `The curated annotation lists reported literature associations with: ${annotation.psychDisorders.join(', ')}. These labels do not indicate that the present analysis tested or replicated every association.`
       );
     }
 
     return paragraphs;
-  }, [gene, annotation, epicManifest, crossData, project]);
+  }, [gene, annotation, epicManifest, effectiveCrossInfo, project, result]);
 
   if (!story || story.length === 0) return null;
 
   return (
     <>
       <button
+        type="button"
+        ref={triggerRef}
         onClick={() => setOpen(true)}
         className="flex items-center gap-1.5 text-[11px] font-bold text-violet-700 hover:text-violet-900 bg-violet-50 hover:bg-violet-100 px-2.5 py-1.5 rounded-lg border border-violet-200 transition shadow-xs"
       >
@@ -118,16 +188,19 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
       </button>
 
       {open && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto border border-slate-200">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}>
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={dialogTitleId} className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto border border-slate-200">
             {/* Modal Header */}
             <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
               <div>
-                <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">{gene} — Scientific Narrative</h2>
-                <p className="text-[11px] text-slate-500 font-medium">Auto-generated from project data, EPIC manifest, and cross-project linkage</p>
+                <h2 id={dialogTitleId} className="text-lg font-extrabold text-slate-900 tracking-tight">{gene} — Data-linked summary</h2>
+                <p className="text-[11px] text-slate-500 font-medium">Automatically assembled; verify against the statistical views and cited sources</p>
               </div>
               <button
+                type="button"
+                ref={closeButtonRef}
                 onClick={() => setOpen(false)}
+                aria-label="Close gene summary"
                 className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition"
               >
                 <X className="w-5 h-5" />
@@ -185,7 +258,7 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
             {/* Modal Footer */}
             <div className="px-6 py-3 bg-slate-50 border-t border-slate-200 rounded-b-2xl">
               <p className="text-[10px] text-slate-400 italic">
-                This narrative is auto-assembled from project data, the EPIC 850K gene manifest, cross-project gene linkage, and curated literature annotations. It is intended as a research aid, not a peer-reviewed statement.
+                This summary combines project data, the EPIC manifest, cross-project linkage, and curated annotations. It is a research navigation aid—not a causal interpretation, clinical claim, or peer-reviewed conclusion.
               </p>
             </div>
           </div>

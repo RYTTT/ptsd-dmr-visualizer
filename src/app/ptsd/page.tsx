@@ -1,15 +1,29 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { MetricsOverview } from '@/components/MetricsOverview';
 import { DmrVolcanoPlot } from '@/components/DmrVolcanoPlot';
 import { SubtypeComparisonChart } from '@/components/SubtypeComparisonChart';
 import { GenomicTrackPlot } from '@/components/GenomicTrackPlot';
 import { GeneAnnotationCard } from '@/components/GeneAnnotationCard';
-import { MasterDMRData } from '@/types/dmr';
+import type { Direction, MasterDMRData, SelectedPtsdResult, SubtypeKey } from '@/types/dmr';
+import { SUBTYPE_KEYS } from '@/types/dmr';
 import { GeneProbeData } from '@/types/probe';
 import { GeneAnnotationMap } from '@/types/annotation';
+import {
+  getGeneMetadata,
+  loadGenesMetadata,
+  loadProbeData,
+  readJsonResponse,
+  SessionExpiredError,
+} from '@/lib/commonDatabase';
+import {
+  deriveCrossSubtypeDirection,
+  findPtsdResult,
+  serializeCsv,
+  validateMasterDMRData,
+} from '@/lib/scientificData';
 import {
   Search,
   Filter,
@@ -25,6 +39,26 @@ import { KeyResultsPanel, FTC_KEY_GENES, EpicManifestEntry } from '@/components/
 import { PathwayEnrichmentPanel } from '@/components/PathwayEnrichmentPanel';
 import { GeneStoryButton } from '@/components/GeneStoryButton';
 
+interface DmrTableRow {
+  gene: string;
+  chr: string;
+  totalProbes: number;
+  isPtsd: boolean;
+  fdr: number;
+  deltaBeta: number;
+  direction: Direction;
+  negLogFdr: number;
+  rawItem: SelectedPtsdResult;
+}
+
+type SortField = 'gene' | 'fdr' | 'deltaBeta';
+type AnalysisTab = 'cross' | SubtypeKey;
+
+interface LoadError {
+  kind: 'session-expired' | 'data';
+  message: string;
+}
+
 export default function Home() {
   // ---- Data loading state ----
   const [masterData, setMasterData] = useState<MasterDMRData | null>(null);
@@ -34,10 +68,6 @@ export default function Home() {
   // Per-gene probe data: cached on demand
   const [selectedTrackData, setSelectedTrackData] = useState<GeneProbeData | null>(null);
   const [trackLoading, setTrackLoading] = useState(false);
-  const probeCache = useRef<Record<string, GeneProbeData | null>>({});
-  const probeCacheKeys = useRef<string[]>([]);
-  const CACHE_LIMIT = 100;
-
   // EPIC manifest for dynamic stats
   const [epicManifest, setEpicManifest] = useState<Record<string, EpicManifestEntry> | undefined>(undefined);
 
@@ -45,76 +75,90 @@ export default function Home() {
   const trackSectionRef = useRef<HTMLDivElement>(null);
 
   // ---- UI state ----
-  const [activeTab, setActiveTab] = useState<string>('cross');
+  const [activeTab, setActiveTab] = useState<AnalysisTab>('cross');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [ptsdOnly, setPtsdOnly] = useState<boolean>(false);
   const [directionFilter, setDirectionFilter] = useState<string>('All');
   const [selectedGene, setSelectedGene] = useState<string | null>('AHRR');
-  const [sortField, setSortField] = useState<string>('fdr');
+  const [sortField, setSortField] = useState<SortField>('fdr');
   const [sortAsc, setSortAsc] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [showTrack, setShowTrack] = useState<boolean>(true);
   const pageSize = 50;
 
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<LoadError | null>(null);
 
   useEffect(() => {
     Promise.all([
-      fetch('/data/dmrData.json').then((r) => { if (!r.ok) throw new Error('Failed to load DMR data'); return r.json(); }),
-      fetch('/data/common/geneAnnotations.json').then((r) => { if (!r.ok) throw new Error('Failed to load annotations'); return r.json(); }),
-      fetch('/data/common/epicGeneManifest.json').then((r) => r.ok ? r.json() : null).catch(() => null),
-    ]).then(([dmr, annos, manifest]) => {
-      setMasterData(dmr as MasterDMRData);
-      setAnnotationData(annos as GeneAnnotationMap);
-      if (manifest) setEpicManifest(manifest);
+      fetch('/data/dmrData.json').then((response) => readJsonResponse(response, 'Failed to load DMR data')),
+      loadGenesMetadata(FTC_KEY_GENES.map(({ gene }) => gene)),
+    ]).then(([dmr, metadata]) => {
+      setMasterData(validateMasterDMRData(dmr));
+      const annotations: GeneAnnotationMap = {};
+      const manifest: Record<string, EpicManifestEntry> = {};
+      for (const { gene } of FTC_KEY_GENES) {
+        const entry = metadata[gene.toUpperCase()];
+        if (entry?.annotation) annotations[gene] = entry.annotation;
+        if (entry?.manifest) manifest[gene] = entry.manifest;
+      }
+      setAnnotationData(annotations);
+      setEpicManifest(manifest);
       setLoading(false);
-    }).catch((err) => {
-      setLoadError(err.message || 'Failed to load data');
+    }).catch((error: unknown) => {
+      setLoadError({
+        kind: error instanceof SessionExpiredError ? 'session-expired' : 'data',
+        message: error instanceof Error ? error.message : 'Failed to load data',
+      });
       setLoading(false);
     });
   }, []);
 
-  // Fetch probe data on demand when selectedGene changes
-  const fetchProbeData = useCallback(async (gene: string) => {
-    // Check cache first
-    if (gene in probeCache.current) {
-      setSelectedTrackData(probeCache.current[gene]);
+  // Fetch probe data on demand. The shared loader deduplicates requests and
+  // maintains a bounded LRU; cancellation guards prevent stale selections.
+  useEffect(() => {
+    if (!selectedGene) {
       return;
     }
-    setTrackLoading(true);
-    setSelectedTrackData(null);
-    try {
-      const res = await fetch(`/data/probes/${encodeURIComponent(gene)}.json`);
-      if (res.ok) {
-        const data = await res.json() as GeneProbeData;
-        // LRU cache eviction
-        if (probeCacheKeys.current.length >= CACHE_LIMIT) {
-          const oldest = probeCacheKeys.current.shift()!;
-          delete probeCache.current[oldest];
-        }
-        probeCache.current[gene] = data;
-        probeCacheKeys.current.push(gene);
-        setSelectedTrackData(data);
-      } else {
-        probeCache.current[gene] = null;
-        probeCacheKeys.current.push(gene);
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setTrackLoading(true);
         setSelectedTrackData(null);
       }
-    } catch {
-      probeCache.current[gene] = null;
-      setSelectedTrackData(null);
-    } finally {
-      setTrackLoading(false);
-    }
-  }, []);
+    });
+    loadProbeData('ptsd', selectedGene)
+      .then((data) => { if (!cancelled) setSelectedTrackData(data); })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        if (error instanceof SessionExpiredError) {
+          setLoadError({ kind: 'session-expired', message: error.message });
+        } else {
+          setSelectedTrackData(null);
+        }
+      })
+      .finally(() => { if (!cancelled) setTrackLoading(false); });
+    return () => { cancelled = true; };
+  }, [selectedGene]);
 
   useEffect(() => {
-    if (selectedGene) {
-      fetchProbeData(selectedGene);
-    } else {
-      setSelectedTrackData(null);
-    }
-  }, [selectedGene, fetchProbeData]);
+    if (!selectedGene || annotationData?.[selectedGene]) return;
+    let cancelled = false;
+    getGeneMetadata(selectedGene)
+      .then((metadata) => {
+        if (cancelled) return;
+        if (metadata.annotation) {
+          setAnnotationData((current) => ({ ...(current ?? {}), [selectedGene]: metadata.annotation! }));
+        }
+        if (metadata.manifest) {
+          setEpicManifest((current) => ({ ...(current ?? {}), [selectedGene]: metadata.manifest! }));
+        }
+      })
+      .catch((error: unknown) => {
+        if (!cancelled && error instanceof SessionExpiredError) {
+          setLoadError({ kind: 'session-expired', message: error.message });
+        }
+      });
+    return () => { cancelled = true; };
+  }, [selectedGene, annotationData]);
 
 
 
@@ -135,7 +179,7 @@ export default function Home() {
     if (!masterData) return [];
     const genes = new Set<string>();
     masterData.crossSubtype.forEach((d) => genes.add(d.gene));
-    for (const sub of ['SSS', 'ADS', 'ICF', 'ISS'] as const) {
+    for (const sub of SUBTYPE_KEYS) {
       masterData.uniqueSubtypes[sub].forEach((d) => genes.add(d.gene));
     }
     return Array.from(genes).sort();
@@ -144,15 +188,12 @@ export default function Home() {
   // ---- Filtered dataset ----
   const filteredData = useMemo(() => {
     if (!masterData) return [];
-    let list: any[] = [];
+    let list: DmrTableRow[] = [];
     if (activeTab === 'cross') {
       list = masterData.crossSubtype.map((item) => {
         const subs = item.subtypes;
         const avgDeltaBeta = (subs.SSS.deltaBeta + subs.ADS.deltaBeta + subs.ICF.deltaBeta + subs.ISS.deltaBeta) / 4;
-        const signs = [subs.SSS.deltaBeta, subs.ADS.deltaBeta, subs.ICF.deltaBeta, subs.ISS.deltaBeta];
-        const allPos = signs.every((s) => s > 0);
-        const allNeg = signs.every((s) => s < 0);
-        const dir = allPos ? 'Hypermethylated' : allNeg ? 'Hypomethylated' : 'Mixed';
+        const dir = deriveCrossSubtypeDirection(subs);
         return {
           gene: item.gene,
           chr: item.chr,
@@ -162,12 +203,12 @@ export default function Home() {
           deltaBeta: avgDeltaBeta,
           direction: dir,
           negLogFdr: -Math.log10(Math.max(item.crossFdr, 1e-30)),
-          rawItem: item,
+          rawItem: { kind: 'cross-subtype', result: item },
         };
       });
     } else {
       const uList =
-        masterData.uniqueSubtypes[activeTab as keyof typeof masterData.uniqueSubtypes] || [];
+        masterData.uniqueSubtypes[activeTab] ?? [];
       list = uList.map((item) => ({
         gene: item.gene,
         chr: item.chr,
@@ -177,7 +218,7 @@ export default function Home() {
         deltaBeta: item.deltaBeta,
         direction: item.direction,
         negLogFdr: -Math.log10(Math.max(item.fdr, 1e-30)),
-        rawItem: item,
+        rawItem: { kind: 'subtype-unique', subtype: activeTab, result: item },
       }));
     }
 
@@ -191,8 +232,8 @@ export default function Home() {
     if (directionFilter !== 'All') list = list.filter((d) => d.direction === directionFilter);
 
     list.sort((a, b) => {
-      const valA = a[sortField as keyof typeof a];
-      const valB = b[sortField as keyof typeof b];
+      const valA = a[sortField];
+      const valB = b[sortField];
       if (typeof valA === 'string') {
         return sortAsc
           ? (valA as string).localeCompare(valB as string)
@@ -204,40 +245,36 @@ export default function Home() {
   }, [masterData, activeTab, searchQuery, ptsdOnly, directionFilter, sortField, sortAsc]);
 
   // ---- Selected gene details ----
-  const selectedCrossItem = useMemo(() => {
+  const selectedResult = useMemo(() => {
     if (!masterData || !selectedGene) return null;
-    const found = masterData.crossSubtype.find((d) => d.gene === selectedGene);
-    if (found) return found;
+    return findPtsdResult(masterData, activeTab, selectedGene);
+  }, [masterData, activeTab, selectedGene]);
 
-    // Search in uniqueSubtypes if not a cross-subtype gene
-    for (const sub of ['SSS', 'ADS', 'ICF', 'ISS'] as const) {
-      const item = masterData.uniqueSubtypes[sub].find((d) => d.gene === selectedGene);
-      if (item) {
-        return {
-          gene: item.gene,
-          chr: item.chr,
-          totalProbes: item.totalProbes,
-          isPtsd: item.isPtsd,
-          crossP: item.fdr,
-          crossFdr: item.fdr,
-          nSubtypesSig: 1,
-          subtypes: {
-            SSS: sub === 'SSS' ? { deltaBeta: item.deltaBeta, fdr: item.fdr, direction: item.direction } : { deltaBeta: 0, fdr: 1, direction: 'N/A' },
-            ADS: sub === 'ADS' ? { deltaBeta: item.deltaBeta, fdr: item.fdr, direction: item.direction } : { deltaBeta: 0, fdr: 1, direction: 'N/A' },
-            ICF: sub === 'ICF' ? { deltaBeta: item.deltaBeta, fdr: item.fdr, direction: item.direction } : { deltaBeta: 0, fdr: 1, direction: 'N/A' },
-            ISS: sub === 'ISS' ? { deltaBeta: item.deltaBeta, fdr: item.fdr, direction: item.direction } : { deltaBeta: 0, fdr: 1, direction: 'N/A' },
-          },
-        };
-      }
+  const selectGeneInAnalysis = (gene: string) => {
+    if (!masterData) return;
+    if (findPtsdResult(masterData, activeTab, gene)) {
+      setSelectedGene(gene);
+      return;
     }
-    return null;
-  }, [masterData, selectedGene]);
+    if (findPtsdResult(masterData, 'cross', gene)) {
+      setActiveTab('cross');
+      setSelectedGene(gene);
+      setCurrentPage(1);
+      return;
+    }
+    const subtype = SUBTYPE_KEYS.find((key) => findPtsdResult(masterData, key, gene));
+    if (subtype) {
+      setActiveTab(subtype);
+      setSelectedGene(gene);
+      setCurrentPage(1);
+    }
+  };
 
   // selectedTrackData is now managed by the fetchProbeData useEffect above
 
   const selectedAnnotation = useMemo(() => {
     if (!annotationData || !selectedGene) return null;
-    return annotationData[selectedGene] || null;
+    return annotationData[selectedGene] ?? null;
   }, [annotationData, selectedGene]);
 
   // ---- Pagination ----
@@ -251,41 +288,38 @@ export default function Home() {
   const handleExportCSV = () => {
     if (activeTab === 'cross') {
       // Full cross-subtype export with all 4 subtype columns
-      const headers = ['Gene', 'Chr', 'TotalProbes', 'PTSD_Related', 'CrossFDR',
+      const headers = ['Gene', 'Chr', 'DMR_TestedProbes', 'PTSD_Related', 'CrossP', 'CrossFDR',
         'SSS_DeltaBeta', 'SSS_FDR', 'SSS_Direction',
         'ADS_DeltaBeta', 'ADS_FDR', 'ADS_Direction',
         'ICF_DeltaBeta', 'ICF_FDR', 'ICF_Direction',
         'ISS_DeltaBeta', 'ISS_FDR', 'ISS_Direction',
       ];
-      const rows = filteredData.map((d: any) => {
-        const item = d.rawItem;
+      const rows = filteredData.map((d) => {
+        const item = d.rawItem.kind === 'cross-subtype' ? d.rawItem.result : null;
+        const subtypes = item?.subtypes;
         return [
-          d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', d.fdr,
-          item.subtypes?.SSS?.deltaBeta ?? '', item.subtypes?.SSS?.fdr ?? '', item.subtypes?.SSS?.direction ?? '',
-          item.subtypes?.ADS?.deltaBeta ?? '', item.subtypes?.ADS?.fdr ?? '', item.subtypes?.ADS?.direction ?? '',
-          item.subtypes?.ICF?.deltaBeta ?? '', item.subtypes?.ICF?.fdr ?? '', item.subtypes?.ICF?.direction ?? '',
-          item.subtypes?.ISS?.deltaBeta ?? '', item.subtypes?.ISS?.fdr ?? '', item.subtypes?.ISS?.direction ?? '',
+          d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', item?.crossP, item?.crossFdr,
+          subtypes?.SSS.deltaBeta ?? '', subtypes?.SSS.fdr ?? '', subtypes?.SSS.direction ?? '',
+          subtypes?.ADS.deltaBeta ?? '', subtypes?.ADS.fdr ?? '', subtypes?.ADS.direction ?? '',
+          subtypes?.ICF.deltaBeta ?? '', subtypes?.ICF.fdr ?? '', subtypes?.ICF.direction ?? '',
+          subtypes?.ISS.deltaBeta ?? '', subtypes?.ISS.fdr ?? '', subtypes?.ISS.direction ?? '',
         ];
       });
-      const csvContent =
-        'data:text/csv;charset=utf-8,' +
-        [headers.join(','), ...rows.map((e: any) => e.join(','))].join('\n');
+      const csvContent = `data:text/csv;charset=utf-8,${encodeURIComponent(serializeCsv([headers, ...rows]))}`;
       const link = document.createElement('a');
-      link.setAttribute('href', encodeURI(csvContent));
+      link.setAttribute('href', csvContent);
       link.setAttribute('download', `DMR_CrossSubtype_filtered.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } else {
       const headers = ['Gene', 'Chr', 'TotalProbes', 'PTSD_Related', 'FDR', 'DeltaBeta', 'Direction'];
-      const rows = filteredData.map((d: any) => [
+      const rows = filteredData.map((d) => [
         d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', d.fdr, d.deltaBeta, d.direction,
       ]);
-      const csvContent =
-        'data:text/csv;charset=utf-8,' +
-        [headers.join(','), ...rows.map((e: any) => e.join(','))].join('\n');
+      const csvContent = `data:text/csv;charset=utf-8,${encodeURIComponent(serializeCsv([headers, ...rows]))}`;
       const link = document.createElement('a');
-      link.setAttribute('href', encodeURI(csvContent));
+      link.setAttribute('href', csvContent);
       link.setAttribute('download', `DMR_${activeTab}_Unique_filtered.csv`);
       document.body.appendChild(link);
       link.click();
@@ -300,9 +334,19 @@ export default function Home() {
           <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
             <span className="text-2xl">!</span>
           </div>
-          <span className="text-red-700 text-sm font-semibold">Error Loading Data</span>
-          <p className="text-slate-500 text-xs max-w-sm">{loadError}</p>
-          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition">Retry</button>
+          <span className="text-red-700 text-sm font-semibold">
+            {loadError.kind === 'session-expired' ? 'Session Expired' : 'Error Loading Data'}
+          </span>
+          <p className="text-slate-500 text-xs max-w-sm">{loadError.message}</p>
+          <button
+            onClick={() => {
+              if (loadError.kind === 'session-expired') window.location.href = '/login';
+              else window.location.reload();
+            }}
+            className="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition"
+          >
+            {loadError.kind === 'session-expired' ? 'Sign in again' : 'Retry'}
+          </button>
         </div>
       </div>
     );
@@ -323,22 +367,24 @@ export default function Home() {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-slate-900 selection:text-white pb-16">
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         {/* Metrics Overview Cards */}
         <MetricsOverview
           activeTab={activeTab}
           setActiveTab={(tab) => {
-            setActiveTab(tab);
+            if (tab !== 'cross' && !SUBTYPE_KEYS.some((key) => key === tab)) return;
+            const nextTab = tab as AnalysisTab;
+            setActiveTab(nextTab);
             setCurrentPage(1);
             // Auto-select the first gene in the new tab
             if (masterData) {
-              if (tab === 'cross') {
+              if (nextTab === 'cross') {
                 const first = masterData.crossSubtype[0]?.gene;
-                if (first) setSelectedGene(first);
+                setSelectedGene(first ?? null);
               } else {
-                const uList = masterData.uniqueSubtypes[tab as keyof typeof masterData.uniqueSubtypes];
+                const uList = masterData.uniqueSubtypes[nextTab];
                 const first = uList?.[0]?.gene;
-                if (first) setSelectedGene(first);
+                setSelectedGene(first ?? null);
               }
             }
           }}
@@ -362,8 +408,7 @@ export default function Home() {
           selectedGene={selectedGene}
           epicManifest={epicManifest}
           onSelectGene={(gene) => {
-            setSelectedGene(gene);
-            setShowTrack(true);
+            selectGeneInAnalysis(gene);
             // Auto-scroll to genomic track
             setTimeout(() => trackSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
           }}
@@ -374,6 +419,7 @@ export default function Home() {
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
             <input
+              aria-label="Search DMR genes"
               type="text"
               placeholder="Search gene symbol or chromosome (e.g. HTR2A, AHRR, ZBTB16, chr13)..."
               value={searchQuery}
@@ -387,6 +433,7 @@ export default function Home() {
 
           <div className="flex flex-wrap items-center gap-3 text-xs">
             <button
+              type="button"
               onClick={() => {
                 setPtsdOnly(!ptsdOnly);
                 setCurrentPage(1);
@@ -405,6 +452,7 @@ export default function Home() {
             <div className="flex items-center space-x-1.5 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
               <Filter className="w-3.5 h-3.5 text-slate-500" />
               <select
+                aria-label="Filter by methylation direction"
                 value={directionFilter}
                 onChange={(e) => {
                   setDirectionFilter(e.target.value);
@@ -420,6 +468,7 @@ export default function Home() {
             </div>
 
             <button
+              type="button"
               onClick={handleExportCSV}
               className="flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition font-semibold shadow-xs"
             >
@@ -432,11 +481,11 @@ export default function Home() {
         {/* ===== OVERVIEW: Volcano + Pathway panels, collapsible above the table ===== */}
         <DmrVolcanoPlot
           data={filteredData}
-          onSelectGene={(g) => setSelectedGene(g)}
+          onSelectGene={selectGeneInAnalysis}
           selectedGene={selectedGene}
         />
         <div className="mb-6 mt-4">
-          <PathwayEnrichmentPanel activeTab={activeTab} onSelectGene={(g) => { setSelectedGene(g); setTimeout(() => trackSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); }} />
+          <PathwayEnrichmentPanel activeTab={activeTab} onSelectGene={(gene) => { selectGeneInAnalysis(gene); setTimeout(() => trackSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); }} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
           {/* LEFT COLUMN (4 Cols): DMR Registry Table (Compact, Top-level Gene Selector) */}
@@ -458,64 +507,48 @@ export default function Home() {
                 <table className="w-full text-xs text-left">
                   <thead className="bg-slate-100/80 text-slate-700 border-b border-slate-200 font-bold uppercase text-[11px]">
                     <tr>
-                      <th
-                        className="p-2.5 cursor-pointer hover:text-slate-900"
-                        onClick={() => {
-                          setSortField('gene');
-                          setSortAsc(sortField === 'gene' ? !sortAsc : true);
-                        }}
-                      >
-                        <div className="flex items-center space-x-1">
+                      <th className="p-0" aria-sort={sortField === 'gene' ? (sortAsc ? 'ascending' : 'descending') : 'none'}>
+                        <button type="button" className="flex w-full items-center space-x-1 p-2.5 text-left hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-slate-900" onClick={() => { setSortField('gene'); setSortAsc(sortField === 'gene' ? !sortAsc : true); }}>
                           <span>Gene</span>
                           <ArrowUpDown className="w-3 h-3 text-slate-400" />
-                        </div>
+                        </button>
                       </th>
                       <th className="p-2.5">Chr</th>
-                      <th
-                        className="p-2.5 cursor-pointer hover:text-slate-900"
-                        onClick={() => {
-                          setSortField('fdr');
-                          setSortAsc(sortField === 'fdr' ? !sortAsc : true);
-                        }}
-                      >
-                        <div className="flex items-center space-x-1">
-                          <span>FDR</span>
+                      <th className="p-0" aria-sort={sortField === 'fdr' ? (sortAsc ? 'ascending' : 'descending') : 'none'}>
+                        <button type="button" className="flex w-full items-center space-x-1 p-2.5 text-left hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-slate-900" onClick={() => { setSortField('fdr'); setSortAsc(sortField === 'fdr' ? !sortAsc : true); }}>
+                          <span>{activeTab === 'cross' ? 'Cross FDR' : `${activeTab} FDR`}</span>
                           <ArrowUpDown className="w-3 h-3 text-slate-400" />
-                        </div>
+                        </button>
                       </th>
-                      <th
-                        className="p-2.5 cursor-pointer hover:text-slate-900"
-                        onClick={() => {
-                          setSortField('deltaBeta');
-                          setSortAsc(sortField === 'deltaBeta' ? !sortAsc : true);
-                        }}
-                      >
-                        <div className="flex items-center space-x-1">
+                      <th className="p-0" aria-sort={sortField === 'deltaBeta' ? (sortAsc ? 'ascending' : 'descending') : 'none'}>
+                        <button type="button" className="flex w-full items-center space-x-1 p-2.5 text-left hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-slate-900" onClick={() => { setSortField('deltaBeta'); setSortAsc(sortField === 'deltaBeta' ? !sortAsc : true); }}>
                           <span>Δβ</span>
                           <ArrowUpDown className="w-3 h-3 text-slate-400" />
-                        </div>
+                        </button>
                       </th>
                     </tr>
                   </thead>
 
                   <tbody className="divide-y divide-slate-100 bg-white">
-                    {paginatedData.map((row: any) => {
+                    {paginatedData.map((row) => {
                       const isSelected = selectedGene === row.gene;
                       return (
                         <tr
                           key={row.gene}
-                          onClick={() => setSelectedGene(row.gene)}
-                          className={`cursor-pointer transition hover:bg-slate-50 ${
+                          aria-selected={isSelected}
+                          className={`transition hover:bg-slate-50 ${
                             isSelected ? 'bg-blue-50/90 font-semibold border-l-4 border-slate-900' : ''
                           }`}
                         >
-                          <td className="p-2.5 font-bold text-slate-900 flex items-center space-x-1.5">
-                            <span>{row.gene}</span>
+                          <td className="p-0 font-bold text-slate-900">
+                            <button type="button" aria-pressed={isSelected} onClick={() => selectGeneInAnalysis(row.gene)} className="flex w-full items-center space-x-1.5 p-2.5 text-left focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-slate-900">
+                              <span>{row.gene}</span>
                             {row.isPtsd && (
                               <span className="px-1 py-0.2 text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-300 rounded">
                                 PTSD
                               </span>
                             )}
+                            </button>
                           </td>
                           <td className="p-2.5 font-mono text-slate-500">{row.chr}</td>
                           <td className="p-2.5 font-mono text-slate-900 font-bold">
@@ -529,6 +562,13 @@ export default function Home() {
                         </tr>
                       );
                     })}
+                    {paginatedData.length === 0 && (
+                      <tr>
+                        <td colSpan={4} className="p-8 text-center text-sm text-slate-500">
+                          No DMR genes match the active analysis and filters.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -566,17 +606,19 @@ export default function Home() {
             {/* Selected Gene Literature & Biological Annotation Card */}
             {selectedGene && (
               <>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0 flex-1">
                     <GeneAnnotationCard gene={selectedGene} annotation={selectedAnnotation} project="ptsd" />
                   </div>
-                  <GeneStoryButton gene={selectedGene} annotation={selectedAnnotation} project="ptsd" epicManifest={epicManifest} />
+                  <div className="self-end sm:self-start">
+                    <GeneStoryButton gene={selectedGene} annotation={selectedAnnotation} project="ptsd" epicManifest={epicManifest} result={selectedResult} />
+                  </div>
                 </div>
               </>
             )}
 
             {/* Subtype Comparison Bar Chart */}
-            <SubtypeComparisonChart geneData={selectedCrossItem} />
+            <SubtypeComparisonChart geneData={selectedResult} />
 
             {/* Probe-Level Genomic Track */}
             <div ref={trackSectionRef} className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
@@ -589,8 +631,12 @@ export default function Home() {
                 </div>
                 <div className="flex items-center gap-2">
                   <select
-                    value={selectedGene || ''}
-                    onChange={(e) => setSelectedGene(e.target.value || null)}
+                    value={selectedGene ?? ''}
+                    onChange={(e) => {
+                      const gene = e.target.value;
+                      if (gene) selectGeneInAnalysis(gene);
+                      else setSelectedGene(null);
+                    }}
                     className="bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-xs text-slate-900 font-semibold focus:outline-none focus:border-slate-900"
                   >
                     <option value="" className="bg-white">-- Select Gene --</option>

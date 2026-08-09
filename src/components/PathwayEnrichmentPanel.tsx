@@ -31,17 +31,22 @@ const SUBTYPE_COLORS: Record<string, string> = {
 
 export const PathwayEnrichmentPanel: React.FC<Props> = ({ activeTab, onSelectGene }) => {
   const [data, setData] = useState<PathwayEntry[] | null>(null);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [expanded, setExpanded] = useState<string | null>(null);
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     fetch('/data/common/pathwayEnrichment.json')
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => setData(d))
-      .catch(() => setData(null));
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to load curated gene-set coverage');
+        return response.json() as Promise<PathwayEntry[]>;
+      })
+      .then((entries) => { setData(entries); setStatus('ready'); })
+      .catch(() => { setData(null); setStatus('error'); });
   }, []);
 
-  if (!data) return null;
+  if (status === 'loading') return <div role="status" className="mb-6 rounded-xl border border-slate-200 bg-white p-4 text-xs text-slate-500 shadow-xs">Loading curated gene-set coverage…</div>;
+  if (status === 'error' || !data) return <div role="alert" className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900 shadow-xs">Curated gene-set coverage could not be loaded. Statistical DMR results remain available.</div>;
 
   const getCount = (entry: PathwayEntry) => {
     if (activeTab === 'cross') return entry.crossSubtype.count;
@@ -53,8 +58,13 @@ export const PathwayEnrichmentPanel: React.FC<Props> = ({ activeTab, onSelectGen
     return entry.subtypes[activeTab]?.genes ?? [];
   };
 
-  const sortedData = [...data].sort((a, b) => getCount(b) - getCount(a));
-  const maxCount = Math.max(...sortedData.map(getCount), 1);
+  const getPct = (entry: PathwayEntry) => {
+    const overlap = activeTab === 'cross' ? entry.crossSubtype : entry.subtypes[activeTab];
+    if (!overlap || entry.geneSetSize <= 0) return 0;
+    return (overlap.count / entry.geneSetSize) * 100;
+  };
+
+  const sortedData = [...data].sort((a, b) => getPct(b) - getPct(a));
   const color = activeTab === 'cross' ? '#0f172a' : SUBTYPE_COLORS[activeTab] ?? '#0f172a';
 
   return (
@@ -63,14 +73,15 @@ export const PathwayEnrichmentPanel: React.FC<Props> = ({ activeTab, onSelectGen
       <button
         onClick={() => setVisible((v) => !v)}
         className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200 hover:bg-slate-100 transition text-left"
+        aria-expanded={visible}
       >
         <div className="flex items-center gap-2">
           <Dna className="w-4 h-4 text-slate-700" />
           <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-            Pathway Coverage Analysis
+            Curated gene-set coverage
           </h3>
           <span className="text-[10px] text-slate-500 font-medium">
-            — DMR genes overlapping key PTSD-relevant gene sets
+            — descriptive overlap, not enrichment testing
           </span>
         </div>
         {visible ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
@@ -78,55 +89,49 @@ export const PathwayEnrichmentPanel: React.FC<Props> = ({ activeTab, onSelectGen
 
       {visible && (
         <div className="p-4 space-y-2.5">
+          {sortedData.length === 0 && <p className="py-4 text-center text-xs text-slate-500">No curated gene sets are available.</p>}
           {sortedData.map((entry) => {
             const count = getCount(entry);
             const genes = getGenes(entry);
-            const pct = Math.round((count / entry.geneSetSize) * 100);
-            const barWidth = Math.round((count / maxCount) * 100);
+            const pct = getPct(entry);
             const isExpanded = expanded === entry.pathway;
 
             return (
-              <div key={entry.pathway} className="group">
-                <div
-                  className="flex items-center gap-3 cursor-pointer"
+              <div key={entry.pathway} className="group border-b border-slate-100 last:border-0 pb-2.5 last:pb-0">
+                <button
+                  type="button"
+                  className="grid w-full grid-cols-1 items-center gap-2 text-left sm:grid-cols-[minmax(10rem,13rem)_minmax(0,1fr)_5.5rem_1rem]"
                   onClick={() => setExpanded(isExpanded ? null : entry.pathway)}
+                  aria-expanded={isExpanded}
+                  aria-controls={`pathway-${entry.pathway.replace(/[^a-zA-Z0-9]/g, '-')}`}
                 >
                   {/* Pathway label */}
-                  <div className="w-52 shrink-0">
+                  <div>
                     <span className="text-[11px] font-semibold text-slate-700 group-hover:text-slate-900 transition">
                       {entry.pathway}
                     </span>
                   </div>
 
                   {/* Bar */}
-                  <div className="flex-1 flex items-center gap-2">
-                    <div className="flex-1 h-5 bg-slate-100 rounded overflow-hidden relative">
+                  <div className="h-3.5 w-full overflow-hidden rounded bg-slate-100" aria-hidden="true">
                       <div
                         className="h-full rounded transition-all duration-500"
-                        style={{ width: `${barWidth}%`, backgroundColor: color, opacity: 0.85 }}
+                        style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: color, opacity: 0.85 }}
                       />
-                      {count > 0 && (
-                        <span className="absolute left-2 top-0 h-full flex items-center text-[10px] font-bold text-white leading-none">
-                          {count} genes
-                        </span>
-                      )}
-                    </div>
-                    <div className="w-20 shrink-0 text-right">
-                      <span className="text-[11px] font-mono text-slate-500">
-                        {pct}% of {entry.geneSetSize}
-                      </span>
-                    </div>
+                  </div>
+                    <span className="text-[11px] font-mono text-slate-600 sm:text-right">
+                      {count}/{entry.geneSetSize} ({pct.toFixed(1)}%)
+                    </span>
                     {isExpanded ? (
                       <ChevronUp className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     ) : (
                       <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     )}
-                  </div>
-                </div>
+                </button>
 
                 {/* Expanded gene chips */}
-                {isExpanded && genes.length > 0 && (
-                  <div className="mt-2 ml-[13.5rem] flex flex-wrap gap-1.5 pb-1">
+                {isExpanded && (
+                  <div id={`pathway-${entry.pathway.replace(/[^a-zA-Z0-9]/g, '-')}`} className="mt-2 flex flex-wrap gap-1.5 pb-1 sm:ml-[13.5rem]">
                     {genes.map((gene) => (
                       <button
                         key={gene}
@@ -141,7 +146,7 @@ export const PathwayEnrichmentPanel: React.FC<Props> = ({ activeTab, onSelectGen
                         {gene}
                       </button>
                     ))}
-                    {count === 0 && (
+                    {genes.length === 0 && (
                       <span className="text-[11px] text-slate-400 italic">No overlap with current filter</span>
                     )}
                   </div>
@@ -150,7 +155,7 @@ export const PathwayEnrichmentPanel: React.FC<Props> = ({ activeTab, onSelectGen
             );
           })}
           <p className="text-[10px] text-slate-400 pt-2 border-t border-slate-100">
-            Gene set membership based on curated PTSD-relevant pathway annotations. Click a gene chip to load its genomic track.
+            Denominators are curated gene-set sizes; percentages are directly comparable because every bar uses a fixed 0–100% scale. No background universe, odds ratio, confidence interval, or enrichment P value is provided, so these overlaps must not be interpreted as pathway enrichment.
           </p>
         </div>
       )}
