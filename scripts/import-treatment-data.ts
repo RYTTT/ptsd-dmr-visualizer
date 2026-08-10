@@ -277,6 +277,25 @@ function sameTreatmentResult(left: TreatmentGeneResult, right: TreatmentGeneResu
     && close(left.avgNegDeltaBeta, right.avgNegDeltaBeta);
 }
 
+function comparablePayload(value: MdmaMasterData): string {
+  return JSON.stringify({
+    ...value,
+    metadata: { ...value.metadata, generatedAt: '' },
+  });
+}
+
+async function stableGeneratedAt(output: MdmaMasterData): Promise<string> {
+  try {
+    const previous = JSON.parse(await readFile(OUTPUT_FILE, 'utf8')) as MdmaMasterData;
+    if (comparablePayload(previous) === comparablePayload(output)) {
+      return previous.metadata.generatedAt;
+    }
+  } catch {
+    // A missing or malformed prior artifact must not prevent a clean rebuild.
+  }
+  return output.metadata.generatedAt;
+}
+
 async function main() {
   const sourceRoot = path.resolve(process.argv[2] ?? DEFAULT_SOURCE_ROOT);
   const selected = {} as Record<TreatmentTimepoint, Record<TreatmentCohort, TreatmentGeneResult[]>>;
@@ -364,6 +383,7 @@ async function main() {
     geneContexts,
   };
 
+  output.metadata.generatedAt = await stableGeneratedAt(output);
   await writeFile(OUTPUT_FILE, JSON.stringify(output));
   const summary = Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => [
     timepoint,
