@@ -462,13 +462,23 @@ export default function Home() {
           issPtsdCount={issPtsdCount}
         />
 
-        <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-xs leading-relaxed text-blue-950">
+        <section className="mb-6 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-xs leading-relaxed text-blue-950" aria-labelledby="ptsd-view-definition">
+          <h2 id="ptsd-view-definition" className="text-sm font-bold text-blue-950">What qualifies for this view?</h2>
           {activeTab === 'cross' ? (
-            <><strong>Adjusted result in 3–4 subtypes:</strong> each listed gene has reported FDR &lt; 0.05 in 3 or 4 of the 4 PTSD subtypes. The figure shows every observed subtype result.</>
+            <p className="mt-1"><strong>Shared across subtypes:</strong> each listed gene has gene-level FDR &lt; 0.05 in at least 3 of the 4 subtype analyses. Its Fisher-combined result across all four subtype gene P values also has FDR &lt; 0.05. Shared statistical support does not require the four effect sizes or directions to match.</p>
           ) : (
-            <><strong>{activeTab}-selected genes:</strong> each listed gene met the source FDR &lt; 0.05 rule in {activeTab} only. Results from the other subtypes are still shown for comparison; a nominal P star there does not mean the adjusted threshold was met.</>
+            <p className="mt-1"><strong>{activeTab}-selected:</strong> each listed gene has gene-level FDR &lt; 0.05 in {activeTab}, but not in the other three subtypes. Their observed results remain visible for comparison; a nominal P star in another subtype does not mean it passed the adjusted threshold.</p>
           )}
-        </div>
+          <details className="mt-2 border-t border-blue-200 pt-2">
+            <summary className="cursor-pointer font-semibold text-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-900">How the gene-level evidence was built</summary>
+            <ol className="mt-2 list-decimal space-y-1 pl-5 text-blue-950">
+              <li>For each subtype, CpG effects were estimated separately in the Vet/SBC, Cohen, and FCC cohorts.</li>
+              <li>Evidence for the same CpG was combined across the three cohorts at probe level; effect estimates used inverse-variance weighting and P values used Fisher&apos;s method.</li>
+              <li>Within each gene, up to three probes with the smallest meta-analysis P values were combined into a gene P value, followed by FDR adjustment across genes.</li>
+            </ol>
+            <p className="mt-2"><strong>Why there is no Treatment-style N8+ rule:</strong> the PTSD analysis uses probes shared across 450K and EPIC platforms and a variance-filtered set. The median gene has only 3 tested probes, versus 13 in the full Treatment combined table, so requiring 8 would preferentially remove genes with lower array coverage.</p>
+          </details>
+        </section>
 
         {/* Key Results / Landmark PTSD Genes Panel */}
         <KeyResultsPanel

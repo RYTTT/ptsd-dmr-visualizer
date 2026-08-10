@@ -33,12 +33,12 @@ export const MetricsOverview: React.FC<MetricsProps> = ({
   const cards = [
     {
       id: 'cross',
-      title: 'Adjusted result in 3–4 subtypes',
+      title: 'Shared across 3–4 subtypes',
       count: crossCount,
       ptsdCount: crossPtsdCount,
       icon: Layers,
       badgeBg: 'bg-blue-100 text-blue-800',
-      description: 'Passes the source FDR cutoff in 3 or 4 PTSD subtypes',
+      description: 'Gene FDR < 0.05 in ≥3 subtypes, plus cross-subtype FDR < 0.05',
     },
     {
       id: 'SSS',

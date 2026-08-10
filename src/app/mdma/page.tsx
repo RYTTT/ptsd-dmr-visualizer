@@ -235,7 +235,7 @@ export default function MdmaPage() {
       .then((value) => {
         if (cancelled) return;
         setProbeData(value);
-        if (!value) setProbeLoadError(`No common-probe source shard was found for ${selectedGene}.`);
+        if (!value) setProbeLoadError(`No study/timepoint probe shard was found for ${selectedGene}.`);
       })
       .catch((error: unknown) => {
         if (cancelled) return;
@@ -539,11 +539,18 @@ export default function MdmaPage() {
           )}
         </div>
 
-        <div className="mb-5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-xs leading-relaxed text-blue-950">
-          <strong>Combined analysis</strong>{' '}gives one overall result calculated across MDMA, ketamine, and CPT; it is separate from the Baseline and Follow-up comparisons.
-          {' '}The combination method and uncertainty estimates were not supplied.
-          Choose a study name to see its Baseline or Follow-up genes. Those study lists require at least 8 probes with P &lt; 0.05 and reported gene FDR &lt; 0.05.
-        </div>
+        <section className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs leading-relaxed text-emerald-950" aria-labelledby="treatment-view-definition">
+          <h2 id="treatment-view-definition" className="text-sm font-bold text-emerald-950">What qualifies for this view?</h2>
+          {activeTab === 'cross' ? (
+            <p className="mt-1"><strong>Combined analysis:</strong> one overall gene result combines evidence from the MDMA, ketamine, and CPT studies. It is not a Baseline or Follow-up comparison, and combined significance does not by itself mean that all three study effects agree.</p>
+          ) : (
+            <p className="mt-1"><strong>{activeTab} {timepoint === 'Pre' ? 'Baseline' : 'Follow-up'} N8+ registry:</strong> each listed gene has at least 8 mapped probes with nominal P &lt; 0.05 and reported gene FDR &lt; 0.05 for this study and visit. This is a responder-versus-non-responder comparison.</p>
+          )}
+          <details className="mt-2 border-t border-emerald-200 pt-2">
+            <summary className="cursor-pointer font-semibold text-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-900">Why Treatment uses N8+ but PTSD subtype does not</summary>
+            <p className="mt-2">The Treatment combined table has denser gene coverage: the median gene has 13 mapped probes, compared with 3 tested probes in the PTSD subtype analysis. A fixed N8+ rule is therefore meaningful here but would create strong array-coverage bias in PTSD. The two atlases use source-appropriate selection rules and their gene counts should not be compared as if the filters were identical.</p>
+          </details>
+        </section>
 
         {/* Filter Bar */}
         <div className="bg-white border border-slate-200 rounded-xl p-4 mb-5 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
@@ -756,9 +763,9 @@ export default function MdmaPage() {
               <section className="rounded-xl border border-slate-300 bg-white p-4 shadow-xs" aria-labelledby="treatment-probe-title">
                 <div className="mb-3">
                   <h3 id="treatment-probe-title" className="text-sm font-bold text-slate-900">Treatment probe-level results — {selectedGene}</h3>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-600">All common probes available in <span className="font-mono">Common_Probes_3Cohorts_Full_Statistics.csv</span> are shown. This is a non-visit-specific three-cohort probe meta-analysis and must not be interpreted as the active Baseline or Follow-up registry result.</p>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-600">Baseline and Follow-up responder-versus-non-responder probe results are shown side by side for MDMA, ketamine, and CPT. The six source DMP exports contain only probes with nominal P &lt; 0.01; an empty panel means that no common probe for this gene appeared in that filtered source export.</p>
                 </div>
-                {probeLoading && <div role="status" className="flex min-h-40 items-center justify-center gap-2 text-sm text-slate-500"><Loader2 className="h-4 w-4 animate-spin" /> Loading full common-probe statistics…</div>}
+                {probeLoading && <div role="status" className="flex min-h-40 items-center justify-center gap-2 text-sm text-slate-500"><Loader2 className="h-4 w-4 animate-spin" /> Loading Baseline and Follow-up probe results…</div>}
                 {!probeLoading && probeLoadError && <div role="alert" className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-950">{probeLoadError} No values were estimated or substituted by this application.</div>}
                 {!probeLoading && probeData && <GenomicTrackPlot geneData={probeData} />}
               </section>

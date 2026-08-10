@@ -16,10 +16,10 @@ export interface CpGIsland {
 }
 
 export interface ProbeDatasetMetadata {
-  scope: 'pooled-cross-cohort';
-  comparison: 'Three-cohort treatment-response probe meta-analysis';
-  selectionRule: 'All common three-cohort probe rows for this gene';
-  sourceFile: string;
+  scope: 'study-timepoint';
+  comparison: 'Responder versus non-responder at Baseline and Follow-up in MDMA, ketamine, and CPT';
+  selectionRule: 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes';
+  sourceFiles: string[];
 }
 
 export interface GeneProbeData {

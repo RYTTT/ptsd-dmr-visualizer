@@ -25,11 +25,11 @@ const projects = [
     title: 'PTSD Subtype DMR Atlas',
     subtitle: 'Four-subtype comparison',
     description:
-      'Explore adjusted results in 3–4 subtypes and genes selected by one subtype at FDR < 0.05 across SSS, ADS, ICF, and ISS. Compare effect sizes, statistical evidence, gene annotations, and probe-level genomic context.',
-    keyFinding: 'Analysis focus: compare subtype direction, effect magnitude, and false discovery rate for each gene.',
+      'Explore genes with adjusted evidence shared across at least 3 of 4 PTSD subtypes, or adjusted evidence confined to one subtype. Each subtype analysis first combines probe evidence across three cohorts.',
+    keyFinding: 'Shared means supported after adjustment in at least 3 subtypes; it does not mean identical effect direction or magnitude.',
     stats: [
-      { label: 'Cross-subtype', value: '1,119' },
-      { label: 'Selected by one subtype (FDR<.05)', value: '3,450' },
+      { label: 'Shared across ≥3 subtypes', value: '1,119' },
+      { label: 'Selected by one subtype', value: '3,450' },
       { label: 'Subtypes', value: '4' },
       { label: 'Result rows', value: '4,569' },
     ],

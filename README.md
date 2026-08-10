@@ -43,8 +43,10 @@ Large common annotation maps remain server-side and are parsed once per server
 process. The browser requests compact, validated per-gene DTOs from
 `/api/data/genes`; the scientifically aligned PTSD probe shards are loaded on
 demand with concurrent-request deduplication and a bounded LRU cache. Treatment
-probe tracks remain hidden until matching unfiltered responder-versus-
-non-responder DMP exports are supplied.
+probe tracks show responder-versus-non-responder Baseline and Follow-up panels
+for MDMA, ketamine, and CPT. The supplied DMP exports are filtered to nominal
+P < 0.01; the importer retains their intersection with the common three-study
+probe annotation so positions remain comparable across all six panels.
 
 Treatment result data is generated from the versioned study CSV exports:
 

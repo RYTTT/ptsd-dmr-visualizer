@@ -151,13 +151,14 @@ function isProbeEntry(value: unknown): value is ProbeEntry {
 function isProbeDatasetMetadata(value: unknown): value is ProbeDatasetMetadata {
   if (
     !isRecord(value) ||
-    typeof value.sourceFile !== 'string' ||
-    value.sourceFile.trim() === ''
+    !Array.isArray(value.sourceFiles) ||
+    value.sourceFiles.length !== 6 ||
+    !value.sourceFiles.every((sourceFile) => typeof sourceFile === 'string' && sourceFile.trim() !== '')
   ) return false;
   return (
-    value.scope === 'pooled-cross-cohort' &&
-    value.comparison === 'Three-cohort treatment-response probe meta-analysis' &&
-    value.selectionRule === 'All common three-cohort probe rows for this gene'
+    value.scope === 'study-timepoint' &&
+    value.comparison === 'Responder versus non-responder at Baseline and Follow-up in MDMA, ketamine, and CPT' &&
+    value.selectionRule === 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes'
   );
 }
 
@@ -240,11 +241,11 @@ export async function loadProbeData(project: Project, gene: string): Promise<Gen
   return request;
 }
 
-/** Loads the full common-probe statistics from the non-visit-specific treatment meta-analysis. */
+/** Loads the six responder-versus-nonresponder Treatment study/timepoint probe panels. */
 export async function loadTreatmentProbeData(gene: string): Promise<GeneProbeData | null> {
   const trimmedGene = gene.trim();
   const normalizedGene = normalizeGene(trimmedGene);
-  const key = `treatment-probes:pooled:${normalizedGene}`;
+  const key = `treatment-probes:visits:${normalizedGene}`;
   if (probeCache.has(key)) {
     const cached = probeCache.get(key) ?? null;
     setProbeCache(key, cached);
@@ -253,7 +254,7 @@ export async function loadTreatmentProbeData(gene: string): Promise<GeneProbeDat
   const pending = probeRequests.get(key);
   if (pending) return pending;
 
-  const directory = '/data/mdma/treatment-probes/pooled';
+  const directory = '/data/mdma/treatment-probes/visits';
   const request = fetch(`${directory}/${encodeURIComponent(trimmedGene)}.json`, {
     headers: { Accept: 'application/json' },
     credentials: 'same-origin',

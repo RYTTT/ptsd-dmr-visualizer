@@ -260,7 +260,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.textAlign = 'center';
     ctx.fillText(
       geneData.probeDataset
-        ? `${geneData.gene} — full common-probe statistics`
+        ? `${geneData.gene} — Treatment probes at Baseline and Follow-up`
         : `${geneData.gene} — CpG probe nominal P`,
       effectiveWidth / 2,
       24
@@ -294,7 +294,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       ctx.fillStyle = '#334155';
       ctx.font = 'bold 11px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Baseline (Pre-Treatment)', leftMargin1 + colWidth / 2, headerY + 13);
+      ctx.fillText('Baseline (Pre)', leftMargin1 + colWidth / 2, headerY + 13);
 
       // Col 1 Header: Post / Follow-Up
       ctx.fillStyle = '#ede9fe';
@@ -308,7 +308,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       ctx.fillStyle = '#5b21b6';
       ctx.font = 'bold 11px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Follow-Up (Post-Treatment)', leftMargin2 + colWidth / 2, headerY + 13);
+      ctx.fillText('Follow-Up (Post)', leftMargin2 + colWidth / 2, headerY + 13);
 
       // ---- Draw Panels for 3 Rows x 2 Cols ----
       TREATMENT_GRID_ROWS.forEach((rowConfig, rIdx) => {
@@ -448,7 +448,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             ctx.fillStyle = '#64748b';
             ctx.font = 'italic 10px Inter, system-ui, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('No nominal probe P values available', colLeft + colWidth / 2, areaTop + areaH / 2);
+            ctx.fillText('No common probes in the P < 0.01 source export', colLeft + colWidth / 2, areaTop + areaH / 2);
           }
 
           for (const probe of drawableProbes) {
@@ -972,8 +972,8 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     <div ref={containerRef} className="relative w-full overflow-x-auto">
       {geneData.probeDataset && (
         <div className="mb-3 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-xs leading-relaxed text-violet-950">
-          <strong>Full common-probe dataset; no P-value filtering.</strong>{' '}
-          The panels come from a non-visit-specific three-cohort treatment-response probe meta-analysis; they are not Baseline or Follow-up estimates.
+          <strong>Six matched study/timepoint panels.</strong>{' '}
+          Each panel compares responders with non-responders at Baseline or Follow-up. The supplied DMP files are filtered to nominal P &lt; 0.01, and the figure restricts them to probes shared across the three studies so genomic positions are directly comparable. It does not test within-person change from Baseline to Follow-up.
         </div>
       )}
       {accessibleRows.length === 0 && <p role="status" className="mb-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-center text-xs text-slate-500">No probe-level statistics are available for this gene in the configured comparisons. No value has been imputed.</p>}
@@ -982,7 +982,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         style={{ width: '100%', height: totalHeight }}
         className="rounded-lg cursor-crosshair border border-slate-200 shadow-sm"
         role="img"
-        aria-label={`${geneData.gene} ${geneData.probeDataset ? 'full common-probe' : 'probe'} track on ${displayChr}. Vertical axis is negative log10 uncorrected probe-level P value, with thresholds at P less than 0.05, 0.01, and 0.001; point color gives methylation-effect direction. Exact values are available in the table following the chart.`}
+        aria-label={`${geneData.gene} ${geneData.probeDataset ? 'Baseline and Follow-up treatment probe' : 'probe'} track on ${displayChr}. Vertical axis is negative log10 uncorrected probe-level P value, with thresholds at P less than 0.05, 0.01, and 0.001; point color gives methylation-effect direction. Exact values are available in the table following the chart.`}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setTooltip(null)}
       />
@@ -1060,7 +1060,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           </table>
         </div>
       </details>
-      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">{geneData.probeDataset ? 'The full common-probe figure uses uncorrected P values without a display filter.' : 'The probe figure uses uncorrected P values.'} Thresholds at P &lt; 0.05, P &lt; 0.01, and P &lt; 0.001 are descriptive and do not control the high-throughput multiple-testing error rate. Interpret them with Δβ and independent validation. Missing statistics are not converted to zero or “not significant”; confidence intervals and standard errors are not present in the probe dataset.</p>
+      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">{geneData.probeDataset ? 'The Treatment source exports include only probes with uncorrected P < 0.01; no additional significance filter is applied by this figure.' : 'The probe figure uses uncorrected P values.'} Thresholds at P &lt; 0.05, P &lt; 0.01, and P &lt; 0.001 are descriptive and do not control the high-throughput multiple-testing error rate. Interpret them with Δβ and independent validation. Missing statistics are not converted to zero or “not significant”; confidence intervals and standard errors are not present in the probe dataset.</p>
       {isPtsdSubtypeFigure && <p className="mt-1 text-[10px] font-medium text-slate-600">Subtype and control-group definitions were not supplied with these result files. Confirm SSS, ADS, ICF, and ISS definitions against the study protocol before interpretation.</p>}
       {hasClippedP && <p className="mt-1 text-[10px] font-medium text-slate-600">Nominal P values below 1×10⁻⁸ are plotted at the fixed upper boundary (−log₁₀P = 8) so the three reference thresholds remain legible. Exact P values remain available in the tooltip and table.</p>}
       {hasZeroP && <p className="mt-1 text-[10px] font-medium text-amber-800">One or more stored nominal P values equal numeric zero (underflow/rounding). They are reported as zero in the table and plotted at the upper display boundary, not interpreted as literally zero probability.</p>}

@@ -14,7 +14,15 @@ interface SelectedGene {
 }
 
 const DEFAULT_SOURCE_ROOT = '/Users/ruotingyang/Documents/manuscripts/MDMA_antigravity/result/IPW_DMP_Analysis_2026_v2_CD4T_arrayWeights';
-const SOURCE_FILE = 'Common_Probes_3Cohorts_Full_Statistics.csv';
+const ANNOTATION_SOURCE = 'Common_Probes_3Cohorts_Full_Statistics.csv';
+const DMP_SOURCES = [
+  { key: 'MDMA_Pre', file: 'MDMA/MDMA_Pre_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'Unnamed: 0', effectColumn: 'Beta_Diff_R_vs_NR' },
+  { key: 'MDMA_FUP', file: 'MDMA/MDMA_FUP1_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'Unnamed: 0', effectColumn: 'Beta_Diff_R_vs_NR' },
+  { key: 'Ketamine_Pre', file: 'Ketamine/Ketamine_Pre_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
+  { key: 'Ketamine_FUP', file: 'Ketamine/Ketamine_FUP2_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
+  { key: 'CPT_Pre', file: 'CPT/CPT_Pre_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
+  { key: 'CPT_FUP', file: 'CPT/CPT_FUP2_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
+] as const;
 const DMR_DATA_FILE = new URL('../public/data/mdma/dmrData.json', import.meta.url);
 const OUTPUT_ROOT = new URL('../public/data/mdma/treatment-probes/', import.meta.url);
 
@@ -83,10 +91,11 @@ function loadSelectedGenes(master: MdmaMasterData): Map<string, SelectedGene> {
 
 async function main() {
   const sourceRoot = path.resolve(process.argv[2] ?? DEFAULT_SOURCE_ROOT);
-  const sourcePath = path.join(sourceRoot, SOURCE_FILE);
+  const sourcePath = path.join(sourceRoot, ANNOTATION_SOURCE);
   const master = JSON.parse(await readFile(DMR_DATA_FILE, 'utf8')) as MdmaMasterData;
   const selectedGenes = loadSelectedGenes(master);
   const probesByGene = new Map<string, ProbeEntry[]>();
+  const probeById = new Map<string, ProbeEntry>();
   const chromosomeByGene = new Map<string, string>();
   const seenProbes = new Set<string>();
   const input = createReadStream(sourcePath);
@@ -122,35 +131,65 @@ async function main() {
       feature: row.UCSC_RefGene_Group?.trim() || 'Unknown',
       cpgIsland: '',
       relationToIsland: row.Relation_to_Island?.trim() || 'Unknown',
-      Meta_logFC: finiteNumber(row, 'Mean_Beta_Diff', source),
-      Meta_P: probability(row, 'Meta_P', source),
-      Meta_FDR: probability(row, 'Meta_FDR', source),
-      CPT_logFC: finiteNumber(row, 'CPT_Beta_Diff', source),
-      CPT_P: probability(row, 'CPT_P.Value', source),
-      CPT_FDR: probability(row, 'CPT_adj.P.Val', source),
-      Ketamine_logFC: finiteNumber(row, 'Ketamine_Beta_Diff', source),
-      Ketamine_P: probability(row, 'Ketamine_P.Value', source),
-      Ketamine_FDR: probability(row, 'Ketamine_adj.P.Val', source),
-      MDMA_logFC: finiteNumber(row, 'MDMA_Beta_Diff', source),
-      MDMA_P: probability(row, 'MDMA_P.Value', source),
-      MDMA_FDR: probability(row, 'MDMA_adj.P.Val', source),
+      MDMA_Pre_logFC: null, MDMA_Pre_P: null, MDMA_Pre_FDR: null,
+      MDMA_FUP_logFC: null, MDMA_FUP_P: null, MDMA_FUP_FDR: null,
+      Ketamine_Pre_logFC: null, Ketamine_Pre_P: null, Ketamine_Pre_FDR: null,
+      Ketamine_FUP_logFC: null, Ketamine_FUP_P: null, Ketamine_FUP_FDR: null,
+      CPT_Pre_logFC: null, CPT_Pre_P: null, CPT_Pre_FDR: null,
+      CPT_FUP_logFC: null, CPT_FUP_P: null, CPT_FUP_FDR: null,
     };
+    probeById.set(probe, entry);
     const current = probesByGene.get(normalizedGene) ?? [];
     current.push(entry);
     probesByGene.set(normalizedGene, current);
   }
 
+  const sourceCounts: Record<string, { rows: number; commonRows: number }> = {};
+  for (const dmpSource of DMP_SOURCES) {
+    const dmpPath = path.join(sourceRoot, dmpSource.file);
+    const dmpLines = createInterface({ input: createReadStream(dmpPath), crlfDelay: Infinity });
+    let dmpHeaders: string[] | null = null;
+    let dmpRowNumber = 0;
+    let commonRows = 0;
+    const seenInSource = new Set<string>();
+    for await (const line of dmpLines) {
+      dmpRowNumber += 1;
+      const values = parseCsvLine(line);
+      if (!dmpHeaders) {
+        dmpHeaders = values;
+        continue;
+      }
+      if (values.length !== dmpHeaders.length) {
+        throw new Error(`${dmpPath}:${dmpRowNumber}: expected ${dmpHeaders.length} columns, found ${values.length}`);
+      }
+      const row = Object.fromEntries(dmpHeaders.map((header, index) => [header, values[index]]));
+      const source = `${dmpPath}:${dmpRowNumber}`;
+      const probe = required(row, dmpSource.probeColumn, source);
+      if (seenInSource.has(probe)) throw new Error(`${source}: duplicate probe ${probe}`);
+      seenInSource.add(probe);
+      const nominalP = probability(row, 'P.Value', source);
+      if (nominalP >= 0.01) throw new Error(`${source}: expected the source-exported probe P to be < 0.01`);
+      const entry = probeById.get(probe);
+      if (!entry) continue;
+      entry[`${dmpSource.key}_logFC`] = finiteNumber(row, dmpSource.effectColumn, source);
+      entry[`${dmpSource.key}_P`] = nominalP;
+      entry[`${dmpSource.key}_FDR`] = probability(row, 'adj.P.Val', source);
+      commonRows += 1;
+    }
+    sourceCounts[dmpSource.key] = { rows: Math.max(0, dmpRowNumber - 1), commonRows };
+  }
+
   await rm(OUTPUT_ROOT, { recursive: true, force: true });
-  const directory = new URL('pooled/', OUTPUT_ROOT);
+  const directory = new URL('visits/', OUTPUT_ROOT);
   await mkdir(directory, { recursive: true });
   let totalProbeRows = 0;
   for (const [normalizedGene, selected] of selectedGenes) {
     const probes = probesByGene.get(normalizedGene);
     const chr = chromosomeByGene.get(normalizedGene);
-    if (!probes || !chr) throw new Error(`${SOURCE_FILE}: selected gene ${selected.gene} has no common-probe rows`);
+    if (!probes || !chr) throw new Error(`${ANNOTATION_SOURCE}: selected gene ${selected.gene} has no common-probe rows`);
     probes.sort((left, right) => left.pos - right.pos || left.probe.localeCompare(right.probe));
     if (probes.length > selected.totalProbes) {
-      throw new Error(`${SOURCE_FILE}: ${selected.gene} has ${probes.length} common-probe rows but only ${selected.totalProbes} mapped probes in the gene result`);
+      throw new Error(`${ANNOTATION_SOURCE}: ${selected.gene} has ${probes.length} common-probe rows but only ${selected.totalProbes} mapped probes in the gene result`);
     }
     const shard: GeneProbeData = {
       gene: selected.gene,
@@ -159,18 +198,19 @@ async function main() {
       cpgIslands: [],
       probes,
       probeDataset: {
-        scope: 'pooled-cross-cohort',
-        comparison: 'Three-cohort treatment-response probe meta-analysis',
-        selectionRule: 'All common three-cohort probe rows for this gene',
-        sourceFile: SOURCE_FILE,
+        scope: 'study-timepoint',
+        comparison: 'Responder versus non-responder at Baseline and Follow-up in MDMA, ketamine, and CPT',
+        selectionRule: 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes',
+        sourceFiles: DMP_SOURCES.map(({ file }) => file),
       },
     };
     totalProbeRows += probes.length;
     await writeFile(new URL(`${selected.gene}.json`, directory), JSON.stringify(shard));
   }
   await writeFile(new URL('index.json', OUTPUT_ROOT), JSON.stringify({
-    version: 'treatment_common_probe_full_statistics_v1',
-    source: SOURCE_FILE,
+    version: 'treatment_study_timepoint_probes_v1',
+    annotationSource: ANNOTATION_SOURCE,
+    sources: DMP_SOURCES.map(({ key, file }) => ({ key, file, ...sourceCounts[key] })),
     selectedGenes: selectedGenes.size,
     totalProbeRows,
   }));

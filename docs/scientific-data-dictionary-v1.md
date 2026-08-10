@@ -1,8 +1,8 @@
 # Scientific data dictionary and display methods — version 1.0
 
-**Document version:** 1.2
+**Document version:** 1.3
 **Application contract:** `scientific-data-v1`  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-10
 
 This document defines what the application can infer from the shipped JSON. It
 does not substitute for the upstream statistical analysis plan. Items marked
@@ -13,15 +13,35 @@ reproduced or used in a scientific publication.
 
 ### PTSD atlas
 
-- **Cross-subtype** records contain one combined P value (`crossP`), one combined
-  FDR (`crossFdr`), and observed statistics for SSS, ADS, ICF, and ISS.
+- Each subtype starts with cohort-specific EWAS results from the Vet/SBC 450K,
+  Cohen EPIC, and FCC EPIC analytical blocks. For each CpG, the source pipeline
+  computes an inverse-variance-weighted meta effect and combines cohort P values
+  with Fisher's method. Within a gene, it then combines the up-to-three probes
+  with the smallest probe meta-analysis P values using Fisher's method and
+  applies BH FDR adjustment across genes.
+- **Shared across subtypes** records require gene-level FDR < 0.05 in at least
+  three of SSS, ADS, ICF, and ISS, plus `crossFdr < 0.05` after Fisher-combining
+  the four subtype gene P values. The record retains every observed subtype
+  result. This selection does not require effect directions or magnitudes to
+  agree.
 - **Subtype-selected** records met the source FDR < 0.05 rule in exactly one of
   SSS, ADS, ICF, or ISS. Every record retains observed P, FDR, Δβ, direction,
   and significant-probe counts for all four subtypes. Nominal P < 0.05 in a
   comparison subtype does not mean that subtype met the adjusted selection rule.
 - The precise phenotype definitions, comparison group coding, sample sizes,
-  covariates, subtype derivation, and cross-subtype combination method are
-  **not supplied** in the application data.
+  subtype derivation, and cohort eligibility rules remain **not supplied** in
+  the application data. The inspected source script adjusts cohort-specific
+  probe models for age, monocytes, and neutrophils.
+
+### Why the atlases use different probe-count screens
+
+The PTSD analysis is restricted to probes shared across 450K and EPIC platforms
+and retains the highest-variance 50% before cohort-specific EWAS. Its median gene
+has 3 tested probes and only 4,424 genes have at least 8. The full Treatment
+combined table has a median of 13 mapped probes and 16,422 genes have at least
+8. Applying Treatment's fixed N8+ screen to PTSD would therefore select heavily
+for array coverage rather than impose an equivalent evidentiary threshold.
+PTSD keeps its source shared/subtype-selected rules; Treatment keeps N8+.
 
 ### Treatment atlas
 
@@ -95,12 +115,14 @@ drawn at the upper boundary while their exact values remain in the tooltip and
 accessible table. This cap keeps the three reference thresholds legible and
 the vertical scale comparable across genes.
 
-Treatment probe tracks are intentionally not shown. The previously supplied
-MDMA probe files compare responders with CPT healthy controls, whereas the
-gene-level treatment results compare responders with non-responders. Supplied
-CPT and ketamine probe exports are also filtered near P < 0.01. Re-enabling a
-complete treatment probe figure requires unfiltered all-probe
-responder-versus-non-responder DMP exports for all six study/visit analyses.
+Treatment probe tracks show six responder-versus-non-responder panels: Baseline
+and Follow-up for MDMA, ketamine, and CPT. All six supplied DMP exports are
+filtered to nominal P < 0.01. The importer restricts those rows to probes in
+`Common_Probes_3Cohorts_Full_Statistics.csv`, providing a shared positional
+universe across panels. An empty panel means that no common probe for the gene
+appeared in that study/timepoint's filtered source export; it is not interpreted
+as a zero effect or a non-significant estimate. The paired display does not test
+within-person change between visits.
 
 ## Direction rule
 

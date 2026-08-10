@@ -160,14 +160,25 @@ test('master and probe runtime validators accept shipped data and reject identit
   const wrongCount = { ...probe, totalProbes: (probe.totalProbes as number) + 1 };
   assert.equal(isGeneProbeData(wrongCount, 'AHRR'), false);
 
-  const treatmentProbe = readJson('../public/data/mdma/treatment-probes/pooled/BDNF.json') as Record<string, unknown>;
-  assert.equal(isGeneProbeData(treatmentProbe, 'BDNF'), true);
+  const treatmentProbe = readJson('../public/data/mdma/treatment-probes/visits/AHRR.json') as Record<string, unknown>;
+  assert.equal(isGeneProbeData(treatmentProbe, 'AHRR'), true);
   assert.deepEqual(treatmentProbe.probeDataset, {
-    scope: 'pooled-cross-cohort',
-    comparison: 'Three-cohort treatment-response probe meta-analysis',
-    selectionRule: 'All common three-cohort probe rows for this gene',
-    sourceFile: 'Common_Probes_3Cohorts_Full_Statistics.csv',
+    scope: 'study-timepoint',
+    comparison: 'Responder versus non-responder at Baseline and Follow-up in MDMA, ketamine, and CPT',
+    selectionRule: 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes',
+    sourceFiles: [
+      'MDMA/MDMA_Pre_Responder_vs_NonResponder_DMPs.csv',
+      'MDMA/MDMA_FUP1_Responder_vs_NonResponder_DMPs.csv',
+      'Ketamine/Ketamine_Pre_Responder_vs_NonResponder_DMPs.csv',
+      'Ketamine/Ketamine_FUP2_Responder_vs_NonResponder_DMPs.csv',
+      'CPT/CPT_Pre_Responder_vs_NonResponder_DMPs.csv',
+      'CPT/CPT_FUP2_Responder_vs_NonResponder_DMPs.csv',
+    ],
   });
   assert.ok((treatmentProbe.probes as unknown[]).length > 0);
   assert.ok((treatmentProbe.probes as unknown[]).length <= (treatmentProbe.totalProbes as number));
+  const probeRows = treatmentProbe.probes as Record<string, unknown>[];
+  for (const key of ['MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP']) {
+    assert.ok(probeRows.some((probeRow) => typeof probeRow[`${key}_P`] === 'number'));
+  }
 });
