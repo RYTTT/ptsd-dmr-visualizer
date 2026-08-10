@@ -16,11 +16,13 @@ export interface CpGIsland {
 }
 
 export interface ProbeDatasetMetadata {
-  scope: 'study-timepoint';
-  comparison: 'Responder versus non-responder at Baseline and Follow-up in MDMA, ketamine, and CPT';
+  scope: 'treatment-study-timepoint-with-cpt-reference';
+  comparison: 'Responder versus non-responder across three studies, plus CPT healthy-control references, at Baseline and Follow-up';
   selectionRule: 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes';
   sourceFiles: string[];
 }
+
+export type TreatmentProbeView = 'three-cohort' | 'cpt-healthy-control';
 
 export interface GeneProbeData {
   gene: string;

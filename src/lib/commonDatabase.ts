@@ -152,12 +152,12 @@ function isProbeDatasetMetadata(value: unknown): value is ProbeDatasetMetadata {
   if (
     !isRecord(value) ||
     !Array.isArray(value.sourceFiles) ||
-    value.sourceFiles.length !== 6 ||
+    value.sourceFiles.length !== 10 ||
     !value.sourceFiles.every((sourceFile) => typeof sourceFile === 'string' && sourceFile.trim() !== '')
   ) return false;
   return (
-    value.scope === 'study-timepoint' &&
-    value.comparison === 'Responder versus non-responder at Baseline and Follow-up in MDMA, ketamine, and CPT' &&
+    value.scope === 'treatment-study-timepoint-with-cpt-reference' &&
+    value.comparison === 'Responder versus non-responder across three studies, plus CPT healthy-control references, at Baseline and Follow-up' &&
     value.selectionRule === 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes'
   );
 }
@@ -241,7 +241,7 @@ export async function loadProbeData(project: Project, gene: string): Promise<Gen
   return request;
 }
 
-/** Loads the six responder-versus-nonresponder Treatment study/timepoint probe panels. */
+/** Loads Treatment study/timepoint probes, including the independent CPT healthy-control reference contrasts. */
 export async function loadTreatmentProbeData(gene: string): Promise<GeneProbeData | null> {
   const trimmedGene = gene.trim();
   const normalizedGene = normalizeGene(trimmedGene);

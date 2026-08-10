@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useMemo, useRef, useEffect, useState, useCallback } from 'react';
-import { GeneProbeData, ProbeEntry } from '../types/probe';
+import type { GeneProbeData, ProbeEntry, TreatmentProbeView } from '../types/probe';
 
 interface GenomicTrackProps {
   geneData: GeneProbeData;
+  treatmentView?: TreatmentProbeView;
 }
 
 const SUBTYPE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
@@ -22,11 +23,22 @@ const SUBTYPE_CONFIG: Record<string, { label: string; color: string; bg: string 
   Ketamine_FUP: { label: 'Ketamine — Follow-Up', color: '#0891b2', bg: '#cffafe' },
   CPT_Pre: { label: 'CPT — Baseline', color: '#059669', bg: '#ecfdf5' },
   CPT_FUP: { label: 'CPT — Follow-Up', color: '#059669', bg: '#d1fae5' },
+  CPT_RvHC_Pre: { label: 'CPT responder vs healthy control — Baseline', color: '#7c3aed', bg: '#f5f3ff' },
+  CPT_RvHC_FUP: { label: 'CPT responder vs healthy control — Follow-Up', color: '#7c3aed', bg: '#ede9fe' },
+  CPT_NRvHC_Pre: { label: 'CPT non-responder vs healthy control — Baseline', color: '#c2410c', bg: '#fff7ed' },
+  CPT_NRvHC_FUP: { label: 'CPT non-responder vs healthy control — Follow-Up', color: '#c2410c', bg: '#ffedd5' },
 };
 
-const TREATMENT_GRID_ROWS = [
+interface GridRow {
+  label: string;
+  cols: readonly [
+    { key: string; title: string; color: string; bg: string },
+    { key: string; title: string; color: string; bg: string },
+  ];
+}
+
+const THREE_COHORT_GRID_ROWS: readonly GridRow[] = [
   {
-    cohort: 'MDMA',
     label: 'MDMA-AT',
     cols: [
       { key: 'MDMA_Pre', title: 'MDMA — Baseline (Pre)', color: '#7c3aed', bg: '#f5f3ff' },
@@ -34,7 +46,6 @@ const TREATMENT_GRID_ROWS = [
     ],
   },
   {
-    cohort: 'Ketamine',
     label: 'Ketamine',
     cols: [
       { key: 'Ketamine_Pre', title: 'Ketamine — Baseline (Pre)', color: '#0891b2', bg: '#ecfeff' },
@@ -42,11 +53,34 @@ const TREATMENT_GRID_ROWS = [
     ],
   },
   {
-    cohort: 'CPT',
     label: 'CPT',
     cols: [
       { key: 'CPT_Pre', title: 'CPT — Baseline (Pre)', color: '#059669', bg: '#ecfdf5' },
       { key: 'CPT_FUP', title: 'CPT — Follow-up (FUP)', color: '#059669', bg: '#d1fae5' },
+    ],
+  },
+];
+
+const CPT_HEALTHY_CONTROL_GRID_ROWS: readonly GridRow[] = [
+  {
+    label: 'Responder vs NonResponder',
+    cols: [
+      { key: 'CPT_Pre', title: 'Responder vs NonResponder — Baseline', color: '#059669', bg: '#ecfdf5' },
+      { key: 'CPT_FUP', title: 'Responder vs NonResponder — Follow-up', color: '#059669', bg: '#d1fae5' },
+    ],
+  },
+  {
+    label: 'Responder vs healthy control',
+    cols: [
+      { key: 'CPT_RvHC_Pre', title: 'Responder vs HC — Baseline', color: '#7c3aed', bg: '#f5f3ff' },
+      { key: 'CPT_RvHC_FUP', title: 'Responder vs HC — Follow-up', color: '#7c3aed', bg: '#ede9fe' },
+    ],
+  },
+  {
+    label: 'NonResponder vs healthy control',
+    cols: [
+      { key: 'CPT_NRvHC_Pre', title: 'NonResponder vs HC — Baseline', color: '#c2410c', bg: '#fff7ed' },
+      { key: 'CPT_NRvHC_FUP', title: 'NonResponder vs HC — Follow-up', color: '#c2410c', bg: '#ffedd5' },
     ],
   },
 ];
@@ -92,7 +126,7 @@ function formatProbability(value: number | null): string {
   return value < 0.001 ? value.toExponential(2) : value.toFixed(3);
 }
 
-export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
+export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatmentView = 'three-cohort' }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
@@ -108,9 +142,13 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         if (match && match[1] !== 'adj') detected.add(match[1]);
       }
     }
-    const order = ['SSS', 'ADS', 'ICF', 'ISS', 'MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'Meta', 'MDMA', 'Ketamine', 'CPT'];
+    const order = ['SSS', 'ADS', 'ICF', 'ISS', 'MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP', 'Meta', 'MDMA', 'Ketamine', 'CPT'];
+    const visibleTreatmentKeys = new Set(treatmentView === 'cpt-healthy-control'
+      ? ['CPT_Pre', 'CPT_FUP', 'CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP']
+      : ['MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP']);
     const result: { key: string; label: string; color: string; bg: string }[] = [];
     for (const k of order) {
+      if (geneData.probeDataset && !visibleTreatmentKeys.has(k)) continue;
       if (detected.has(k) && SUBTYPE_CONFIG[k]) {
         result.push({ key: k, ...SUBTYPE_CONFIG[k] });
       }
@@ -121,12 +159,13 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       }
     }
     return result;
-  }, [geneData]);
+  }, [geneData, treatmentView]);
 
   // Check if 3x2 treatment grid mode should be used
   const isGrid = useMemo(() => {
     return SUBTYPES.some((s) => s.key.includes('_Pre') || s.key.includes('_FUP'));
   }, [SUBTYPES]);
+  const gridRows = treatmentView === 'cpt-healthy-control' ? CPT_HEALTHY_CONTROL_GRID_ROWS : THREE_COHORT_GRID_ROWS;
   const isPtsdSubtypeFigure = useMemo(
     () => SUBTYPES.some((subtype) => ['SSS', 'ADS', 'ICF', 'ISS'].includes(subtype.key)),
     [SUBTYPES],
@@ -260,7 +299,9 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.textAlign = 'center';
     ctx.fillText(
       geneData.probeDataset
-        ? `${geneData.gene} — Treatment probes at Baseline and Follow-up`
+        ? treatmentView === 'cpt-healthy-control'
+          ? `${geneData.gene} — CPT healthy-control reference`
+          : `${geneData.gene} — Three-cohort Treatment probes`
         : `${geneData.gene} — CpG probe nominal P`,
       effectiveWidth / 2,
       24
@@ -275,7 +316,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
 
     if (isGrid) {
       // ==========================================
-      // 3x2 GRID LAYOUT (MDMA, Ketamine, CPT x Pre, Post)
+      // 3x2 grid: either three studies or the three CPT comparison groups.
       // ==========================================
 
       // ---- Draw Column Headers (Pre vs Post) ----
@@ -311,7 +352,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       ctx.fillText('Follow-Up (Post)', leftMargin2 + colWidth / 2, headerY + 13);
 
       // ---- Draw Panels for 3 Rows x 2 Cols ----
-      TREATMENT_GRID_ROWS.forEach((rowConfig, rIdx) => {
+      gridRows.forEach((rowConfig, rIdx) => {
         const panelTop = topMargin + rIdx * (panelHeight + panelGap);
         const areaTop = panelTop + 26;
         const areaBot = panelTop + panelHeight - 8;
@@ -885,6 +926,8 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     featureLegend,
     displayChr,
     bottomMargin,
+    gridRows,
+    treatmentView,
   ]);
 
   // ---- Tooltip on hover ----
@@ -906,7 +949,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         else if (mx >= leftMargin2 - 10 && mx <= leftMargin2 + colWidth + 10) cIdx = 1;
 
         if (cIdx >= 0) {
-          TREATMENT_GRID_ROWS.forEach((rConfig, rIdx) => {
+          gridRows.forEach((rConfig, rIdx) => {
             if (found) return;
             const panelTop = topMargin + rIdx * (panelHeight + panelGap);
             if (my < panelTop - 5 || my > panelTop + panelHeight + 5) return;
@@ -965,6 +1008,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       valToY,
       maxNegLogP,
       SUBTYPES,
+      gridRows,
     ]
   );
 
@@ -972,8 +1016,12 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     <div ref={containerRef} className="relative w-full overflow-x-auto">
       {geneData.probeDataset && (
         <div className="mb-3 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-xs leading-relaxed text-violet-950">
-          <strong>Six matched study/timepoint panels.</strong>{' '}
-          Each panel compares responders with non-responders at Baseline or Follow-up. The supplied DMP files are filtered to nominal P &lt; 0.01, and the figure restricts them to probes shared across the three studies so genomic positions are directly comparable. It does not test within-person change from Baseline to Follow-up.
+          {treatmentView === 'cpt-healthy-control' ? (
+            <><strong>Independent CPT healthy-control reference.</strong>{' '}Rows compare responder vs non-responder, responder vs healthy control, and non-responder vs healthy control; columns show Baseline and Follow-up. The healthy-control comparisons are displayed separately and are not used to filter the Treatment results. These are cross-sectional contrasts at each visit, not within-person change tests.</>
+          ) : (
+            <><strong>Three-cohort Treatment comparison.</strong>{' '}Each panel compares responders with non-responders at Baseline or Follow-up for MDMA, ketamine, or CPT. It does not test within-person change from Baseline to Follow-up.</>
+          )}{' '}
+          All supplied DMP files are filtered to nominal P &lt; 0.01, and the figure restricts them to probes shared across the three studies so genomic positions are directly comparable.
         </div>
       )}
       {accessibleRows.length === 0 && <p role="status" className="mb-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-center text-xs text-slate-500">No probe-level statistics are available for this gene in the configured comparisons. No value has been imputed.</p>}
@@ -982,7 +1030,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         style={{ width: '100%', height: totalHeight }}
         className="rounded-lg cursor-crosshair border border-slate-200 shadow-sm"
         role="img"
-        aria-label={`${geneData.gene} ${geneData.probeDataset ? 'Baseline and Follow-up treatment probe' : 'probe'} track on ${displayChr}. Vertical axis is negative log10 uncorrected probe-level P value, with thresholds at P less than 0.05, 0.01, and 0.001; point color gives methylation-effect direction. Exact values are available in the table following the chart.`}
+        aria-label={`${geneData.gene} ${geneData.probeDataset ? treatmentView === 'cpt-healthy-control' ? 'CPT healthy-control reference probe' : 'three-cohort Baseline and Follow-up treatment probe' : 'probe'} track on ${displayChr}. Vertical axis is negative log10 uncorrected probe-level P value, with thresholds at P less than 0.05, 0.01, and 0.001; point color gives methylation-effect direction. Exact values are available in the table following the chart.`}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setTooltip(null)}
       />

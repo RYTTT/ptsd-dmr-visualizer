@@ -115,14 +115,21 @@ drawn at the upper boundary while their exact values remain in the tooltip and
 accessible table. This cap keeps the three reference thresholds legible and
 the vertical scale comparable across genes.
 
-Treatment probe tracks show six responder-versus-non-responder panels: Baseline
-and Follow-up for MDMA, ketamine, and CPT. All six supplied DMP exports are
-filtered to nominal P < 0.01. The importer restricts those rows to probes in
-`Common_Probes_3Cohorts_Full_Statistics.csv`, providing a shared positional
-universe across panels. An empty panel means that no common probe for the gene
-appeared in that study/timepoint's filtered source export; it is not interpreted
-as a zero effect or a non-significant estimate. The paired display does not test
+Treatment probe tracks use two separate 3×2 tabs. **Three-cohort Pre/Post** has
+MDMA, ketamine, and CPT rows and Baseline/Follow-up columns; every panel compares
+responders with non-responders. **CPT healthy-control reference** has rows for
+responder versus non-responder, responder versus healthy control, and
+non-responder versus healthy control, again with Baseline/Follow-up columns.
+The healthy-control contrasts are an independent reference: they do not filter,
+exclude, define, or replace the primary Treatment results. Every panel is a
+cross-sectional contrast at one visit; the paired display does not test
 within-person change between visits.
+
+All ten supplied DMP exports are filtered to nominal P < 0.01. The importer
+restricts those rows to probes in `Common_Probes_3Cohorts_Full_Statistics.csv`,
+providing a shared positional universe across panels. An empty panel means that
+no common probe for the gene appeared in that comparison/visit's filtered source
+export; it is not interpreted as a zero effect or a non-significant estimate.
 
 ## Direction rule
 

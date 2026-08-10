@@ -30,7 +30,7 @@ import {
   readJsonResponse,
   SessionExpiredError,
 } from '@/lib/commonDatabase';
-import type { GeneProbeData } from '@/types/probe';
+import type { GeneProbeData, TreatmentProbeView } from '@/types/probe';
 import {
   findTreatmentResult,
   nominalPStars,
@@ -128,7 +128,21 @@ export default function MdmaPage() {
   const [probeData, setProbeData] = useState<GeneProbeData | null>(null);
   const [probeLoading, setProbeLoading] = useState(false);
   const [probeLoadError, setProbeLoadError] = useState<string | null>(null);
+  const [treatmentProbeView, setTreatmentProbeView] = useState<TreatmentProbeView>('three-cohort');
   const pageSize = 50;
+
+  const handleTreatmentProbeTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const nextView: TreatmentProbeView = event.key === 'ArrowLeft' || event.key === 'Home'
+      ? 'three-cohort'
+      : 'cpt-healthy-control';
+    setTreatmentProbeView(nextView);
+    const nextId = nextView === 'three-cohort'
+      ? 'treatment-probe-tab-three-cohort'
+      : 'treatment-probe-tab-cpt-reference';
+    window.requestAnimationFrame(() => document.getElementById(nextId)?.focus());
+  };
 
   // EPIC manifest for dynamic stats
   const [epicManifest, setEpicManifest] = useState<Record<string, EpicManifestEntry> | undefined>(undefined);
@@ -763,11 +777,47 @@ export default function MdmaPage() {
               <section className="rounded-xl border border-slate-300 bg-white p-4 shadow-xs" aria-labelledby="treatment-probe-title">
                 <div className="mb-3">
                   <h3 id="treatment-probe-title" className="text-sm font-bold text-slate-900">Treatment probe-level results — {selectedGene}</h3>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-600">Baseline and Follow-up responder-versus-non-responder probe results are shown side by side for MDMA, ketamine, and CPT. The six source DMP exports contain only probes with nominal P &lt; 0.01; an empty panel means that no common probe for this gene appeared in that filtered source export.</p>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-600">Choose the primary three-study treatment view or the independent CPT healthy-control reference. Every source DMP export contains only probes with nominal P &lt; 0.01; an empty panel means that no common probe for this gene appeared in that filtered export.</p>
+                </div>
+                <div className="mb-4 inline-flex max-w-full gap-1 overflow-x-auto rounded-lg border border-slate-200 bg-slate-100 p-1" role="tablist" aria-label="Treatment probe figure view">
+                  <button
+                    type="button"
+                    role="tab"
+                    id="treatment-probe-tab-three-cohort"
+                    aria-selected={treatmentProbeView === 'three-cohort'}
+                    aria-controls="treatment-probe-panel"
+                    onClick={() => setTreatmentProbeView('three-cohort')}
+                    onKeyDown={handleTreatmentProbeTabKeyDown}
+                    tabIndex={treatmentProbeView === 'three-cohort' ? 0 : -1}
+                    className={`whitespace-nowrap rounded-md px-3 py-2 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 ${treatmentProbeView === 'three-cohort' ? 'bg-white text-slate-950 shadow-sm' : 'text-slate-600 hover:bg-white/70 hover:text-slate-900'}`}
+                  >
+                    Three-cohort Pre/Post
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    id="treatment-probe-tab-cpt-reference"
+                    aria-selected={treatmentProbeView === 'cpt-healthy-control'}
+                    aria-controls="treatment-probe-panel"
+                    onClick={() => setTreatmentProbeView('cpt-healthy-control')}
+                    onKeyDown={handleTreatmentProbeTabKeyDown}
+                    tabIndex={treatmentProbeView === 'cpt-healthy-control' ? 0 : -1}
+                    className={`whitespace-nowrap rounded-md px-3 py-2 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 ${treatmentProbeView === 'cpt-healthy-control' ? 'bg-white text-slate-950 shadow-sm' : 'text-slate-600 hover:bg-white/70 hover:text-slate-900'}`}
+                  >
+                    CPT healthy-control reference
+                  </button>
                 </div>
                 {probeLoading && <div role="status" className="flex min-h-40 items-center justify-center gap-2 text-sm text-slate-500"><Loader2 className="h-4 w-4 animate-spin" /> Loading Baseline and Follow-up probe results…</div>}
                 {!probeLoading && probeLoadError && <div role="alert" className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-950">{probeLoadError} No values were estimated or substituted by this application.</div>}
-                {!probeLoading && probeData && <GenomicTrackPlot geneData={probeData} />}
+                {!probeLoading && probeData && (
+                  <div
+                    id="treatment-probe-panel"
+                    role="tabpanel"
+                    aria-labelledby={treatmentProbeView === 'three-cohort' ? 'treatment-probe-tab-three-cohort' : 'treatment-probe-tab-cpt-reference'}
+                  >
+                    <GenomicTrackPlot geneData={probeData} treatmentView={treatmentProbeView} />
+                  </div>
+                )}
               </section>
             )}
 

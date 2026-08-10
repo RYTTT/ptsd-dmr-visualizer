@@ -32,4 +32,4 @@ const [ptsdProbeFiles, legacyTreatmentProbeFiles, treatmentVisitProbeFiles] = aw
   validateProbeDirectory('mdma/treatment-probes/visits/'),
 ]);
 
-console.log(`Validated both master datasets and ${ptsdProbeFiles + legacyTreatmentProbeFiles + treatmentVisitProbeFiles} probe shards, including ${treatmentVisitProbeFiles} Treatment Baseline/Follow-up shards.`);
+console.log(`Validated both master datasets and ${ptsdProbeFiles + legacyTreatmentProbeFiles + treatmentVisitProbeFiles} probe shards, including ${treatmentVisitProbeFiles} Treatment Baseline/Follow-up shards with CPT healthy-control references.`);

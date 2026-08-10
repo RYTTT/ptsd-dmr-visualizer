@@ -163,8 +163,8 @@ test('master and probe runtime validators accept shipped data and reject identit
   const treatmentProbe = readJson('../public/data/mdma/treatment-probes/visits/AHRR.json') as Record<string, unknown>;
   assert.equal(isGeneProbeData(treatmentProbe, 'AHRR'), true);
   assert.deepEqual(treatmentProbe.probeDataset, {
-    scope: 'study-timepoint',
-    comparison: 'Responder versus non-responder at Baseline and Follow-up in MDMA, ketamine, and CPT',
+    scope: 'treatment-study-timepoint-with-cpt-reference',
+    comparison: 'Responder versus non-responder across three studies, plus CPT healthy-control references, at Baseline and Follow-up',
     selectionRule: 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes',
     sourceFiles: [
       'MDMA/MDMA_Pre_Responder_vs_NonResponder_DMPs.csv',
@@ -173,6 +173,10 @@ test('master and probe runtime validators accept shipped data and reject identit
       'Ketamine/Ketamine_FUP2_Responder_vs_NonResponder_DMPs.csv',
       'CPT/CPT_Pre_Responder_vs_NonResponder_DMPs.csv',
       'CPT/CPT_FUP2_Responder_vs_NonResponder_DMPs.csv',
+      'CPT/CPT_Pre_Responder_vs_HC_DMPs.csv',
+      'CPT/CPT_FUP2_Responder_vs_HC_DMPs.csv',
+      'CPT/CPT_Pre_NonResponder_vs_HC_DMPs.csv',
+      'CPT/CPT_FUP2_NonResponder_vs_HC_DMPs.csv',
     ],
   });
   assert.ok((treatmentProbe.probes as unknown[]).length > 0);
@@ -180,5 +184,17 @@ test('master and probe runtime validators accept shipped data and reject identit
   const probeRows = treatmentProbe.probes as Record<string, unknown>[];
   for (const key of ['MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP']) {
     assert.ok(probeRows.some((probeRow) => typeof probeRow[`${key}_P`] === 'number'));
+  }
+  for (const key of ['CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP']) {
+    assert.ok(probeRows.every((probeRow) => probeRow[`${key}_P`] === null || typeof probeRow[`${key}_P`] === 'number'));
+  }
+
+  const treatmentProbeIndex = readJson('../public/data/mdma/treatment-probes/index.json') as {
+    version: string;
+    sources: { key: string; commonRows: number }[];
+  };
+  assert.equal(treatmentProbeIndex.version, 'treatment_study_timepoint_probes_with_cpt_reference_v2');
+  for (const key of ['CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP']) {
+    assert.ok((treatmentProbeIndex.sources.find((source) => source.key === key)?.commonRows ?? 0) > 0);
   }
 });

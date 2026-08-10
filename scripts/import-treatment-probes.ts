@@ -22,6 +22,10 @@ const DMP_SOURCES = [
   { key: 'Ketamine_FUP', file: 'Ketamine/Ketamine_FUP2_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
   { key: 'CPT_Pre', file: 'CPT/CPT_Pre_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
   { key: 'CPT_FUP', file: 'CPT/CPT_FUP2_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
+  { key: 'CPT_RvHC_Pre', file: 'CPT/CPT_Pre_Responder_vs_HC_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
+  { key: 'CPT_RvHC_FUP', file: 'CPT/CPT_FUP2_Responder_vs_HC_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
+  { key: 'CPT_NRvHC_Pre', file: 'CPT/CPT_Pre_NonResponder_vs_HC_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
+  { key: 'CPT_NRvHC_FUP', file: 'CPT/CPT_FUP2_NonResponder_vs_HC_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
 ] as const;
 const DMR_DATA_FILE = new URL('../public/data/mdma/dmrData.json', import.meta.url);
 const OUTPUT_ROOT = new URL('../public/data/mdma/treatment-probes/', import.meta.url);
@@ -137,6 +141,10 @@ async function main() {
       Ketamine_FUP_logFC: null, Ketamine_FUP_P: null, Ketamine_FUP_FDR: null,
       CPT_Pre_logFC: null, CPT_Pre_P: null, CPT_Pre_FDR: null,
       CPT_FUP_logFC: null, CPT_FUP_P: null, CPT_FUP_FDR: null,
+      CPT_RvHC_Pre_logFC: null, CPT_RvHC_Pre_P: null, CPT_RvHC_Pre_FDR: null,
+      CPT_RvHC_FUP_logFC: null, CPT_RvHC_FUP_P: null, CPT_RvHC_FUP_FDR: null,
+      CPT_NRvHC_Pre_logFC: null, CPT_NRvHC_Pre_P: null, CPT_NRvHC_Pre_FDR: null,
+      CPT_NRvHC_FUP_logFC: null, CPT_NRvHC_FUP_P: null, CPT_NRvHC_FUP_FDR: null,
     };
     probeById.set(probe, entry);
     const current = probesByGene.get(normalizedGene) ?? [];
@@ -198,8 +206,8 @@ async function main() {
       cpgIslands: [],
       probes,
       probeDataset: {
-        scope: 'study-timepoint',
-        comparison: 'Responder versus non-responder at Baseline and Follow-up in MDMA, ketamine, and CPT',
+        scope: 'treatment-study-timepoint-with-cpt-reference',
+        comparison: 'Responder versus non-responder across three studies, plus CPT healthy-control references, at Baseline and Follow-up',
         selectionRule: 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes',
         sourceFiles: DMP_SOURCES.map(({ file }) => file),
       },
@@ -208,7 +216,7 @@ async function main() {
     await writeFile(new URL(`${selected.gene}.json`, directory), JSON.stringify(shard));
   }
   await writeFile(new URL('index.json', OUTPUT_ROOT), JSON.stringify({
-    version: 'treatment_study_timepoint_probes_v1',
+    version: 'treatment_study_timepoint_probes_with_cpt_reference_v2',
     annotationSource: ANNOTATION_SOURCE,
     sources: DMP_SOURCES.map(({ key, file }) => ({ key, file, ...sourceCounts[key] })),
     selectedGenes: selectedGenes.size,
