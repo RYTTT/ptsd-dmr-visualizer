@@ -8,6 +8,7 @@ import {
   deriveCrossSubtypeDirection,
   findPtsdResult,
   findTreatmentResult,
+  nominalPStars,
   serializeCsv,
   treatmentViewDescriptor,
   validateMasterDMRData,
@@ -27,29 +28,28 @@ test('pooled treatment results never inherit a timepoint label or filename', () 
   assert.match(baseline.shortLabel, /not timepoint-specific/u);
   assert.doesNotMatch(baseline.csvFilename, /Pre|FUP|Baseline|Follow/u);
 
-  const unique = treatmentViewDescriptor('MDMA', 'Pre');
-  assert.equal(unique.kind, 'timepoint-cohort-unique');
-  assert.match(unique.title, /Baseline \(Pre\)/u);
-  assert.match(unique.csvFilename, /Pre_MDMA_unique/u);
+  const cohort = treatmentViewDescriptor('MDMA', 'Pre');
+  assert.equal(cohort.kind, 'timepoint-cohort');
+  assert.match(cohort.title, /Baseline \(Pre\)/u);
+  assert.match(cohort.csvFilename, /Pre_MDMA_N8plus/u);
 });
 
-test('treatment validation converts only explicit N/A sentinels to missing values', () => {
-  const raw = readJson('../public/data/mdma/dmrData.json') as Record<string, unknown>;
-  const crossCohort = raw.crossCohort as Record<string, unknown>[];
-  const first = crossCohort[0];
-  const cohorts = first.cohorts as Record<string, Record<string, unknown>>;
-
-  cohorts.MDMA.Pre = { deltaBeta: 0, fdr: 0, direction: 'Hypermethylated' };
-  cohorts.MDMA.FUP = { deltaBeta: 0, fdr: 1, direction: 'N/A' };
-  const parsed = validateMdmaMasterData(raw);
-
-  assert.equal(parsed.crossCohort[0].cohorts.MDMA.timepoints.Pre.deltaBeta, 0);
-  assert.equal(parsed.crossCohort[0].cohorts.MDMA.timepoints.Pre.fdr, 0);
-  assert.deepEqual(parsed.crossCohort[0].cohorts.MDMA.timepoints.FUP, {
-    deltaBeta: null,
-    fdr: null,
-    direction: null,
+test('treatment database ships exact N8+ registry counts and complete BDNF Ketamine context', () => {
+  const parsed = validateMdmaMasterData(readJson('../public/data/mdma/dmrData.json'));
+  assert.deepEqual({
+    Pre: Object.fromEntries(Object.entries(parsed.timepoints.Pre.cohorts).map(([key, rows]) => [key, rows.length])),
+    FUP: Object.fromEntries(Object.entries(parsed.timepoints.FUP.cohorts).map(([key, rows]) => [key, rows.length])),
+  }, {
+    Pre: { MDMA: 827, Ketamine: 475, CPT: 515 },
+    FUP: { MDMA: 1274, Ketamine: 878, CPT: 1410 },
   });
+  const bdnf = parsed.geneContexts.BDNF;
+  assert.equal('Ketamine' in bdnf, false, 'context is organized by timepoint first');
+  assert.equal(bdnf.Pre.Ketamine?.totalProbes, 88);
+  assert.equal(bdnf.Pre.Ketamine?.nSigProbes, 6);
+  assert.equal(bdnf.FUP.Ketamine?.nSigProbes, 5);
+  assert.ok(bdnf.Pre.Ketamine?.deltaBeta !== 0);
+  assert.ok(bdnf.FUP.Ketamine?.deltaBeta !== 0);
 });
 
 test('cross-subtype direction treats each stored Mixed classification as authoritative', () => {
@@ -86,18 +86,18 @@ test('subtype-unique selections remain subtype-specific and have no fabricated c
   assert.equal('subtypes' in selected.result, false);
 });
 
-test('treatment selection preserves pooled versus timepoint/cohort-unique statistic scope', () => {
+test('treatment selection preserves pooled versus timepoint/cohort statistic scope', () => {
   const data = validateMdmaMasterData(readJson('../public/data/mdma/dmrData.json'));
   const pooled = findTreatmentResult(data, 'cross', 'Pre', data.crossCohort[0].gene);
   assert.equal(pooled?.kind, 'pooled-cross-cohort');
 
-  const unique = data.timepoints.FUP.uniqueCohorts.Ketamine[0];
-  const selected = findTreatmentResult(data, 'Ketamine', 'FUP', unique.gene);
-  assert.equal(selected?.kind, 'timepoint-cohort-unique');
-  if (selected?.kind !== 'timepoint-cohort-unique') assert.fail('Expected cohort-unique result');
+  const cohort = data.timepoints.FUP.cohorts.Ketamine[0];
+  const selected = findTreatmentResult(data, 'Ketamine', 'FUP', cohort.gene);
+  assert.equal(selected?.kind, 'timepoint-cohort');
+  if (selected?.kind !== 'timepoint-cohort') assert.fail('Expected timepoint/cohort result');
   assert.equal(selected.timepoint, 'FUP');
   assert.equal(selected.cohort, 'Ketamine');
-  assert.equal('pValue' in selected.result, false);
+  assert.equal(selected.result.pValue, cohort.pValue);
 });
 
 test('CSV serialization preserves zero, leaves missing blank, and quotes unsafe text', () => {
@@ -106,6 +106,16 @@ test('CSV serialization preserves zero, leaves missing blank, and quotes unsafe 
   assert.equal(csvCell('gene,alias'), '"gene,alias"');
   assert.equal(csvCell('a"b'), '"a""b"');
   assert.equal(serializeCsv([['Gene', 'Value'], ['A,1', null], ['B', 0]]), 'Gene,Value\r\n"A,1",\r\nB,0');
+});
+
+test('nominal P stars use strict requested thresholds and never label missing values', () => {
+  assert.equal(nominalPStars(null), '');
+  assert.equal(nominalPStars(0.05), '');
+  assert.equal(nominalPStars(0.049), '*');
+  assert.equal(nominalPStars(0.01), '*');
+  assert.equal(nominalPStars(0.009), '**');
+  assert.equal(nominalPStars(0.001), '**');
+  assert.equal(nominalPStars(0.0009), '***');
 });
 
 test('master and probe runtime validators accept shipped data and reject identity/count mismatches', () => {

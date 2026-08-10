@@ -45,9 +45,9 @@ interface DmrTableRow {
   totalProbes: number;
   isPtsd: boolean;
   fdr: number;
+  pValue: number | null;
   deltaBeta: number;
   direction: Direction;
-  negLogFdr: number;
   rawItem: SelectedPtsdResult;
 }
 
@@ -200,9 +200,9 @@ export default function Home() {
           totalProbes: item.totalProbes,
           isPtsd: item.isPtsd,
           fdr: item.crossFdr,
+          pValue: item.crossP,
           deltaBeta: avgDeltaBeta,
           direction: dir,
-          negLogFdr: -Math.log10(Math.max(item.crossFdr, 1e-30)),
           rawItem: { kind: 'cross-subtype', result: item },
         };
       });
@@ -215,9 +215,9 @@ export default function Home() {
         totalProbes: item.totalProbes,
         isPtsd: item.isPtsd,
         fdr: item.fdr,
+        pValue: null,
         deltaBeta: item.deltaBeta,
         direction: item.direction,
-        negLogFdr: -Math.log10(Math.max(item.fdr, 1e-30)),
         rawItem: { kind: 'subtype-unique', subtype: activeTab, result: item },
       }));
     }

@@ -20,6 +20,7 @@ import type {
   MdmaMasterData,
   SelectedTreatmentResult,
   TreatmentCohort,
+  TreatmentGeneResult,
   TreatmentTimepoint,
 } from '@/types/dmr';
 import { TREATMENT_COHORTS, TREATMENT_TIMEPOINTS } from '@/types/dmr';
@@ -32,6 +33,7 @@ import {
 } from '@/lib/commonDatabase';
 import {
   findTreatmentResult,
+  nominalPStars,
   serializeCsv,
   treatmentViewDescriptor,
   validateMdmaMasterData,
@@ -42,29 +44,32 @@ import { GeneStoryButton } from '@/components/GeneStoryButton';
 
 interface MdmaTableRow {
   gene: string;
-  pValue: number | null;
+  pValue: number;
   fdr: number;
   deltaBeta: number;
   direction: Direction;
   totalProbes: number;
   nSigProbes: number;
+  nPosTop3?: number;
+  avgPosDeltaBeta?: number | null;
+  nNegTop3?: number;
+  avgNegDeltaBeta?: number | null;
 }
 
 interface VolcanoPoint {
   gene: string;
   deltaBeta: number;
   direction: Direction;
-  negLogFdr: number;
+  pValue: number;
+  negLogP: number;
 }
 
 interface TreatmentBarDatum {
   cohort: TreatmentCohort;
+  pre: TreatmentGeneResult | null;
+  fup: TreatmentGeneResult | null;
   deltaBeta_Pre: number | null;
-  fdr_Pre: number | null;
-  direction_Pre: Direction | null;
   deltaBeta_FUP: number | null;
-  fdr_FUP: number | null;
-  direction_FUP: Direction | null;
   color: string;
 }
 
@@ -76,13 +81,22 @@ interface LoadError {
 // ---- Tab config ----
 const COHORT_TABS = [
   { key: 'cross', label: 'Pooled cross-cohort', color: '#0f172a' },
-  { key: 'MDMA', label: 'MDMA-Unique', color: '#7c3aed' },
-  { key: 'Ketamine', label: 'Ketamine-Unique', color: '#0891b2' },
-  { key: 'CPT', label: 'CPT-Unique', color: '#059669' },
+  { key: 'MDMA', label: 'MDMA cohort', color: '#7c3aed' },
+  { key: 'Ketamine', label: 'Ketamine cohort', color: '#0891b2' },
+  { key: 'CPT', label: 'CPT cohort', color: '#059669' },
 ] as const;
 
 const COHORT_COLORS: Record<string, string> = { MDMA: '#7c3aed', Ketamine: '#0891b2', CPT: '#059669' };
 type AnalysisTab = 'cross' | TreatmentCohort;
+
+function formatProbability(value: number): string {
+  return value < 1e-15 ? '< 1e-15' : value.toExponential(2);
+}
+
+function significanceLabel(value: number | null | undefined): string {
+  if (value == null) return 'unavailable';
+  return nominalPStars(value) || 'ns';
+}
 
 export default function MdmaPage() {
   const [data, setData] = useState<MdmaMasterData | null>(null);
@@ -95,7 +109,7 @@ export default function MdmaPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [directionFilter, setDirectionFilter] = useState('All');
   const [selectedGene, setSelectedGene] = useState<string | null>(null);
-  const [sortField, setSortField] = useState<keyof MdmaTableRow>('fdr');
+  const [sortField, setSortField] = useState<keyof MdmaTableRow>('pValue');
   const [sortAsc, setSortAsc] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 50;
@@ -199,9 +213,11 @@ export default function MdmaPage() {
       }));
     } else {
       const tpData = data.timepoints[timepoint];
-      list = (tpData.uniqueCohorts[activeTab] ?? []).map((g) => ({
-        gene: g.gene, pValue: null, fdr: g.fdr, deltaBeta: g.deltaBeta, direction: g.direction,
+      list = (tpData.cohorts[activeTab] ?? []).map((g) => ({
+        gene: g.gene, pValue: g.pValue, fdr: g.fdr, deltaBeta: g.deltaBeta, direction: g.direction,
         totalProbes: g.totalProbes, nSigProbes: g.nSigProbes,
+        nPosTop3: g.nPosTop3, avgPosDeltaBeta: g.avgPosDeltaBeta,
+        nNegTop3: g.nNegTop3, avgNegDeltaBeta: g.avgNegDeltaBeta,
       }));
     }
 
@@ -235,7 +251,7 @@ export default function MdmaPage() {
     if (!data) return;
     const activeList = activeTab === 'cross'
       ? data.crossCohort
-      : data.timepoints[timepoint].uniqueCohorts[activeTab];
+      : data.timepoints[timepoint].cohorts[activeTab];
     if (activeList.some((item) => item.gene === gene)) {
       setSelectedGene(gene);
       return;
@@ -248,7 +264,7 @@ export default function MdmaPage() {
     }
     for (const candidateTimepoint of [timepoint, ...TREATMENT_TIMEPOINTS.filter((item) => item !== timepoint)]) {
       const cohort = TREATMENT_COHORTS.find((candidate) =>
-        data.timepoints[candidateTimepoint].uniqueCohorts[candidate].some((item) => item.gene === gene),
+        data.timepoints[candidateTimepoint].cohorts[candidate].some((item) => item.gene === gene),
       );
       if (cohort) {
         setTimepoint(candidateTimepoint);
@@ -262,33 +278,22 @@ export default function MdmaPage() {
 
   // ---- Bar chart ----
   const selectedGeneBarData = useMemo<TreatmentBarDatum[] | null>(() => {
-    if (!selectedResult) return null;
-    if (selectedResult.kind === 'pooled-cross-cohort') {
-      return TREATMENT_COHORTS.map((cohort) => {
-        const measurements = selectedResult.result.cohorts[cohort].timepoints;
-        return {
-          cohort,
-          deltaBeta_Pre: measurements.Pre.deltaBeta,
-          fdr_Pre: measurements.Pre.fdr,
-          direction_Pre: measurements.Pre.direction,
-          deltaBeta_FUP: measurements.FUP.deltaBeta,
-          fdr_FUP: measurements.FUP.fdr,
-          direction_FUP: measurements.FUP.direction,
-          color: COHORT_COLORS[cohort],
-        };
-      });
-    }
-    return [{
-      cohort: selectedResult.cohort,
-      deltaBeta_Pre: selectedResult.timepoint === 'Pre' ? selectedResult.result.deltaBeta : null,
-      fdr_Pre: selectedResult.timepoint === 'Pre' ? selectedResult.result.fdr : null,
-      direction_Pre: selectedResult.timepoint === 'Pre' ? selectedResult.result.direction : null,
-      deltaBeta_FUP: selectedResult.timepoint === 'FUP' ? selectedResult.result.deltaBeta : null,
-      fdr_FUP: selectedResult.timepoint === 'FUP' ? selectedResult.result.fdr : null,
-      direction_FUP: selectedResult.timepoint === 'FUP' ? selectedResult.result.direction : null,
-      color: COHORT_COLORS[selectedResult.cohort],
-    }];
-  }, [selectedResult]);
+    if (!data || !selectedGene) return null;
+    const context = data.geneContexts[selectedGene];
+    if (!context) return null;
+    return TREATMENT_COHORTS.map((cohort) => {
+      const pre = context.Pre[cohort];
+      const fup = context.FUP[cohort];
+      return {
+        cohort,
+        pre,
+        fup,
+        deltaBeta_Pre: pre?.deltaBeta ?? null,
+        deltaBeta_FUP: fup?.deltaBeta ?? null,
+        color: COHORT_COLORS[cohort],
+      };
+    });
+  }, [data, selectedGene]);
 
   // Annotation
   const selectedAnnotation = useMemo(() => {
@@ -300,7 +305,8 @@ export default function MdmaPage() {
   const volcanoData = useMemo(() => {
     return filteredData.map((d) => ({
       gene: d.gene, deltaBeta: d.deltaBeta,
-      negLogFdr: -Math.log10(Math.max(d.fdr, 1e-30)),
+      pValue: d.pValue,
+      negLogP: -Math.log10(Math.max(d.pValue, 1e-300)),
       direction: d.direction,
     }));
   }, [filteredData]);
@@ -309,10 +315,10 @@ export default function MdmaPage() {
   const handleExportCSV = () => {
     const headers = activeTab === 'cross'
       ? ['Gene', 'CrossP', 'CrossFDR', 'PooledDeltaBeta', 'Direction', 'DMR_TestedProbes', 'SignificantProbes']
-      : ['Gene', 'FDR', 'DeltaBeta', 'Direction', 'DMR_TestedProbes', 'SignificantProbes'];
+      : ['Gene', 'Total_Gene_Probes', 'N_Sig_Probes_p05', 'Gene_Fisher_P', 'Gene_FDR', 'Pattern', 'N_Pos_Probes_Top3', 'Ave_Pos_Beta_Diff_Top3', 'N_Neg_Probes_Top3', 'Ave_Neg_Beta_Diff_Top3', 'Top3_Weighted_Beta_Diff'];
     const rows = filteredData.map((d) => activeTab === 'cross'
       ? [d.gene, d.pValue, d.fdr, d.deltaBeta, d.direction, d.totalProbes, d.nSigProbes]
-      : [d.gene, d.fdr, d.deltaBeta, d.direction, d.totalProbes, d.nSigProbes]);
+      : [d.gene, d.totalProbes, d.nSigProbes, d.pValue, d.fdr, d.direction, d.nPosTop3, d.avgPosDeltaBeta, d.nNegTop3, d.avgNegDeltaBeta, d.deltaBeta]);
     const csv = `data:text/csv;charset=utf-8,${encodeURIComponent(serializeCsv([headers, ...rows]))}`;
     const link = document.createElement('a');
     link.setAttribute('href', csv);
@@ -411,7 +417,7 @@ export default function MdmaPage() {
               const tpd = data?.timepoints[timepoint];
               const actualCount = tab.key === 'cross'
                 ? (data?.crossCohort.length ?? 0)
-                : (tpd?.uniqueCohorts[tab.key]?.length ?? 0);
+                : (tpd?.cohorts[tab.key]?.length ?? 0);
               return (
                 <button
                   key={tab.key}
@@ -420,7 +426,7 @@ export default function MdmaPage() {
                     setCurrentPage(1);
                     const list = tab.key === 'cross'
                       ? data?.crossCohort ?? []
-                      : tpd?.uniqueCohorts[tab.key] ?? [];
+                      : tpd?.cohorts[tab.key] ?? [];
                     setSelectedGene(list[0]?.gene ?? null);
                   }}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold border transition whitespace-nowrap ${
@@ -442,7 +448,7 @@ export default function MdmaPage() {
           ) : (
             <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-0.5 border border-slate-200" aria-label="Analysis timepoint">
               <Clock className="w-3.5 h-3.5 text-slate-400 ml-2" aria-hidden="true" />
-              {([['Pre', 'Baseline (Pre)'], ['FUP', 'Follow-up (FUP)']] as const).map(([tp, label]) => (
+              {([['Pre', 'Baseline (Pre)'], ['FUP', activeTab === 'MDMA' ? 'Follow-up (FUP1 / E2)' : 'Follow-up (FUP2)']] as const).map(([tp, label]) => (
                 <button
                   type="button"
                   key={tp}
@@ -450,7 +456,7 @@ export default function MdmaPage() {
                   onClick={() => {
                     setTimepoint(tp);
                     setCurrentPage(1);
-                    const list = data.timepoints[tp].uniqueCohorts[activeTab];
+                    const list = data.timepoints[tp].cohorts[activeTab];
                     setSelectedGene(list[0]?.gene ?? null);
                   }}
                   className={`px-3 py-1.5 rounded-md text-[11px] font-bold transition ${
@@ -462,6 +468,12 @@ export default function MdmaPage() {
               ))}
             </div>
           )}
+        </div>
+
+        <div className="mb-5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-xs leading-relaxed text-blue-950">
+          <strong>Pooled cross-cohort</strong> is a meta-analysis and is not a Pre or Follow-up tab. The three cohort tabs are timepoint-specific N8+ registries
+          (at least 8 probes with nominal P &lt; 0.05; reported gene FDR &lt; 0.05). Selecting a gene also shows all available TotalProbes8plus context values,
+          including cohort/timepoint rows that do not reach N8+.
         </div>
 
         {/* Filter Bar */}
@@ -480,6 +492,7 @@ export default function MdmaPage() {
                 <option value="All">All Directions</option>
                 <option value="Hypermethylated">Hyper</option>
                 <option value="Hypomethylated">Hypo</option>
+                <option value="Mixed">Mixed</option>
               </select>
             </div>
             <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition font-semibold shadow-xs">
@@ -499,9 +512,12 @@ export default function MdmaPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis type="number" dataKey="deltaBeta" name="Δβ" stroke="#64748b" fontSize={11}
                   label={{ value: 'DMR Δβ (methylation proportion)', position: 'insideBottom', offset: -15, fill: '#475569', fontSize: 11 }} />
-                <YAxis type="number" dataKey="negLogFdr" name="-log₁₀(FDR)" stroke="#64748b" fontSize={11}
-                  label={{ value: '-log₁₀(FDR)', angle: -90, position: 'insideLeft', fill: '#475569', fontSize: 11 }} />
+                <YAxis type="number" dataKey="negLogP" name="-log₁₀(P)" stroke="#64748b" fontSize={11}
+                  label={{ value: '-log₁₀(nominal P)', angle: -90, position: 'insideLeft', fill: '#475569', fontSize: 11 }} />
                 <ZAxis range={[20, 20]} />
+                <ReferenceLine y={-Math.log10(0.05)} stroke="#94a3b8" strokeDasharray="4 4" label={{ value: 'P < 0.05', fill: '#64748b', fontSize: 9 }} />
+                <ReferenceLine y={2} stroke="#64748b" strokeDasharray="4 4" label={{ value: 'P < 0.01', fill: '#64748b', fontSize: 9 }} />
+                <ReferenceLine y={3} stroke="#475569" strokeDasharray="4 4" label={{ value: 'P < 0.001', fill: '#475569', fontSize: 9 }} />
                 <Tooltip content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     const d = payload[0].payload;
@@ -509,7 +525,7 @@ export default function MdmaPage() {
                       <div className="bg-white border border-slate-300 p-2.5 rounded shadow-lg text-xs space-y-0.5">
                         <div className="font-bold">{d.gene}</div>
                         <div>Δβ: <span className="font-mono">{d.deltaBeta.toFixed(4)}</span></div>
-                        <div>-log₁₀FDR: <span className="font-mono">{d.negLogFdr.toFixed(2)}</span></div>
+                        <div>Nominal P: <span className="font-mono">{d.pValue < 1e-15 ? '< 1e-15' : d.pValue.toExponential(2)}</span> <strong>{nominalPStars(d.pValue) || 'ns'}</strong></div>
                       </div>
                     );
                   }
@@ -546,13 +562,14 @@ export default function MdmaPage() {
                 </span>
               </div>
               <div className="overflow-x-auto flex-1">
-                <table className="w-full text-xs text-left">
+                <table className="w-full min-w-[520px] text-xs text-left">
                   <thead className="bg-slate-100/80 text-slate-700 border-b border-slate-200 font-bold uppercase text-[11px]">
                     <tr>
                       {([
                         { f: 'gene', l: 'Gene' },
-                        { f: 'fdr', l: activeTab === 'cross' ? 'Cross FDR' : 'FDR' },
+                        { f: 'pValue', l: activeTab === 'cross' ? 'Cross P' : 'Fisher P' },
                         { f: 'deltaBeta', l: activeTab === 'cross' ? 'Pooled Δβ' : 'Δβ' },
+                        { f: 'nSigProbes', l: 'P<.05 / total' },
                       ] as const).map(({ f, l }) => (
                         <th key={f} className="p-0" aria-sort={sortField === f ? (sortAsc ? 'ascending' : 'descending') : 'none'}>
                           <button type="button" className="flex w-full items-center gap-1 p-2.5 text-left hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-slate-900" onClick={() => { setSortField(f); setSortAsc(sortField === f ? !sortAsc : true); }}>
@@ -574,12 +591,16 @@ export default function MdmaPage() {
                               {row.gene}
                             </button>
                           </td>
-                          <td className="p-2.5 font-mono text-slate-900">{row.fdr < 1e-15 ? '< 1e-15' : row.fdr.toExponential(2)}</td>
+                          <td className="whitespace-nowrap p-2.5 font-mono text-slate-900">
+                            {row.pValue < 1e-15 ? '< 1e-15' : row.pValue.toExponential(2)}{' '}
+                            <strong aria-label={`${nominalPStars(row.pValue).length || 0} significance stars`}>{nominalPStars(row.pValue) || 'ns'}</strong>
+                          </td>
                           <td className="p-2.5 font-mono font-bold">
                             <span className={row.deltaBeta > 0 ? 'text-red-600' : 'text-blue-600'}>
                               {row.deltaBeta > 0 ? `+${row.deltaBeta.toFixed(3)}` : row.deltaBeta.toFixed(3)}
                             </span>
                           </td>
+                          <td className="p-2.5 font-mono text-slate-700">{row.nSigProbes}/{row.totalProbes}</td>
                           <td className="p-2.5">
                             <span className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${
                               row.direction === 'Hypermethylated' ? 'bg-red-50 text-red-700' :
@@ -591,7 +612,7 @@ export default function MdmaPage() {
                     })}
                     {paginatedData.length === 0 && (
                       <tr>
-                        <td colSpan={4} className="p-8 text-center text-sm text-slate-500">
+                        <td colSpan={5} className="p-8 text-center text-sm text-slate-500">
                           No DMR genes match the active analysis and filters.
                         </td>
                       </tr>
@@ -633,14 +654,6 @@ export default function MdmaPage() {
               const pad = maxAbs * 1.35;
               const yDomain = [-pad, pad];
 
-              const sigStars = (fdr: number | null) => {
-                if (fdr === null) return 'unavailable';
-                if (fdr < 0.001) return '***';
-                if (fdr < 0.01) return '**';
-                if (fdr < 0.05) return '*';
-                return 'ns';
-              };
-
               // Custom label for Pre bars
               const renderPreLabel = (props: LabelProps) => {
                 const { index } = props;
@@ -649,8 +662,8 @@ export default function MdmaPage() {
                 const y = Number(props.y ?? 0);
                 const width = Number(props.width ?? 0);
                 const entry = selectedGeneBarData[index];
-                if (entry.deltaBeta_Pre === null || entry.fdr_Pre === null) return null;
-                const sig = sigStars(entry.fdr_Pre);
+                if (entry.deltaBeta_Pre === null || !entry.pre) return null;
+                const sig = significanceLabel(entry.pre.pValue);
                 const isPos = entry.deltaBeta_Pre >= 0;
                 const ly = isPos ? y - 5 : y + 15;
                 return (
@@ -668,8 +681,8 @@ export default function MdmaPage() {
                 const y = Number(props.y ?? 0);
                 const width = Number(props.width ?? 0);
                 const entry = selectedGeneBarData[index];
-                if (entry.deltaBeta_FUP === null || entry.fdr_FUP === null) return null;
-                const sig = sigStars(entry.fdr_FUP);
+                if (entry.deltaBeta_FUP === null || !entry.fup) return null;
+                const sig = significanceLabel(entry.fup.pValue);
                 const isPos = entry.deltaBeta_FUP >= 0;
                 const ly = isPos ? y - 5 : y + 15;
                 return (
@@ -685,9 +698,7 @@ export default function MdmaPage() {
                   <div>
                     <h3 className="text-base font-bold text-slate-900">{selectedGene}</h3>
                     <p className="text-xs text-slate-500">
-                      {selectedResult?.kind === 'pooled-cross-cohort'
-                        ? 'Available cohort/timepoint estimates for a gene selected from the pooled cross-cohort result set'
-                        : `${viewDescriptor.title}; unavailable comparison cells are omitted`}
+                      Six cohort/timepoint context estimates from TotalProbes8plus tables. A value can be shown here even when it is not in the N8+ cohort registry.
                     </p>
                   </div>
                   <div className="flex items-center gap-3 text-[11px]">
@@ -697,7 +708,7 @@ export default function MdmaPage() {
                     </div>
                     <div className="flex items-center gap-1.5">
                       <span className="w-2.5 h-2.5 rounded-xs bg-purple-600 border border-purple-700" />
-                      <span className="text-slate-600 font-medium">Follow-up (FUP)</span>
+                      <span className="text-slate-600 font-medium">Follow-up (MDMA FUP1/E2; Ketamine/CPT FUP2)</span>
                     </div>
                   </div>
                 </div>
@@ -710,29 +721,30 @@ export default function MdmaPage() {
                         label={{ value: 'Δβ (methylation proportion)', angle: -90, position: 'insideLeft', fill: '#475569', fontSize: 11 }} />
                       <Tooltip content={({ active, payload }) => {
                         if (active && payload && payload.length) {
-                          const d = payload[0].payload;
+                          const d = payload[0].payload as TreatmentBarDatum;
+                          const resultCard = (result: TreatmentGeneResult | null, label: string, accent = false) => (
+                            <div className={`${accent ? 'bg-purple-50/50 border-purple-200' : 'bg-slate-50 border-slate-200'} p-1.5 rounded border`}>
+                              <div className={`text-[10px] font-bold uppercase ${accent ? 'text-purple-700' : 'text-slate-500'}`}>{label}</div>
+                              {!result ? (
+                                <div className="font-semibold text-slate-500">Unavailable</div>
+                              ) : (<>
+                                <div>Δβ: <span className="font-mono font-bold">{result.deltaBeta > 0 ? `+${result.deltaBeta.toFixed(4)}` : result.deltaBeta.toFixed(4)}</span></div>
+                                <div>Nominal P: <span className="font-mono">{formatProbability(result.pValue)}</span> <strong>{significanceLabel(result.pValue)}</strong></div>
+                                <div>Reported FDR: <span className="font-mono">{formatProbability(result.fdr)}</span></div>
+                                <div>Significant/total probes: <strong>{result.nSigProbes}/{result.totalProbes}</strong></div>
+                                <div className={result.nSigProbes >= 8 ? 'text-emerald-700' : 'text-amber-700'}>{result.nSigProbes >= 8 ? 'Core N8+ row' : 'Context only · below N8'}</div>
+                                <div>Pattern: {result.direction}</div>
+                                <div>Top-3 +: {result.nPosTop3}, mean {result.avgPosDeltaBeta == null ? '—' : result.avgPosDeltaBeta.toFixed(4)}</div>
+                                <div>Top-3 −: {result.nNegTop3}, mean {result.avgNegDeltaBeta == null ? '—' : result.avgNegDeltaBeta.toFixed(4)}</div>
+                              </>)}
+                            </div>
+                          );
                           return (
-                            <div className="bg-white border border-slate-300 p-3 rounded-xl shadow-xl text-xs space-y-1.5 min-w-[200px]">
+                            <div className="bg-white border border-slate-300 p-3 rounded-xl shadow-xl text-xs space-y-1.5 min-w-[360px]">
                               <div className="font-extrabold text-slate-900 border-b border-slate-100 pb-1">{d.cohort} Cohort</div>
                               <div className="grid grid-cols-2 gap-2 text-[11px] pt-0.5">
-                                <div className="bg-slate-50 p-1.5 rounded border border-slate-200">
-                                  <div className="text-[10px] text-slate-400 font-bold uppercase">Baseline (Pre)</div>
-                                  {d.deltaBeta_Pre === null || d.fdr_Pre === null ? (
-                                    <div className="font-semibold text-slate-500">Unavailable</div>
-                                  ) : (<>
-                                    <div>Δβ: <span className="font-mono font-bold">{d.deltaBeta_Pre > 0 ? `+${d.deltaBeta_Pre.toFixed(4)}` : d.deltaBeta_Pre.toFixed(4)}</span></div>
-                                    <div>FDR: <span className="font-mono">{d.fdr_Pre < 1e-15 ? '< 1e-15' : d.fdr_Pre.toExponential(2)}</span> <strong>{sigStars(d.fdr_Pre)}</strong></div>
-                                  </>)}
-                                </div>
-                                <div className="bg-purple-50/50 p-1.5 rounded border border-purple-200">
-                                  <div className="text-[10px] text-purple-700 font-bold uppercase">Follow-up (FUP)</div>
-                                  {d.deltaBeta_FUP === null || d.fdr_FUP === null ? (
-                                    <div className="font-semibold text-slate-500">Unavailable</div>
-                                  ) : (<>
-                                    <div>Δβ: <span className="font-mono font-bold text-purple-900">{d.deltaBeta_FUP > 0 ? `+${d.deltaBeta_FUP.toFixed(4)}` : d.deltaBeta_FUP.toFixed(4)}</span></div>
-                                    <div>FDR: <span className="font-mono">{d.fdr_FUP < 1e-15 ? '< 1e-15' : d.fdr_FUP.toExponential(2)}</span> <strong>{sigStars(d.fdr_FUP)}</strong></div>
-                                  </>)}
-                                </div>
+                                {resultCard(d.pre, 'Baseline (Pre)')}
+                                {resultCard(d.fup, d.cohort === 'MDMA' ? 'Follow-up (FUP1 / E2)' : 'Follow-up (FUP2)', true)}
                               </div>
                             </div>
                           );
@@ -753,26 +765,26 @@ export default function MdmaPage() {
                   </ResponsiveContainer>
                 </div>
                 <div className="flex items-center justify-center gap-4 mt-1 text-[10px] text-slate-500 border-t border-slate-100 pt-2">
-                  <span><strong className="text-slate-900">***</strong> FDR &lt; 0.001</span>
-                  <span><strong className="text-slate-900">**</strong> FDR &lt; 0.01</span>
-                  <span><strong className="text-slate-900">*</strong> FDR &lt; 0.05</span>
+                  <span><strong className="text-slate-900">***</strong> nominal P &lt; 0.001</span>
+                  <span><strong className="text-slate-900">**</strong> nominal P &lt; 0.01</span>
+                  <span><strong className="text-slate-900">*</strong> nominal P &lt; 0.05</span>
                   <span><em className="text-slate-400">ns</em> not significant</span>
                   <span><strong>—</strong> unavailable (not non-significant)</span>
                 </div>
                 <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50">
                   <summary className="cursor-pointer px-3 py-2 text-xs font-semibold text-slate-700">Accessible cohort/timepoint data table</summary>
                   <div className="overflow-x-auto border-t border-slate-200">
-                    <table className="w-full min-w-[720px] text-left text-xs">
+                    <table className="w-full min-w-[980px] text-left text-xs">
                       <caption className="sr-only">Observed cohort and timepoint estimates for {selectedGene}</caption>
                       <thead className="bg-slate-100 text-slate-600">
                         <tr>
                           <th className="px-3 py-2">Cohort</th>
                           <th className="px-3 py-2">Baseline Δβ</th>
-                          <th className="px-3 py-2">Baseline direction</th>
-                          <th className="px-3 py-2">Baseline FDR</th>
+                          <th className="px-3 py-2">Baseline P / FDR</th>
+                          <th className="px-3 py-2">Baseline probes / pattern</th>
                           <th className="px-3 py-2">Follow-up Δβ</th>
-                          <th className="px-3 py-2">Follow-up direction</th>
-                          <th className="px-3 py-2">Follow-up FDR</th>
+                          <th className="px-3 py-2">Follow-up P / FDR</th>
+                          <th className="px-3 py-2">Follow-up probes / pattern</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -780,11 +792,11 @@ export default function MdmaPage() {
                           <tr key={entry.cohort} className="border-t border-slate-200">
                             <td className="px-3 py-2 font-semibold">{entry.cohort}</td>
                             <td className="px-3 py-2 font-mono">{entry.deltaBeta_Pre == null ? '—' : entry.deltaBeta_Pre.toFixed(4)}</td>
-                            <td className="px-3 py-2">{entry.direction_Pre ?? 'Unavailable'}</td>
-                            <td className="px-3 py-2 font-mono">{entry.fdr_Pre == null ? '—' : entry.fdr_Pre < 1e-15 ? '< 1e-15' : entry.fdr_Pre.toExponential(2)}</td>
+                            <td className="whitespace-nowrap px-3 py-2 font-mono">{entry.pre ? <>P {formatProbability(entry.pre.pValue)} {significanceLabel(entry.pre.pValue)}<br />FDR {formatProbability(entry.pre.fdr)}</> : '—'}</td>
+                            <td className="px-3 py-2">{entry.pre ? <>{entry.pre.nSigProbes}/{entry.pre.totalProbes} · {entry.pre.direction}<br /><span className="text-slate-500">+{entry.pre.nPosTop3} / −{entry.pre.nNegTop3}</span></> : 'Unavailable'}</td>
                             <td className="px-3 py-2 font-mono">{entry.deltaBeta_FUP == null ? '—' : entry.deltaBeta_FUP.toFixed(4)}</td>
-                            <td className="px-3 py-2">{entry.direction_FUP ?? 'Unavailable'}</td>
-                            <td className="px-3 py-2 font-mono">{entry.fdr_FUP == null ? '—' : entry.fdr_FUP < 1e-15 ? '< 1e-15' : entry.fdr_FUP.toExponential(2)}</td>
+                            <td className="whitespace-nowrap px-3 py-2 font-mono">{entry.fup ? <>P {formatProbability(entry.fup.pValue)} {significanceLabel(entry.fup.pValue)}<br />FDR {formatProbability(entry.fup.fdr)}</> : '—'}</td>
+                            <td className="px-3 py-2">{entry.fup ? <>{entry.fup.nSigProbes}/{entry.fup.totalProbes} · {entry.fup.direction}<br /><span className="text-slate-500">+{entry.fup.nPosTop3} / −{entry.fup.nNegTop3}</span></> : 'Unavailable'}</td>
                           </tr>
                         ))}
                       </tbody>

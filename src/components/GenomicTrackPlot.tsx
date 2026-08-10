@@ -410,15 +410,15 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             if (tick === 1.301) {
               ctx.fillStyle = P_05_COLOR;
               ctx.font = 'bold 9px Inter, system-ui, sans-serif';
-              ctx.fillText('P=.05', colLeft - 5, y + 3);
+              ctx.fillText('* P=.05', colLeft - 5, y + 3);
             } else if (tick === 2) {
               ctx.fillStyle = P_01_COLOR;
               ctx.font = 'bold 9px Inter, system-ui, sans-serif';
-              ctx.fillText('P=.01', colLeft - 5, y + 3);
+              ctx.fillText('** P=.01', colLeft - 5, y + 3);
             } else if (tick === 3) {
               ctx.fillStyle = P_001_COLOR;
               ctx.font = 'bold 9px Inter, system-ui, sans-serif';
-              ctx.fillText('P=.001', colLeft - 5, y + 3);
+              ctx.fillText('*** P=.001', colLeft - 5, y + 3);
             } else if (tick > 0) {
               ctx.fillStyle = '#94a3b8';
               ctx.fillText(tick.toFixed(0), colLeft - 5, y + 3);
@@ -634,15 +634,15 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           if (tick === 1.301) {
             ctx.fillStyle = P_05_COLOR;
             ctx.font = 'bold 10px Inter, system-ui, sans-serif';
-            ctx.fillText('P=.05', leftMargin1 - 10, y + 4);
+            ctx.fillText('* P=.05', leftMargin1 - 10, y + 4);
           } else if (tick === 2) {
             ctx.fillStyle = P_01_COLOR;
             ctx.font = 'bold 10px Inter, system-ui, sans-serif';
-            ctx.fillText('P=.01', leftMargin1 - 10, y + 4);
+            ctx.fillText('** P=.01', leftMargin1 - 10, y + 4);
           } else if (tick === 3) {
             ctx.fillStyle = P_001_COLOR;
             ctx.font = 'bold 10px Inter, system-ui, sans-serif';
-            ctx.fillText('P=.001', leftMargin1 - 10, y + 4);
+            ctx.fillText('*** P=.001', leftMargin1 - 10, y + 4);
           } else if (tick > 0) {
             ctx.fillStyle = '#94a3b8';
             ctx.fillText(tick.toFixed(0), leftMargin1 - 10, y + 4);
@@ -776,9 +776,9 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       { type: 'dot', color: HYPO_COLOR, label: 'Lower methylation (Δβ < 0)' },
       { type: 'dot', color: NEUTRAL_COLOR, label: 'Effect unavailable or zero' },
       { type: 'island', label: 'CpG Island Region' },
-      { type: 'dash', color: P_05_COLOR, label: 'Nominal P = 0.05' },
-      { type: 'dash', color: P_01_COLOR, label: 'Nominal P = 0.01' },
-      { type: 'dash', color: P_001_COLOR, label: 'Nominal P = 0.001' },
+      { type: 'dash', color: P_05_COLOR, label: '* P < 0.05' },
+      { type: 'dash', color: P_01_COLOR, label: '** P < 0.01' },
+      { type: 'dash', color: P_001_COLOR, label: '*** P < 0.001' },
     ];
     
     // Add present feature annotations to legend
@@ -1041,7 +1041,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           <table className="w-full whitespace-nowrap text-left text-xs">
             <caption className="sr-only">Available probe statistics for {geneData.gene} on {displayChr}</caption>
             <thead className="sticky top-0 bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Probe</th><th className="px-3 py-2">Position (bp)</th><th className="px-3 py-2">Feature</th><th className="px-3 py-2">Comparison</th><th className="px-3 py-2">Δβ</th><th className="px-3 py-2">Nominal P</th><th className="px-3 py-2">Threshold tier</th></tr></thead>
-            <tbody>{accessibleRows.map((row) => <tr key={`${row.probe}-${row.comparison}`} className="border-t border-slate-200"><td className="px-3 py-2 font-mono font-semibold">{row.probe}</td><td className="px-3 py-2 font-mono">{row.pos.toLocaleString()}</td><td className="px-3 py-2">{row.feature}</td><td className="px-3 py-2">{row.comparison}</td><td className="px-3 py-2 font-mono">{row.deltaBeta == null ? 'Unavailable' : `${row.deltaBeta > 0 ? '+' : ''}${row.deltaBeta.toFixed(4)}`}</td><td className="px-3 py-2 font-mono">{formatProbability(row.nominalP)}</td><td className="px-3 py-2">{row.nominalP == null ? 'Unavailable' : row.nominalP < 0.001 ? 'P < 0.001' : row.nominalP < 0.01 ? 'P < 0.01' : row.nominalP < 0.05 ? 'P < 0.05' : 'P ≥ 0.05'}</td></tr>)}</tbody>
+            <tbody>{accessibleRows.map((row) => <tr key={`${row.probe}-${row.comparison}`} className="border-t border-slate-200"><td className="px-3 py-2 font-mono font-semibold">{row.probe}</td><td className="px-3 py-2 font-mono">{row.pos.toLocaleString()}</td><td className="px-3 py-2">{row.feature}</td><td className="px-3 py-2">{row.comparison}</td><td className="px-3 py-2 font-mono">{row.deltaBeta == null ? 'Unavailable' : `${row.deltaBeta > 0 ? '+' : ''}${row.deltaBeta.toFixed(4)}`}</td><td className="px-3 py-2 font-mono">{formatProbability(row.nominalP)}</td><td className="px-3 py-2">{row.nominalP == null ? 'Unavailable' : row.nominalP < 0.001 ? '*** P < 0.001' : row.nominalP < 0.01 ? '** P < 0.01' : row.nominalP < 0.05 ? '* P < 0.05' : 'P ≥ 0.05'}</td></tr>)}</tbody>
           </table>
         </div>
       </details>

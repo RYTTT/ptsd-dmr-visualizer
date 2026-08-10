@@ -44,6 +44,17 @@ process. The browser requests compact, validated per-gene DTOs from
 `/api/data/genes`; probe shards are loaded on demand with concurrent-request
 deduplication and a bounded LRU cache.
 
+Treatment registry data is generated from the versioned cohort CSV exports:
+
+```bash
+npm run import:treatment -- /path/to/IPW_DMP_Analysis_2026_v2_CD4T_arrayWeights
+```
+
+The importer validates all expected source files, row counts, columns,
+probability/count bounds, duplicate genes, N8+ selection criteria, and exact
+agreement between selected rows and their TotalProbes8plus coverage rows before
+replacing `public/data/mdma/dmrData.json`.
+
 ## Scientific interpretation
 
 Read the versioned [scientific data dictionary and display methods](docs/scientific-data-dictionary-v1.md)

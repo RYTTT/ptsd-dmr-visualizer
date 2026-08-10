@@ -9,10 +9,10 @@ import type {
   SubtypeKey,
   SubtypeStat,
   TreatmentCohort,
-  TreatmentMeasurement,
+  TreatmentGeneContext,
+  TreatmentGeneResult,
   TreatmentTimepoint,
   UniqueDMR,
-  UniqueTreatmentGene,
 } from '../types/dmr.ts';
 import {
   SUBTYPE_KEYS,
@@ -175,30 +175,36 @@ export function validateMasterDMRData(value: unknown): MasterDMRData {
   return { crossSubtype, uniqueSubtypes, ptsdGenesList };
 }
 
-function parseTreatmentMeasurement(value: unknown, path: string): TreatmentMeasurement {
-  const item = record(value, path);
-  if (item.direction === 'N/A') {
-    return { deltaBeta: null, fdr: null, direction: null };
-  }
-  return {
-    deltaBeta: finite(item.deltaBeta, `${path}.deltaBeta`),
-    fdr: probability(item.fdr, `${path}.fdr`),
-    direction: direction(item.direction, `${path}.direction`),
-  };
-}
-
-function parseUniqueTreatmentGene(value: unknown, path: string): UniqueTreatmentGene {
+function parseTreatmentGeneResult(value: unknown, path: string): TreatmentGeneResult {
   const item = record(value, path);
   const totalProbes = count(item.totalProbes, `${path}.totalProbes`);
   const nSigProbes = count(item.nSigProbes, `${path}.nSigProbes`);
+  const nPosTop3 = count(item.nPosTop3, `${path}.nPosTop3`);
+  const nNegTop3 = count(item.nNegTop3, `${path}.nNegTop3`);
+  const avgPosDeltaBeta = optionalFinite(item.avgPosDeltaBeta, `${path}.avgPosDeltaBeta`) ?? null;
+  const avgNegDeltaBeta = optionalFinite(item.avgNegDeltaBeta, `${path}.avgNegDeltaBeta`) ?? null;
+  const deltaBeta = finite(item.deltaBeta, `${path}.deltaBeta`);
+  if (totalProbes < 8) fail(`${path}.totalProbes`, 'at least 8');
   if (nSigProbes > totalProbes) fail(`${path}.nSigProbes`, 'no greater than totalProbes');
+  if (nPosTop3 + nNegTop3 < 1 || nPosTop3 + nNegTop3 > 3) fail(path, 'consistent with one to three summarized probes');
+  if ((nPosTop3 === 0) !== (avgPosDeltaBeta === null)) fail(`${path}.avgPosDeltaBeta`, 'present exactly when nPosTop3 is positive');
+  if ((nNegTop3 === 0) !== (avgNegDeltaBeta === null)) fail(`${path}.avgNegDeltaBeta`, 'present exactly when nNegTop3 is positive');
+  const expectedDeltaBeta = (
+    nPosTop3 * (avgPosDeltaBeta ?? 0) + nNegTop3 * (avgNegDeltaBeta ?? 0)
+  ) / (nPosTop3 + nNegTop3);
+  if (Math.abs(deltaBeta - expectedDeltaBeta) > 1e-12) fail(`${path}.deltaBeta`, 'the count-weighted positive/negative Top-3 mean');
   return {
     gene: string(item.gene, `${path}.gene`),
     totalProbes,
     nSigProbes,
+    pValue: probability(item.pValue, `${path}.pValue`),
     fdr: probability(item.fdr, `${path}.fdr`),
-    deltaBeta: finite(item.deltaBeta, `${path}.deltaBeta`),
+    deltaBeta,
     direction: direction(item.direction, `${path}.direction`),
+    nPosTop3,
+    avgPosDeltaBeta,
+    nNegTop3,
+    avgNegDeltaBeta,
   };
 }
 
@@ -207,17 +213,6 @@ function parseCrossCohortGene(value: unknown, path: string): CrossCohortGene {
   const totalProbes = count(item.totalProbes, `${path}.totalProbes`);
   const nSigProbes = count(item.nSigProbes, `${path}.nSigProbes`);
   if (nSigProbes > totalProbes) fail(`${path}.nSigProbes`, 'no greater than totalProbes');
-  const cohortSource = record(item.cohorts, `${path}.cohorts`);
-  const cohorts = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => {
-    const cohortItem = record(cohortSource[cohort], `${path}.cohorts.${cohort}`);
-    return [cohort, {
-      pooled: parseTreatmentMeasurement(cohortItem, `${path}.cohorts.${cohort}.pooled`),
-      timepoints: Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => [
-        timepoint,
-        parseTreatmentMeasurement(cohortItem[timepoint], `${path}.cohorts.${cohort}.${timepoint}`),
-      ])) as Record<TreatmentTimepoint, TreatmentMeasurement>,
-    }];
-  })) as CrossCohortGene['cohorts'];
   return {
     gene: string(item.gene, `${path}.gene`),
     fdr: probability(item.fdr, `${path}.fdr`),
@@ -226,30 +221,71 @@ function parseCrossCohortGene(value: unknown, path: string): CrossCohortGene {
     direction: direction(item.direction, `${path}.direction`),
     totalProbes,
     nSigProbes,
-    cohorts,
   };
 }
 
-/** Validate and normalize treatment master JSON; N/A sentinels become null. */
+/** Validate treatment meta-analysis, cohort/timepoint selections, and context rows. */
 export function validateMdmaMasterData(value: unknown): MdmaMasterData {
   const source = record(value, 'treatment master data');
+  const metadataSource = record(source.metadata, 'metadata');
+  const parseSourceMatrix = (value: unknown, path: string) => {
+    const timepointSource = record(value, path);
+    return Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => {
+      const cohortSource = record(timepointSource[timepoint], `${path}.${timepoint}`);
+      return [timepoint, Object.fromEntries(TREATMENT_COHORTS.map((cohort) => [
+        cohort,
+        string(cohortSource[cohort], `${path}.${timepoint}.${cohort}`),
+      ]))];
+    })) as MdmaMasterData['metadata']['cohortSources'];
+  };
+  const generatedAt = string(metadataSource.generatedAt, 'metadata.generatedAt');
+  if (Number.isNaN(Date.parse(generatedAt))) fail('metadata.generatedAt', 'an ISO-compatible date-time');
+  const metadata = {
+    version: string(metadataSource.version, 'metadata.version'),
+    generatedAt,
+    selectionRule: string(metadataSource.selectionRule, 'metadata.selectionRule'),
+    coverageRule: string(metadataSource.coverageRule, 'metadata.coverageRule'),
+    pooledSource: string(metadataSource.pooledSource, 'metadata.pooledSource'),
+    cohortSources: parseSourceMatrix(metadataSource.cohortSources, 'metadata.cohortSources'),
+    coverageSources: parseSourceMatrix(metadataSource.coverageSources, 'metadata.coverageSources'),
+  };
   if (!Array.isArray(source.crossCohort)) fail('crossCohort', 'an array');
   const crossCohort = source.crossCohort.map((item, index) => parseCrossCohortGene(item, `crossCohort[${index}]`));
   assertUniqueGenes(crossCohort, 'crossCohort');
   const timepointSource = record(source.timepoints, 'timepoints');
   const timepoints = Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => {
     const timepointItem = record(timepointSource[timepoint], `timepoints.${timepoint}`);
-    const uniqueSource = record(timepointItem.uniqueCohorts, `timepoints.${timepoint}.uniqueCohorts`);
-    const uniqueCohorts = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => {
-      const items = uniqueSource[cohort];
-      if (!Array.isArray(items)) fail(`timepoints.${timepoint}.uniqueCohorts.${cohort}`, 'an array');
-      const parsed = items.map((item, index) => parseUniqueTreatmentGene(item, `timepoints.${timepoint}.uniqueCohorts.${cohort}[${index}]`));
-      assertUniqueGenes(parsed, `timepoints.${timepoint}.uniqueCohorts.${cohort}`);
+    const cohortSource = record(timepointItem.cohorts, `timepoints.${timepoint}.cohorts`);
+    const cohorts = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => {
+      const items = cohortSource[cohort];
+      if (!Array.isArray(items)) fail(`timepoints.${timepoint}.cohorts.${cohort}`, 'an array');
+      const parsed = items.map((item, index) => parseTreatmentGeneResult(item, `timepoints.${timepoint}.cohorts.${cohort}[${index}]`));
+      assertUniqueGenes(parsed, `timepoints.${timepoint}.cohorts.${cohort}`);
+      for (const result of parsed) {
+        if (result.nSigProbes < 8) fail(`timepoints.${timepoint}.cohorts.${cohort}.${result.gene}.nSigProbes`, 'at least 8 for an N8+ registry row');
+        if (result.fdr >= 0.05) fail(`timepoints.${timepoint}.cohorts.${cohort}.${result.gene}.fdr`, 'below 0.05 for an N8+ registry row');
+      }
       return [cohort, parsed];
-    })) as Record<TreatmentCohort, UniqueTreatmentGene[]>;
-    return [timepoint, { uniqueCohorts }];
+    })) as Record<TreatmentCohort, TreatmentGeneResult[]>;
+    return [timepoint, { cohorts }];
   })) as MdmaMasterData['timepoints'];
-  return { crossCohort, timepoints };
+
+  const contextSource = record(source.geneContexts, 'geneContexts');
+  const geneContexts = Object.fromEntries(Object.entries(contextSource).map(([gene, rawContext]) => {
+    const contextItem = record(rawContext, `geneContexts.${gene}`);
+    const parsedContext = Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => {
+      const rawTimepoint = record(contextItem[timepoint], `geneContexts.${gene}.${timepoint}`);
+      const parsedTimepoint = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => {
+        const rawResult = rawTimepoint[cohort];
+        const result = rawResult === null ? null : parseTreatmentGeneResult(rawResult, `geneContexts.${gene}.${timepoint}.${cohort}`);
+        if (result && result.gene.toUpperCase() !== gene.toUpperCase()) fail(`geneContexts.${gene}.${timepoint}.${cohort}.gene`, `equal to ${gene}`);
+        return [cohort, result];
+      })) as TreatmentGeneContext[TreatmentTimepoint];
+      return [timepoint, parsedTimepoint];
+    })) as TreatmentGeneContext;
+    return [gene, parsedContext];
+  })) as MdmaMasterData['geneContexts'];
+  return { metadata, crossCohort, timepoints, geneContexts };
 }
 
 /**
@@ -286,14 +322,14 @@ export function findTreatmentResult(
     const result = data.crossCohort.find((item) => item.gene === gene);
     return result ? { kind: 'pooled-cross-cohort', result } : null;
   }
-  const result = data.timepoints[timepoint].uniqueCohorts[context].find((item) => item.gene === gene);
+  const result = data.timepoints[timepoint].cohorts[context].find((item) => item.gene === gene);
   return result
-    ? { kind: 'timepoint-cohort-unique', timepoint, cohort: context, result }
+    ? { kind: 'timepoint-cohort', timepoint, cohort: context, result }
     : null;
 }
 
 export interface TreatmentViewDescriptor {
-  kind: 'pooled-cross-cohort' | 'timepoint-cohort-unique';
+  kind: 'pooled-cross-cohort' | 'timepoint-cohort';
   title: string;
   shortLabel: string;
   csvFilename: string;
@@ -311,12 +347,16 @@ export function treatmentViewDescriptor(
       csvFilename: 'Treatment_DMR_pooled_cross-cohort.csv',
     };
   }
-  const label = timepoint === 'Pre' ? 'Baseline (Pre)' : 'Follow-up (FUP)';
+  const label = timepoint === 'Pre'
+    ? 'Baseline (Pre)'
+    : context === 'MDMA'
+      ? 'Follow-up (FUP1 / E2)'
+      : 'Follow-up (FUP2)';
   return {
-    kind: 'timepoint-cohort-unique',
-    title: `${context}-unique DMR results · ${label}`,
+    kind: 'timepoint-cohort',
+    title: `${context} cohort DMR results · ${label}`,
     shortLabel: label,
-    csvFilename: `Treatment_DMR_${timepoint}_${context}_unique.csv`,
+    csvFilename: `Treatment_DMR_${timepoint}_${context}_N8plus.csv`,
   };
 }
 
@@ -330,4 +370,14 @@ export function csvCell(value: CsvValue): string {
 
 export function serializeCsv(rows: readonly (readonly CsvValue[])[]): string {
   return rows.map((row) => row.map(csvCell).join(',')).join('\r\n');
+}
+
+export type NominalPStars = '' | '*' | '**' | '***';
+
+/** Display-only nominal-P tiers. FDR values must never be passed here. */
+export function nominalPStars(pValue: number | null | undefined): NominalPStars {
+  if (pValue == null || !Number.isFinite(pValue) || pValue < 0 || pValue >= 0.05) return '';
+  if (pValue < 0.001) return '***';
+  if (pValue < 0.01) return '**';
+  return '*';
 }

@@ -52,17 +52,6 @@ export type TreatmentCohort = (typeof TREATMENT_COHORTS)[number];
 export const TREATMENT_TIMEPOINTS = ['Pre', 'FUP'] as const;
 export type TreatmentTimepoint = (typeof TREATMENT_TIMEPOINTS)[number];
 
-export interface TreatmentMeasurement {
-  deltaBeta: number | null;
-  fdr: number | null;
-  direction: Direction | null;
-}
-
-export interface TreatmentCohortResult {
-  pooled: TreatmentMeasurement;
-  timepoints: Record<TreatmentTimepoint, TreatmentMeasurement>;
-}
-
 export interface CrossCohortGene {
   gene: string;
   fdr: number;
@@ -71,32 +60,53 @@ export interface CrossCohortGene {
   direction: Direction;
   totalProbes: number;
   nSigProbes: number;
-  cohorts: Record<TreatmentCohort, TreatmentCohortResult>;
 }
 
-export interface UniqueTreatmentGene {
+export interface TreatmentGeneResult {
   gene: string;
   totalProbes: number;
   nSigProbes: number;
+  pValue: number;
   fdr: number;
   deltaBeta: number;
   direction: Direction;
+  nPosTop3: number;
+  avgPosDeltaBeta: number | null;
+  nNegTop3: number;
+  avgNegDeltaBeta: number | null;
 }
 
 export interface TreatmentTimepointData {
-  uniqueCohorts: Record<TreatmentCohort, UniqueTreatmentGene[]>;
+  cohorts: Record<TreatmentCohort, TreatmentGeneResult[]>;
+}
+
+export type TreatmentGeneContext = Record<
+  TreatmentTimepoint,
+  Record<TreatmentCohort, TreatmentGeneResult | null>
+>;
+
+export interface TreatmentDatasetMetadata {
+  version: string;
+  generatedAt: string;
+  selectionRule: string;
+  coverageRule: string;
+  pooledSource: string;
+  cohortSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>>;
+  coverageSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>>;
 }
 
 export interface MdmaMasterData {
+  metadata: TreatmentDatasetMetadata;
   crossCohort: CrossCohortGene[];
   timepoints: Record<TreatmentTimepoint, TreatmentTimepointData>;
+  geneContexts: Record<string, TreatmentGeneContext>;
 }
 
 export type SelectedTreatmentResult =
   | { kind: 'pooled-cross-cohort'; result: CrossCohortGene }
   | {
-      kind: 'timepoint-cohort-unique';
+      kind: 'timepoint-cohort';
       timepoint: TreatmentTimepoint;
       cohort: TreatmentCohort;
-      result: UniqueTreatmentGene;
+      result: TreatmentGeneResult;
     };

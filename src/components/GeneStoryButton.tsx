@@ -140,12 +140,16 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
         );
       } else if (result.kind === 'pooled-cross-cohort') {
         paragraphs.push(
-          `The active treatment result is the pooled cross-cohort analysis: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, FDR ${formatProbability(result.result.fdr)}. This pooled result has no Baseline or Follow-up scope and does not imply that every cohort or timepoint is individually significant.`
+          `The active treatment result is the pooled cross-cohort analysis: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, nominal P ${formatProbability(result.result.pValue)}, and reported FDR ${formatProbability(result.result.fdr)}. This pooled result has no Baseline or Follow-up scope and does not imply that every cohort or timepoint is individually significant.`
         );
       } else {
-        const timepointLabel = result.timepoint === 'Pre' ? 'Baseline' : 'Follow-up';
+        const timepointLabel = result.timepoint === 'Pre'
+          ? 'Baseline (Pre)'
+          : result.cohort === 'MDMA'
+            ? 'Follow-up (FUP1 / E2)'
+            : 'Follow-up (FUP2)';
         paragraphs.push(
-          `The active treatment result is unique to ${result.cohort} at ${timepointLabel}: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, FDR ${formatProbability(result.result.fdr)}. It should not be generalized to the other cohorts or to the pooled cross-cohort result.`
+          `The active treatment result is from the ${result.cohort} N8+ registry at ${timepointLabel}: weighted Top-3 Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, nominal Fisher P ${formatProbability(result.result.pValue)}, reported FDR ${formatProbability(result.result.fdr)}, and ${result.result.nSigProbes} of ${result.result.totalProbes} mapped probes with P < 0.05. This is cohort/timepoint-specific and should not be generalized to the other cohorts or to the pooled cross-cohort result.`
         );
       }
     }
