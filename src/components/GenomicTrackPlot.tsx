@@ -12,9 +12,10 @@ const SUBTYPE_CONFIG: Record<string, { label: string; color: string; bg: string 
   ADS: { label: 'ADS vs control', color: '#1d4ed8', bg: '#eff6ff' },
   ICF: { label: 'ICF vs control', color: '#6d28d9', bg: '#f5f3ff' },
   ISS: { label: 'ISS vs control', color: '#047857', bg: '#ecfdf5' },
-  MDMA: { label: 'MDMA-AT — Responder vs HC', color: '#7c3aed', bg: '#f5f3ff' },
-  Ketamine: { label: 'Ketamine — Resp vs NonResp', color: '#0891b2', bg: '#ecfeff' },
-  CPT: { label: 'CPT — Resp vs NonResp', color: '#059669', bg: '#ecfdf5' },
+  Meta: { label: 'Combined probe meta-analysis', color: '#0f172a', bg: '#f8fafc' },
+  MDMA: { label: 'MDMA component — non-visit-specific', color: '#7c3aed', bg: '#f5f3ff' },
+  Ketamine: { label: 'Ketamine component — non-visit-specific', color: '#0891b2', bg: '#ecfeff' },
+  CPT: { label: 'CPT component — non-visit-specific', color: '#059669', bg: '#ecfdf5' },
   MDMA_Pre: { label: 'MDMA — Baseline', color: '#7c3aed', bg: '#f5f3ff' },
   MDMA_FUP: { label: 'MDMA — Follow-Up', color: '#7c3aed', bg: '#ede9fe' },
   Ketamine_Pre: { label: 'Ketamine — Baseline', color: '#0891b2', bg: '#ecfeff' },
@@ -97,17 +98,17 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const [dimensions, setDimensions] = useState({ width: 900, height: 0 });
 
-  // ---- Auto-detect subtypes from probe data ----
+  // ---- Auto-detect analyses from every retained probe ----
   const SUBTYPES = useMemo(() => {
     if (!geneData.probes.length) return [];
-    const firstProbe = geneData.probes[0];
-    const keys = Object.keys(firstProbe);
     const detected = new Set<string>();
-    for (const k of keys) {
-      const m = k.match(/^(.+)_P$/);
-      if (m && m[1] !== 'adj') detected.add(m[1]);
+    for (const probe of geneData.probes) {
+      for (const key of Object.keys(probe)) {
+        const match = key.match(/^(.+)_P$/u);
+        if (match && match[1] !== 'adj') detected.add(match[1]);
+      }
     }
-    const order = ['SSS', 'ADS', 'ICF', 'ISS', 'MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'MDMA', 'Ketamine', 'CPT'];
+    const order = ['SSS', 'ADS', 'ICF', 'ISS', 'MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'Meta', 'MDMA', 'Ketamine', 'CPT'];
     const result: { key: string; label: string; color: string; bg: string }[] = [];
     for (const k of order) {
       if (detected.has(k) && SUBTYPE_CONFIG[k]) {
@@ -126,6 +127,10 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
   const isGrid = useMemo(() => {
     return SUBTYPES.some((s) => s.key.includes('_Pre') || s.key.includes('_FUP'));
   }, [SUBTYPES]);
+  const isPtsdSubtypeFigure = useMemo(
+    () => SUBTYPES.some((subtype) => ['SSS', 'ADS', 'ICF', 'ISS'].includes(subtype.key)),
+    [SUBTYPES],
+  );
 
   // ---- DIMENSIONS ----
   const panelHeight = 175;
@@ -178,7 +183,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
       const nominalP = probe[`${subtype.key}_P`];
       const numericDeltaBeta = typeof deltaBeta === 'number' ? deltaBeta : null;
       const numericP = isProbability(nominalP) ? nominalP : null;
-      if (numericDeltaBeta == null && numericP == null) return [];
+      if (numericP == null) return [];
       return [{ probe: probe.probe, pos: probe.pos, feature: probe.feature || 'Unannotated', comparison: subtype.label, deltaBeta: numericDeltaBeta, nominalP: numericP }];
     }));
   }, [geneData.probes, SUBTYPES]);
@@ -254,7 +259,9 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.font = 'bold 16px Inter, system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(
-      `${geneData.gene} — CpG probe nominal P`,
+      geneData.probeDataset
+        ? `${geneData.gene} — full common-probe statistics`
+        : `${geneData.gene} — CpG probe nominal P`,
       effectiveWidth / 2,
       24
     );
@@ -963,13 +970,19 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
 
   return (
     <div ref={containerRef} className="relative w-full overflow-x-auto">
-      {accessibleRows.length === 0 && <p role="status" className="mb-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-center text-xs text-slate-500">No probe-level statistics are available for this gene in the configured comparisons. Manifest probe annotations may still be shown.</p>}
+      {geneData.probeDataset && (
+        <div className="mb-3 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-xs leading-relaxed text-violet-950">
+          <strong>Full common-probe dataset; no P-value filtering.</strong>{' '}
+          The panels come from a non-visit-specific three-cohort treatment-response probe meta-analysis; they are not Baseline or Follow-up estimates.
+        </div>
+      )}
+      {accessibleRows.length === 0 && <p role="status" className="mb-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-center text-xs text-slate-500">No probe-level statistics are available for this gene in the configured comparisons. No value has been imputed.</p>}
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: totalHeight }}
         className="rounded-lg cursor-crosshair border border-slate-200 shadow-sm"
         role="img"
-        aria-label={`${geneData.gene} probe track on ${displayChr}. Vertical axis is negative log10 uncorrected probe-level P value, with thresholds at P less than 0.05, 0.01, and 0.001; point color gives methylation-effect direction. Exact values are available in the table following the chart.`}
+        aria-label={`${geneData.gene} ${geneData.probeDataset ? 'full common-probe' : 'probe'} track on ${displayChr}. Vertical axis is negative log10 uncorrected probe-level P value, with thresholds at P less than 0.05, 0.01, and 0.001; point color gives methylation-effect direction. Exact values are available in the table following the chart.`}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setTooltip(null)}
       />
@@ -1047,8 +1060,8 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           </table>
         </div>
       </details>
-      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">The probe figure uses uncorrected P values. Thresholds at P &lt; 0.05, P &lt; 0.01, and P &lt; 0.001 are descriptive and do not control the high-throughput multiple-testing error rate. Interpret them with Δβ and independent validation. Missing statistics are not converted to zero or “not significant”; confidence intervals and standard errors are not present in the probe dataset.</p>
-      {!isGrid && <p className="mt-1 text-[10px] font-medium text-slate-600">Subtype and control-group definitions were not supplied with these result files. Confirm SSS, ADS, ICF, and ISS definitions against the study protocol before interpretation.</p>}
+      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">{geneData.probeDataset ? 'The full common-probe figure uses uncorrected P values without a display filter.' : 'The probe figure uses uncorrected P values.'} Thresholds at P &lt; 0.05, P &lt; 0.01, and P &lt; 0.001 are descriptive and do not control the high-throughput multiple-testing error rate. Interpret them with Δβ and independent validation. Missing statistics are not converted to zero or “not significant”; confidence intervals and standard errors are not present in the probe dataset.</p>
+      {isPtsdSubtypeFigure && <p className="mt-1 text-[10px] font-medium text-slate-600">Subtype and control-group definitions were not supplied with these result files. Confirm SSS, ADS, ICF, and ISS definitions against the study protocol before interpretation.</p>}
       {hasClippedP && <p className="mt-1 text-[10px] font-medium text-slate-600">Nominal P values below 1×10⁻⁸ are plotted at the fixed upper boundary (−log₁₀P = 8) so the three reference thresholds remain legible. Exact P values remain available in the tooltip and table.</p>}
       {hasZeroP && <p className="mt-1 text-[10px] font-medium text-amber-800">One or more stored nominal P values equal numeric zero (underflow/rounding). They are reported as zero in the table and plotted at the upper display boundary, not interpreted as literally zero probability.</p>}
     </div>

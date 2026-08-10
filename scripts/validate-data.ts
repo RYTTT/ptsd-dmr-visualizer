@@ -26,9 +26,10 @@ async function validateProbeDirectory(relativeDirectory: string): Promise<number
 
 validateMasterDMRData(await json(new URL('dmrData.json', publicData)));
 validateMdmaMasterData(await json(new URL('mdma/dmrData.json', publicData)));
-const [ptsdProbeFiles, treatmentProbeFiles] = await Promise.all([
+const [ptsdProbeFiles, legacyTreatmentProbeFiles, treatmentCommonProbeFiles] = await Promise.all([
   validateProbeDirectory('probes/'),
   validateProbeDirectory('mdma/probes/'),
+  validateProbeDirectory('mdma/treatment-probes/pooled/'),
 ]);
 
-console.log(`Validated both master datasets and ${ptsdProbeFiles + treatmentProbeFiles} probe shards.`);
+console.log(`Validated both master datasets and ${ptsdProbeFiles + legacyTreatmentProbeFiles + treatmentCommonProbeFiles} probe shards, including ${treatmentCommonProbeFiles} full Treatment common-probe shards.`);

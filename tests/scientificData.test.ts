@@ -159,4 +159,15 @@ test('master and probe runtime validators accept shipped data and reject identit
   assert.equal(isGeneProbeData(probe, 'NOT_AHRR'), false);
   const wrongCount = { ...probe, totalProbes: (probe.totalProbes as number) + 1 };
   assert.equal(isGeneProbeData(wrongCount, 'AHRR'), false);
+
+  const treatmentProbe = readJson('../public/data/mdma/treatment-probes/pooled/BDNF.json') as Record<string, unknown>;
+  assert.equal(isGeneProbeData(treatmentProbe, 'BDNF'), true);
+  assert.deepEqual(treatmentProbe.probeDataset, {
+    scope: 'pooled-cross-cohort',
+    comparison: 'Three-cohort treatment-response probe meta-analysis',
+    selectionRule: 'All common three-cohort probe rows for this gene',
+    sourceFile: 'Common_Probes_3Cohorts_Full_Statistics.csv',
+  });
+  assert.ok((treatmentProbe.probes as unknown[]).length > 0);
+  assert.ok((treatmentProbe.probes as unknown[]).length <= (treatmentProbe.totalProbes as number));
 });

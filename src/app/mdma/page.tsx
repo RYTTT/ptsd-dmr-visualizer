@@ -25,10 +25,12 @@ import type {
 import { TREATMENT_COHORTS, TREATMENT_TIMEPOINTS } from '@/types/dmr';
 import {
   getGeneMetadata,
+  loadTreatmentProbeData,
   loadGenesMetadata,
   readJsonResponse,
   SessionExpiredError,
 } from '@/lib/commonDatabase';
+import type { GeneProbeData } from '@/types/probe';
 import {
   findTreatmentResult,
   nominalPStars,
@@ -39,6 +41,7 @@ import {
 
 import { KeyResultsPanel, MDMA_KEY_GENES, EpicManifestEntry } from '@/components/KeyResultsPanel';
 import { GeneStoryButton } from '@/components/GeneStoryButton';
+import { GenomicTrackPlot } from '@/components/GenomicTrackPlot';
 
 interface MdmaTableRow {
   gene: string;
@@ -122,6 +125,9 @@ export default function MdmaPage() {
   const [sortField, setSortField] = useState<keyof MdmaTableRow>('pValue');
   const [sortAsc, setSortAsc] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [probeData, setProbeData] = useState<GeneProbeData | null>(null);
+  const [probeLoading, setProbeLoading] = useState(false);
+  const [probeLoadError, setProbeLoadError] = useState<string | null>(null);
   const pageSize = 50;
 
   // EPIC manifest for dynamic stats
@@ -215,6 +221,35 @@ export default function MdmaPage() {
       });
     return () => { cancelled = true; };
   }, [selectedGene, annotationData]);
+
+  useEffect(() => {
+    if (!selectedGene) return;
+    let cancelled = false;
+    void Promise.resolve().then(() => {
+      if (cancelled) return;
+      setProbeData(null);
+      setProbeLoadError(null);
+      setProbeLoading(true);
+    });
+    loadTreatmentProbeData(selectedGene)
+      .then((value) => {
+        if (cancelled) return;
+        setProbeData(value);
+        if (!value) setProbeLoadError(`No common-probe source shard was found for ${selectedGene}.`);
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        if (error instanceof SessionExpiredError) {
+          setLoadError({ kind: 'session-expired', message: error.message });
+        } else {
+          setProbeLoadError(error instanceof Error ? error.message : 'Failed to load treatment probe data');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setProbeLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [selectedGene]);
 
 
   // ---- Normalize rows to a common shape ----
@@ -714,6 +749,18 @@ export default function MdmaPage() {
                     );
                   })}
                 </dl>
+              </section>
+            )}
+
+            {selectedGene && (
+              <section className="rounded-xl border border-slate-300 bg-white p-4 shadow-xs" aria-labelledby="treatment-probe-title">
+                <div className="mb-3">
+                  <h3 id="treatment-probe-title" className="text-sm font-bold text-slate-900">Treatment probe-level results — {selectedGene}</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-600">All common probes available in <span className="font-mono">Common_Probes_3Cohorts_Full_Statistics.csv</span> are shown. This is a non-visit-specific three-cohort probe meta-analysis and must not be interpreted as the active Baseline or Follow-up registry result.</p>
+                </div>
+                {probeLoading && <div role="status" className="flex min-h-40 items-center justify-center gap-2 text-sm text-slate-500"><Loader2 className="h-4 w-4 animate-spin" /> Loading full common-probe statistics…</div>}
+                {!probeLoading && probeLoadError && <div role="alert" className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-950">{probeLoadError} No values were estimated or substituted by this application.</div>}
+                {!probeLoading && probeData && <GenomicTrackPlot geneData={probeData} />}
               </section>
             )}
 

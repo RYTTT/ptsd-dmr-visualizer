@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "import:ptsd": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-ptsd-data.ts",
     "import:treatment": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-treatment-data.ts",
+    "import:treatment-probes": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-treatment-probes.ts",
     "validate:data": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-data.ts",
     "sync:cross-project": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/sync-cross-project-genes.ts",
     "validate:cross-project": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/sync-cross-project-genes.ts --check"

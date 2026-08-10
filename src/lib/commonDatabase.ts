@@ -1,5 +1,5 @@
 import type { GeneMetadata } from '@/types/annotation';
-import type { GeneProbeData, ProbeEntry } from '@/types/probe';
+import type { GeneProbeData, ProbeDatasetMetadata, ProbeEntry } from '@/types/probe';
 
 type Project = 'ptsd' | 'mdma';
 
@@ -148,7 +148,21 @@ function isProbeEntry(value: unknown): value is ProbeEntry {
   });
 }
 
+function isProbeDatasetMetadata(value: unknown): value is ProbeDatasetMetadata {
+  if (
+    !isRecord(value) ||
+    typeof value.sourceFile !== 'string' ||
+    value.sourceFile.trim() === ''
+  ) return false;
+  return (
+    value.scope === 'pooled-cross-cohort' &&
+    value.comparison === 'Three-cohort treatment-response probe meta-analysis' &&
+    value.selectionRule === 'All common three-cohort probe rows for this gene'
+  );
+}
+
 export function isGeneProbeData(value: unknown, requestedGene: string): value is GeneProbeData {
+  const probeDataset = isRecord(value) ? value.probeDataset : undefined;
   if (
     !isRecord(value) ||
     typeof value.gene !== 'string' ||
@@ -158,7 +172,8 @@ export function isGeneProbeData(value: unknown, requestedGene: string): value is
     !Number.isSafeInteger(value.totalProbes) ||
     (value.totalProbes as number) < 0 ||
     !Array.isArray(value.probes) ||
-    value.probes.length !== value.totalProbes ||
+    (probeDataset === undefined ? value.probes.length !== value.totalProbes : value.probes.length > (value.totalProbes as number)) ||
+    (probeDataset !== undefined && !isProbeDatasetMetadata(probeDataset)) ||
     !value.probes.every(isProbeEntry) ||
     !Array.isArray(value.cpgIslands)
   ) return false;
@@ -213,6 +228,40 @@ export async function loadProbeData(project: Project, gene: string): Promise<Gen
       if (response.status === 404) return null;
       const value = await readJsonResponse(response, 'Failed to load probe data');
       if (!isGeneProbeData(value, trimmedGene)) throw new Error(`Invalid probe data returned for ${trimmedGene}`);
+      return value;
+    })
+    .then((value) => {
+      setProbeCache(key, value);
+      return value;
+    })
+    .finally(() => probeRequests.delete(key));
+
+  probeRequests.set(key, request);
+  return request;
+}
+
+/** Loads the full common-probe statistics from the non-visit-specific treatment meta-analysis. */
+export async function loadTreatmentProbeData(gene: string): Promise<GeneProbeData | null> {
+  const trimmedGene = gene.trim();
+  const normalizedGene = normalizeGene(trimmedGene);
+  const key = `treatment-probes:pooled:${normalizedGene}`;
+  if (probeCache.has(key)) {
+    const cached = probeCache.get(key) ?? null;
+    setProbeCache(key, cached);
+    return cached;
+  }
+  const pending = probeRequests.get(key);
+  if (pending) return pending;
+
+  const directory = '/data/mdma/treatment-probes/pooled';
+  const request = fetch(`${directory}/${encodeURIComponent(trimmedGene)}.json`, {
+    headers: { Accept: 'application/json' },
+    credentials: 'same-origin',
+  })
+    .then(async (response) => {
+      if (response.status === 404) return null;
+      const value = await readJsonResponse(response, 'Failed to load treatment probe data');
+      if (!isGeneProbeData(value, trimmedGene)) throw new Error(`Invalid treatment probe data returned for ${trimmedGene}`);
       return value;
     })
     .then((value) => {
