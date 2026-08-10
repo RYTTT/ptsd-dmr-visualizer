@@ -35,9 +35,10 @@ interface VolcanoProps {
   data: VolcanoItem[];
   onSelectGene: (gene: string) => void;
   selectedGene: string | null;
+  analysisLabel: string;
+  pDefinition: string;
 }
 
-const MAX_POINTS = 500;
 const MAX_NEG_LOG_P = 8;
 
 function probabilityScore(value: number): number {
@@ -50,7 +51,7 @@ function formatProbability(value: number): string {
   return value < 0.001 ? value.toExponential(2) : value.toFixed(3);
 }
 
-function VolcanoTooltip({ active, payload }: TooltipContentProps) {
+function VolcanoTooltip({ active, payload, pDefinition }: TooltipContentProps & { pDefinition: string }) {
   if (!active || !payload.length) return null;
   const item = payload[0].payload as PlottedVolcanoItem;
   const stars = nominalPStars(item.pValue);
@@ -62,14 +63,17 @@ function VolcanoTooltip({ active, payload }: TooltipContentProps) {
       </div>
       <div className="flex justify-between gap-4"><span className="text-slate-500">Chromosome</span><span className="font-mono text-slate-800">{item.chr}</span></div>
       <div className="flex justify-between gap-4"><span className="text-slate-500">{item.effectDefinition}</span><span className="font-mono font-bold text-slate-900">{item.deltaBeta > 0 ? '+' : ''}{item.deltaBeta.toFixed(4)}</span></div>
-      <div className="flex justify-between gap-4"><span className="text-slate-500">Nominal DMR P</span><span className="font-mono text-slate-800">{formatProbability(item.pValue)} {stars}</span></div>
+      <div className="flex justify-between gap-4"><span className="text-slate-500">{pDefinition}</span><span className="font-mono text-slate-800">{formatProbability(item.pValue)} {stars}</span></div>
       <div className="flex justify-between gap-4"><span className="text-slate-500">DMR tested probes</span><span className="font-mono text-slate-800">{item.totalProbes}</span></div>
       {item.direction === 'Mixed' && <p className="rounded border border-amber-200 bg-amber-50 p-1.5 text-[10px] text-amber-900">Opposing selected-probe directions can partially cancel in the signed mean; inspect the subtype and probe-level views before interpreting direction.</p>}
     </div>
   );
 }
 
-export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, selectedGene }) => {
+export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, selectedGene, analysisLabel, pDefinition }) => {
+  const id = React.useId().replace(/:/gu, '');
+  const titleId = `dmr-volcano-title-${id}`;
+  const noteId = `dmr-volcano-note-${id}`;
   const { concordantData, mixedData } = React.useMemo(() => {
     const sorted = data
       .filter((item): item is VolcanoItem & { pValue: number } => (
@@ -80,7 +84,6 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, sel
         item.pValue <= 1
       ))
       .sort((a, b) => a.pValue - b.pValue)
-      .slice(0, MAX_POINTS)
       .map((item): PlottedVolcanoItem => ({ ...item, negLogP: probabilityScore(item.pValue) }));
     return {
       concordantData: sorted.filter((item) => item.direction !== 'Mixed'),
@@ -122,11 +125,11 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, sel
     <div className="mb-4 rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
       <div className="mb-3 flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
         <div>
-          <h3 id="dmr-volcano-title" className="flex flex-wrap items-center gap-2 text-sm font-bold text-slate-900">
-            <span>DMR effect–significance plot</span>
+          <h3 id={titleId} className="flex flex-wrap items-center gap-2 text-sm font-bold text-slate-900">
+            <span>DMR effect–significance — {analysisLabel}</span>
             <span className="text-xs font-normal text-slate-500">({effectAxisLabel} vs −log₁₀ nominal P)</span>
           </h3>
-          <p className="text-xs text-slate-500">Showing {nTotal.toLocaleString()} of {data.length.toLocaleString()} DMRs, ranked by lowest nominal P. Select a point for details.</p>
+          <p className="text-xs text-slate-500">Showing all {nTotal.toLocaleString()} DMRs with a valid matched effect and P value. Select a point for details.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-xs">
           <div className="flex items-center space-x-1.5"><span className="inline-block h-2.5 w-2.5 rounded-full bg-red-600" /><span className="font-medium text-slate-600">Hyper (Δβ &gt; 0)</span></div>
@@ -135,13 +138,13 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, sel
         </div>
       </div>
 
-      <div className="h-80 min-h-72 w-full" role="img" aria-labelledby="dmr-volcano-title" aria-describedby="dmr-volcano-note">
+      <div className="h-80 min-h-72 w-full" role="img" aria-labelledby={titleId} aria-describedby={noteId}>
         <ResponsiveContainer width="100%" height="100%">
           <ScatterChart accessibilityLayer margin={{ top: 10, right: 32, bottom: 28, left: 12 }}>
             <XAxis type="number" dataKey="deltaBeta" name={effectAxisLabel} stroke="#64748b" fontSize={11} tickFormatter={(value: number) => value.toFixed(2)} domain={[-maxAbsoluteDeltaBeta, maxAbsoluteDeltaBeta]} label={{ value: effectAxisLabel, position: 'bottom', offset: 0, fill: '#475569', fontSize: 11 }} />
             <YAxis type="number" dataKey="negLogP" name="−log₁₀ nominal P" stroke="#64748b" fontSize={11} domain={[0, MAX_NEG_LOG_P]} label={{ value: '−log₁₀(nominal P)', angle: -90, position: 'insideLeft', fill: '#475569', fontSize: 11 }} />
             <ZAxis type="number" range={[40, 40]} />
-            <Tooltip content={VolcanoTooltip} />
+            <Tooltip content={(props) => <VolcanoTooltip {...props} pDefinition={pDefinition} />} />
             <ReferenceLine x={0} stroke="#cbd5e1" strokeDasharray="3 3" />
             <ReferenceLine y={-Math.log10(0.05)} stroke="#475569" strokeWidth={1.2} strokeDasharray="6 4" label={{ value: '*', position: 'insideRight', fill: '#475569', fontWeight: 700 }} />
             <ReferenceLine y={2} stroke="#7c3aed" strokeWidth={1.2} strokeDasharray="4 4" label={{ value: '**', position: 'insideRight', fill: '#7c3aed', fontWeight: 700 }} />
@@ -152,7 +155,7 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, sel
         </ResponsiveContainer>
       </div>
 
-      <div id="dmr-volcano-note" className="mt-2 flex flex-wrap items-center justify-center gap-4 border-t border-slate-100 pt-2 text-[10px] text-slate-600">
+      <div id={noteId} className="mt-2 flex flex-wrap items-center justify-center gap-4 border-t border-slate-100 pt-2 text-[10px] text-slate-600">
         <span><strong>*</strong> P &lt; 0.05</span><span><strong>**</strong> P &lt; 0.01</span><span><strong>***</strong> P &lt; 0.001</span><span>Nominal, uncorrected P values</span>
       </div>
       {nMixed > 0 && <p className="mt-2 rounded border border-amber-200 bg-amber-50/60 px-3 py-1.5 text-[10px] text-amber-900"><strong>◆ Mixed:</strong> opposing top-three probe directions can cancel in the mean. Significance stars use nominal P only; the plot does not show confidence intervals.</p>}
@@ -160,8 +163,8 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, sel
         <summary className="cursor-pointer px-3 py-2 text-xs font-semibold text-slate-700">Accessible plotted-data table ({nTotal.toLocaleString()} DMRs)</summary>
         <div className="max-h-80 overflow-auto border-t border-slate-200">
           <table className="w-full text-left text-xs">
-            <caption className="sr-only">DMRs plotted by {effectAxisLabel} and nominal P value</caption>
-            <thead className="sticky top-0 bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Gene</th><th className="px-3 py-2">Chromosome</th><th className="px-3 py-2">{effectAxisLabel}</th><th className="px-3 py-2">Direction</th><th className="px-3 py-2">Nominal DMR P</th><th className="px-3 py-2">Stars</th><th className="px-3 py-2"><span className="sr-only">Action</span></th></tr></thead>
+            <caption className="sr-only">{analysisLabel} DMRs plotted by {effectAxisLabel} and {pDefinition}</caption>
+            <thead className="sticky top-0 bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Gene</th><th className="px-3 py-2">Chromosome</th><th className="px-3 py-2">{effectAxisLabel}</th><th className="px-3 py-2">Direction</th><th className="px-3 py-2">{pDefinition}</th><th className="px-3 py-2">Stars</th><th className="px-3 py-2"><span className="sr-only">Action</span></th></tr></thead>
             <tbody>{plottedData.map((item) => <tr key={`${item.gene}-${item.chr}`} className="border-t border-slate-200"><td className="px-3 py-2 font-semibold">{item.gene}</td><td className="px-3 py-2 font-mono">{item.chr}</td><td className="px-3 py-2 font-mono">{item.deltaBeta.toFixed(4)}</td><td className="px-3 py-2">{item.direction}</td><td className="px-3 py-2 font-mono">{formatProbability(item.pValue)}</td><td className="px-3 py-2 font-bold">{nominalPStars(item.pValue) || '—'}</td><td className="px-3 py-2"><button type="button" onClick={() => onSelectGene(item.gene)} className="rounded border border-slate-300 bg-white px-2 py-1 font-semibold text-slate-700 hover:bg-slate-100">Select</button></td></tr>)}</tbody>
           </table>
         </div>

@@ -242,7 +242,7 @@ export default function Home() {
         fdr: item.fdr,
         pValue: item.pValue,
         deltaBeta: item.deltaBeta,
-        effectDefinition: `${activeTab} mean selected-probe Δβ`,
+        effectDefinition: `${activeTab} Delta_Beta_Top3`,
         direction: item.direction,
         rawItem: { kind: 'subtype-unique', subtype: activeTab, result: item },
       }));
@@ -269,6 +269,36 @@ export default function Home() {
     });
     return list;
   }, [masterData, activeTab, searchQuery, ptsdOnly, directionFilter, sortField, sortAsc]);
+
+  const volcanoPanels = useMemo(() => {
+    if (activeTab !== 'cross') {
+      return [{
+        key: activeTab,
+        analysisLabel: `${activeTab}-selected genes — ${activeTab} statistics`,
+        pDefinition: `${activeTab} P_Top3`,
+        data: filteredData,
+      }];
+    }
+    return SUBTYPE_KEYS.map((subtype) => ({
+      key: subtype,
+      analysisLabel: `${subtype} estimates among cross-subtype-selected genes`,
+      pDefinition: `${subtype} P_Top3`,
+      data: filteredData.flatMap((row) => {
+        if (row.rawItem.kind !== 'cross-subtype') return [];
+        const stat = row.rawItem.result.subtypes[subtype];
+        return [{
+          gene: row.gene,
+          chr: row.chr,
+          totalProbes: row.totalProbes,
+          isPtsd: row.isPtsd,
+          pValue: stat.pValue,
+          deltaBeta: stat.deltaBeta,
+          effectDefinition: `${subtype} Delta_Beta_Top3`,
+          direction: stat.direction,
+        }];
+      }),
+    }));
+  }, [activeTab, filteredData]);
 
   // ---- Selected gene details ----
   const selectedResult = useMemo(() => {
@@ -518,12 +548,24 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ===== OVERVIEW: Volcano + Pathway panels, collapsible above the table ===== */}
-        <DmrVolcanoPlot
-          data={filteredData}
-          onSelectGene={selectGeneInAnalysis}
-          selectedGene={selectedGene}
-        />
+        {/* ===== OVERVIEW: matched effect/P plots + pathway panel ===== */}
+        {activeTab === 'cross' && (
+          <div className="mb-4 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-xs leading-relaxed text-blue-950">
+            <strong>Why four plots?</strong>{' '}The source supplies a combined cross-subtype P value but no corresponding combined Δβ. Each panel therefore pairs one subtype&apos;s own <span className="font-mono">Delta_Beta_Top3</span> with that same subtype&apos;s <span className="font-mono">P_Top3</span>. The previous display-only arithmetic mean is not used in these plots.
+          </div>
+        )}
+        <div className={activeTab === 'cross' ? 'grid grid-cols-1 gap-4 xl:grid-cols-2' : ''}>
+          {volcanoPanels.map((panel) => (
+            <DmrVolcanoPlot
+              key={panel.key}
+              data={panel.data}
+              analysisLabel={panel.analysisLabel}
+              pDefinition={panel.pDefinition}
+              onSelectGene={selectGeneInAnalysis}
+              selectedGene={selectedGene}
+            />
+          ))}
+        </div>
         <div className="mb-6 mt-4">
           <PathwayEnrichmentPanel activeTab={activeTab} onSelectGene={(gene) => { selectGeneInAnalysis(gene); setTimeout(() => trackSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); }} />
         </div>
