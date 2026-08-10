@@ -8,10 +8,10 @@ interface GenomicTrackProps {
 }
 
 const SUBTYPE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  SSS: { label: 'SSS — Severe Stress Subtype', color: '#b91c1c', bg: '#fef2f2' },
-  ADS: { label: 'ADS — Affective/Depressive Subtype', color: '#1d4ed8', bg: '#eff6ff' },
-  ICF: { label: 'ICF — Cognitive Function Subtype', color: '#6d28d9', bg: '#f5f3ff' },
-  ISS: { label: 'ISS — Intermediate Stress Subtype', color: '#047857', bg: '#ecfdf5' },
+  SSS: { label: 'SSS vs control', color: '#b91c1c', bg: '#fef2f2' },
+  ADS: { label: 'ADS vs control', color: '#1d4ed8', bg: '#eff6ff' },
+  ICF: { label: 'ICF vs control', color: '#6d28d9', bg: '#f5f3ff' },
+  ISS: { label: 'ISS vs control', color: '#047857', bg: '#ecfdf5' },
   MDMA: { label: 'MDMA-AT — Responder vs HC', color: '#7c3aed', bg: '#f5f3ff' },
   Ketamine: { label: 'Ketamine — Resp vs NonResp', color: '#0891b2', bg: '#ecfeff' },
   CPT: { label: 'CPT — Resp vs NonResp', color: '#059669', bg: '#ecfdf5' },
@@ -53,6 +53,7 @@ const TREATMENT_GRID_ROWS = [
 const HYPER_COLOR = '#dc2626';
 const HYPO_COLOR = '#2563eb';
 const NEUTRAL_COLOR = '#64748b';
+const ZERO_EFFECT_COLOR = '#0f172a';
 const ISLAND_FILL = 'rgba(245, 158, 11, 0.28)';
 const ISLAND_STROKE = 'rgba(180, 83, 9, 0.75)';
 const P_05_COLOR = '#475569';
@@ -260,7 +261,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     ctx.font = '12px Inter, system-ui, sans-serif';
     ctx.fillStyle = '#64748b';
     ctx.fillText(
-      `${displayChr} | ${geneData.probes.length} probe records / ${geneData.totalProbes} EPIC probes mapped | Display range: ${Math.round(minPos).toLocaleString()}–${Math.round(maxPos).toLocaleString()} bp`,
+      `${displayChr} | ${geneData.probes.length} probe records / ${geneData.totalProbes} array probes mapped | Display range: ${Math.round(minPos).toLocaleString()}–${Math.round(maxPos).toLocaleString()} bp`,
       effectiveWidth / 2,
       42
     );
@@ -452,7 +453,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
             const x = posToX(probe.pos, cIdx);
             const yBase = valToY(0, panelTop);
             const yTop = valToY(Math.min(nlp, maxNegLogP), panelTop);
-            const dotColor = logFC == null || logFC === 0 ? NEUTRAL_COLOR : logFC > 0 ? HYPER_COLOR : HYPO_COLOR;
+            const dotColor = logFC == null ? NEUTRAL_COLOR : logFC === 0 ? ZERO_EFFECT_COLOR : logFC > 0 ? HYPER_COLOR : HYPO_COLOR;
             const isSig05 = nominalP < 0.05;
             const isSig01 = nominalP < 0.01;
             const isSig001 = nominalP < 0.001;
@@ -675,7 +676,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
           const x = posToX(probe.pos, 0);
           const yBase = valToY(0, panelTop);
           const yTop = valToY(Math.min(nlp, maxNegLogP), panelTop);
-          const dotColor = logFC == null || logFC === 0 ? NEUTRAL_COLOR : logFC > 0 ? HYPER_COLOR : HYPO_COLOR;
+          const dotColor = logFC == null ? NEUTRAL_COLOR : logFC === 0 ? ZERO_EFFECT_COLOR : logFC > 0 ? HYPER_COLOR : HYPO_COLOR;
           const isSig05 = nominalP < 0.05;
           const isSig01 = nominalP < 0.01;
           const isSig001 = nominalP < 0.001;
@@ -774,7 +775,8 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
     const legendItems = [
       { type: 'dot', color: HYPER_COLOR, label: 'Higher methylation (Δβ > 0)' },
       { type: 'dot', color: HYPO_COLOR, label: 'Lower methylation (Δβ < 0)' },
-      { type: 'dot', color: NEUTRAL_COLOR, label: 'Effect unavailable or zero' },
+      { type: 'dot', color: NEUTRAL_COLOR, label: 'Effect unavailable' },
+      { type: 'dot', color: ZERO_EFFECT_COLOR, label: 'Effect exactly 0' },
       { type: 'island', label: 'CpG Island Region' },
       { type: 'dash', color: P_05_COLOR, label: '* P < 0.05' },
       { type: 'dash', color: P_01_COLOR, label: '** P < 0.01' },
@@ -1046,6 +1048,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData }) => {
         </div>
       </details>
       <p className="mt-2 text-[10px] leading-relaxed text-slate-500">The probe figure uses uncorrected P values. Thresholds at P &lt; 0.05, P &lt; 0.01, and P &lt; 0.001 are descriptive and do not control the high-throughput multiple-testing error rate. Interpret them with Δβ and independent validation. Missing statistics are not converted to zero or “not significant”; confidence intervals and standard errors are not present in the probe dataset.</p>
+      {!isGrid && <p className="mt-1 text-[10px] font-medium text-slate-600">Subtype and control-group definitions were not supplied with these result files. Confirm SSS, ADS, ICF, and ISS definitions against the study protocol before interpretation.</p>}
       {hasClippedP && <p className="mt-1 text-[10px] font-medium text-slate-600">Nominal P values below 1×10⁻⁸ are plotted at the fixed upper boundary (−log₁₀P = 8) so the three reference thresholds remain legible. Exact P values remain available in the tooltip and table.</p>}
       {hasZeroP && <p className="mt-1 text-[10px] font-medium text-amber-800">One or more stored nominal P values equal numeric zero (underflow/rounding). They are reported as zero in the table and plotted at the upper display boundary, not interpreted as literally zero probability.</p>}
     </div>

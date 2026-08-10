@@ -3,9 +3,11 @@ export type SubtypeKey = (typeof SUBTYPE_KEYS)[number];
 export type Direction = 'Hypermethylated' | 'Hypomethylated' | 'Mixed';
 
 export interface SubtypeStat {
+  pValue: number;
   deltaBeta: number;
   fdr: number;
   direction: Direction;
+  nSigProbes: number;
   avgPosLogFC?: number | null;
   avgNegLogFC?: number | null;
   nPosTop3?: number;
@@ -28,9 +30,12 @@ export interface UniqueDMR {
   chr: string;
   totalProbes: number;
   isPtsd: boolean;
+  pValue: number;
   fdr: number;
   deltaBeta: number;
   direction: Direction;
+  nSigProbes: number;
+  subtypes: Record<SubtypeKey, SubtypeStat>;
   avgPosLogFC?: number | null;
   avgNegLogFC?: number | null;
   nPosTop3?: number;
@@ -52,6 +57,16 @@ export type TreatmentCohort = (typeof TREATMENT_COHORTS)[number];
 export const TREATMENT_TIMEPOINTS = ['Pre', 'FUP'] as const;
 export type TreatmentTimepoint = (typeof TREATMENT_TIMEPOINTS)[number];
 
+export interface TreatmentComponentStat {
+  pValue: number;
+  deltaBeta: number;
+  direction: Direction;
+  nPosTop3: number;
+  avgPosDeltaBeta: number | null;
+  nNegTop3: number;
+  avgNegDeltaBeta: number | null;
+}
+
 export interface CrossCohortGene {
   gene: string;
   fdr: number;
@@ -60,6 +75,10 @@ export interface CrossCohortGene {
   direction: Direction;
   totalProbes: number;
   nSigProbes: number;
+  cohortPValues: Record<TreatmentCohort, number>;
+  cohortComponents: Record<TreatmentCohort, TreatmentComponentStat>;
+  nCohortsNominal: number;
+  componentSignsConsistent: boolean;
 }
 
 export interface TreatmentGeneResult {
@@ -89,10 +108,11 @@ export interface TreatmentDatasetMetadata {
   version: string;
   generatedAt: string;
   selectionRule: string;
-  coverageRule: string;
+  contextRule: string;
   pooledSource: string;
+  pooledComponentSource: string;
   cohortSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>>;
-  coverageSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>>;
+  contextSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>>;
 }
 
 export interface MdmaMasterData {

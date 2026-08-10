@@ -147,7 +147,7 @@ export const PathwayEnrichmentPanel: React.FC<Props> = ({ activeTab, onSelectGen
                       </button>
                     ))}
                     {genes.length === 0 && (
-                      <span className="text-[11px] text-slate-400 italic">No overlap with current filter</span>
+                      <span className="text-[11px] text-slate-400 italic">No genes from this curated set occur in the active result group</span>
                     )}
                   </div>
                 )}

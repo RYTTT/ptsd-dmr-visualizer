@@ -88,49 +88,49 @@ export const MDMA_KEY_GENES: KeyGeneItem[] = [
     category: 'Treatment DMR Anchor',
     categoryColor: '#7c3aed',
     categoryBg: '#f5f3ff',
-    finding: 'Protein arginylation locus prioritized for inspection in the pooled cross-cohort results. Compare cohort estimates before interpreting direction or consistency.',
+    finding: 'Protein arginylation locus prioritized for inspection in the overall combined results. Compare the three study results before interpreting direction or consistency.',
   },
   {
     gene: 'AHRR',
     category: 'Trauma & Epigenetic Aging Locus',
     categoryColor: '#1d4ed8',
     categoryBg: '#eff6ff',
-    finding: 'Exposure-sensitive locus prioritized for pooled-result inspection. Cohort estimates can differ in direction and require smoking and environmental-confounder context.',
+    finding: 'Exposure-sensitive locus prioritized for combined-result inspection. Study estimates can differ in direction and require smoking and environmental-confounder context.',
   },
   {
     gene: 'NR3C1',
     category: 'Glucocorticoid Receptor',
     categoryColor: '#6d28d9',
     categoryBg: '#f5f3ff',
-    finding: 'HPA-axis receptor prioritized for pooled-result inspection. Compare pooled effect size with individual cohort estimates before biological interpretation.',
+    finding: 'HPA-axis receptor prioritized for combined-result inspection. Compare the overall effect with each study before biological interpretation.',
   },
   {
     gene: 'BDNF',
     category: 'Neuroplasticity Candidate',
     categoryColor: '#047857',
     categoryBg: '#ecfdf5',
-    finding: 'Neuroplasticity candidate included for pooled-result inspection. Observational methylation differences do not establish a driver of clinical recovery.',
+    finding: 'Neuroplasticity candidate included for combined-result inspection. Observational methylation differences do not establish a driver of clinical recovery.',
   },
   {
     gene: 'HOXB9',
     category: 'Chromatin Remodeling',
     categoryColor: '#0891b2',
     categoryBg: '#ecfeff',
-    finding: 'Developmental transcription factor included for pooled-result inspection. Review cohort/timepoint availability before interpreting generalizability.',
+    finding: 'Developmental transcription factor included for combined-result inspection. Review each study and visit before interpreting generalizability.',
   },
   {
     gene: 'GNAS',
     category: 'cAMP Neuroendocrine Signaling',
     categoryColor: '#059669',
     categoryBg: '#ecfdf5',
-    finding: 'G-protein signaling locus included for pooled-result inspection. “Restoration” requires a prespecified healthy reference and longitudinal contrast.',
+    finding: 'G-protein signaling locus included for combined-result inspection. “Restoration” requires a prespecified healthy reference and longitudinal contrast.',
   },
   {
     gene: 'FKBP5',
     category: 'HPA-axis Candidate',
     categoryColor: '#c2410c',
     categoryBg: '#fff7ed',
-    finding: 'HPA-axis chaperone included for pooled-result inspection. Methylation estimates alone should not be presented as evidence of clinical recovery.',
+    finding: 'HPA-axis chaperone included for combined-result inspection. Methylation estimates alone should not be presented as evidence of clinical recovery.',
   },
 ];
 
@@ -150,7 +150,7 @@ export const KeyResultsPanel: React.FC<KeyResultsPanelProps> = ({
       const entry = epicManifest[item.gene];
       if (entry) {
         const parts: string[] = [];
-        parts.push(`${entry.totalProbes} EPIC probes mapped`);
+        parts.push(`${entry.totalProbes} array probes mapped`);
         parts.push(`${entry.probesWithStats} with compiled statistics`);
         if (entry.nCpgIslands > 0) parts.push(`${entry.nCpgIslands} CpG island annotation${entry.nCpgIslands > 1 ? 's' : ''}`);
         parts.push(`${entry.features.length} feature categor${entry.features.length === 1 ? 'y' : 'ies'}`);

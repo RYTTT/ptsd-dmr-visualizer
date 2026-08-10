@@ -24,9 +24,12 @@ interface ComparisonProps {
 
 interface ComparisonDatum {
   subtype: SubtypeKey;
+  pValue: number;
   deltaBeta: number;
   fdr: number;
   direction: Direction;
+  nSigProbes: number;
+  selected: boolean;
   avgPositiveDeltaBeta: number | null;
   avgNegativeDeltaBeta: number | null;
   nPositive: number;
@@ -46,12 +49,15 @@ function formatProbability(value: number): string {
   return value < 0.001 ? value.toExponential(2) : value.toFixed(3);
 }
 
-function toDatum(subtype: SubtypeKey, stat: SubtypeStat): Omit<ComparisonDatum, 'domainMax'> {
+function toDatum(subtype: SubtypeKey, stat: SubtypeStat, selected: boolean): Omit<ComparisonDatum, 'domainMax'> {
   return {
     subtype,
+    pValue: stat.pValue,
     deltaBeta: stat.deltaBeta,
     fdr: stat.fdr,
     direction: stat.direction,
+    nSigProbes: stat.nSigProbes,
+    selected,
     avgPositiveDeltaBeta: stat.avgPosLogFC ?? null,
     avgNegativeDeltaBeta: stat.avgNegLogFC ?? null,
     nPositive: stat.nPosTop3 ?? 0,
@@ -67,7 +73,10 @@ function DirectionBar(props: CustomBarShapeProps) {
   const plotHeight = background.height;
   const zeroY = plotTop + plotHeight / 2;
   const toY = (value: number) => zeroY - value * (plotHeight / (2 * payload.domainMax));
-  const opacity = 0.95;
+  const opacity = payload.selected ? 1 : 0.72;
+  const stroke = payload.selected ? '#0f172a' : 'none';
+  const strokeWidth = payload.selected ? 2 : 0;
+  const stars = nominalPStars(payload.pValue);
   const canSplitMixed =
     payload.direction === 'Mixed' &&
     payload.avgPositiveDeltaBeta != null &&
@@ -80,10 +89,11 @@ function DirectionBar(props: CustomBarShapeProps) {
     const negativeHeight = Math.max(0, negativeY - zeroY);
     return (
       <g>
-        {positiveHeight > 0 && <rect x={x} y={positiveY} width={width} height={positiveHeight} fill="#b91c1c" rx={3} opacity={opacity} />}
-        {negativeHeight > 0 && <rect x={x} y={zeroY} width={width} height={negativeHeight} fill="#1d4ed8" rx={3} opacity={opacity} />}
+        {positiveHeight > 0 && <rect x={x} y={positiveY} width={width} height={positiveHeight} fill="#b91c1c" stroke={stroke} strokeWidth={strokeWidth} rx={3} opacity={opacity} />}
+        {negativeHeight > 0 && <rect x={x} y={zeroY} width={width} height={negativeHeight} fill="#1d4ed8" stroke={stroke} strokeWidth={strokeWidth} rx={3} opacity={opacity} />}
         {payload.nPositive > 0 && positiveHeight > 0 && <text x={x + width / 2} y={positiveY - 4} textAnchor="middle" fill="#991b1b" fontSize={10} fontWeight={700}>↑{payload.nPositive}</text>}
         {payload.nNegative > 0 && negativeHeight > 0 && <text x={x + width / 2} y={negativeY + 13} textAnchor="middle" fill="#1e40af" fontSize={10} fontWeight={700}>↓{payload.nNegative}</text>}
+        {stars && <text x={x + width / 2} y={plotTop + 11} textAnchor="middle" fill="#0f172a" fontSize={11} fontWeight={800}>{stars}</text>}
       </g>
     );
   }
@@ -94,7 +104,8 @@ function DirectionBar(props: CustomBarShapeProps) {
   const fill = payload.direction === 'Hypermethylated' ? '#b91c1c' : payload.direction === 'Hypomethylated' ? '#1d4ed8' : '#b45309';
   return (
     <g>
-      <rect x={x} y={barY} width={width} height={barHeight} fill={fill} rx={3} opacity={opacity} />
+      <rect x={x} y={barY} width={width} height={barHeight} fill={fill} stroke={stroke} strokeWidth={strokeWidth} rx={3} opacity={opacity} />
+      {stars && <text x={x + width / 2} y={plotTop + 11} textAnchor="middle" fill="#0f172a" fontSize={11} fontWeight={800}>{stars}</text>}
     </g>
   );
 }
@@ -102,9 +113,12 @@ function DirectionBar(props: CustomBarShapeProps) {
 export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) => {
   const chartData = useMemo(() => {
     if (!geneData) return [];
-    const raw = geneData.kind === 'cross-subtype'
-      ? SUBTYPE_KEYS.map((subtype) => toDatum(subtype, geneData.result.subtypes[subtype]))
-      : [toDatum(geneData.subtype, geneData.result)];
+    const selectedSubtype = geneData.kind === 'subtype-unique' ? geneData.subtype : null;
+    const raw = SUBTYPE_KEYS.map((subtype) => toDatum(
+      subtype,
+      geneData.result.subtypes[subtype],
+      subtype === selectedSubtype,
+    ));
     const values = raw.flatMap((datum) => [datum.deltaBeta, datum.avgPositiveDeltaBeta ?? 0, datum.avgNegativeDeltaBeta ?? 0]);
     const domainMax = Math.max(...values.map(Math.abs), 0.02) * 1.55;
     return raw.map((datum) => ({ ...datum, domainMax }));
@@ -113,14 +127,14 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
   if (!geneData) {
     return (
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs flex min-h-[280px] h-full items-center justify-center text-center">
-        <p className="max-w-md text-xs text-slate-500">Select a DMR to view its observed top-three-probe methylation summary. Subtype-unique results show only the selected subtype; unavailable subtypes are not replaced with zeros.</p>
+        <p className="max-w-md text-xs text-slate-500">Select a DMR to compare the four observed subtype results.</p>
       </div>
     );
   }
 
   const result = geneData.result;
   const isCrossSubtype = geneData.kind === 'cross-subtype';
-  const summaryP = isCrossSubtype ? geneData.result.crossP : null;
+  const summaryP = isCrossSubtype ? geneData.result.crossP : geneData.result.pValue;
   const summaryStars = nominalPStars(summaryP);
   const domainMax = chartData[0]?.domainMax ?? 0.1;
   const hasMixed = chartData.some((datum) => datum.direction === 'Mixed');
@@ -133,21 +147,19 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
           <div className="flex flex-wrap items-center gap-2">
             <h3 id={titleId} className="text-base font-bold text-slate-900">{result.gene}</h3>
             <span className="rounded border border-slate-300 bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-700">
-              {isCrossSubtype ? `Cross-subtype (${geneData.result.nSubtypesSig}/4 called significant upstream)` : `${geneData.subtype} subtype-unique`}
+              {isCrossSubtype ? `Passes the adjusted threshold in ${geneData.result.nSubtypesSig}/4 subtypes` : `${geneData.subtype}-selected gene`}
             </span>
             {result.isPtsd && <span className="rounded border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-900">Curated PTSD-related list</span>}
           </div>
-          <p className="mt-1 text-xs text-slate-500">Mean of the three probes selected by the DMR pipeline | {result.chr} | {result.totalProbes} probes tested in the DMR analysis</p>
+          <p className="mt-1 text-xs text-slate-500">Mean of up to three probes selected by the DMR pipeline | {result.chr} | {result.totalProbes} probes tested in the DMR analysis</p>
         </div>
         <div className="sm:text-right">
-          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Cross-subtype nominal P</div>
-          {summaryP == null
-            ? <div className="text-xs font-semibold text-slate-500">Unavailable · no stars</div>
-            : <div className="font-mono text-sm font-bold text-slate-900">{formatProbability(summaryP)} <span aria-label={`${summaryStars.length} significance stars`}>{summaryStars}</span></div>}
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{isCrossSubtype ? 'Combined P across four subtypes' : `${geneData.subtype} nominal P`}</div>
+          <div className="font-mono text-sm font-bold text-slate-900">{formatProbability(summaryP)} <span aria-label={`${summaryStars.length} significance stars`}>{summaryStars}</span></div>
         </div>
       </div>
 
-      <div className="h-72 w-full" role="img" aria-label={`${result.gene} methylation difference chart. ${isCrossSubtype ? 'Four observed subtype estimates are shown.' : `Only the observed ${geneData.subtype} subtype-unique estimate is shown.`}`}>
+      <div className="h-72 w-full" role="img" aria-label={`${result.gene} methylation difference chart with observed SSS, ADS, ICF, and ISS estimates.${isCrossSubtype ? '' : ` ${geneData.subtype} is the only subtype that passes the source FDR cutoff.`}`}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart accessibilityLayer data={chartData} margin={{ top: 20, right: 20, bottom: 28, left: 12 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -163,6 +175,9 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
                     <span className="rounded border border-slate-300 bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-800">{datum.direction}</span>
                   </div>
                   <div className="flex justify-between gap-4"><span className="text-slate-500">Mean top-three Δβ</span><span className="font-mono font-bold">{datum.deltaBeta > 0 ? '+' : ''}{datum.deltaBeta.toFixed(4)}</span></div>
+                  <div className="flex justify-between gap-4"><span className="text-slate-500">Nominal P</span><span className="font-mono font-bold">{formatProbability(datum.pValue)} {nominalPStars(datum.pValue) || 'P ≥ 0.05'}</span></div>
+                  <div className="flex justify-between gap-4"><span className="text-slate-500">Reported FDR</span><span className="font-mono">{formatProbability(datum.fdr)}</span></div>
+                  <div className="flex justify-between gap-4"><span className="text-slate-500">Probes with P &lt; 0.05</span><span className="font-mono">{datum.nSigProbes}</span></div>
                   {datum.direction === 'Mixed' && datum.avgPositiveDeltaBeta != null && datum.avgNegativeDeltaBeta != null && (
                     <div className="space-y-1 rounded border border-amber-200 bg-amber-50 p-2 text-[11px]">
                       <div className="flex justify-between gap-3"><span>Positive probes ({datum.nPositive})</span><span className="font-mono font-bold text-red-800">+{datum.avgPositiveDeltaBeta.toFixed(4)}</span></div>
@@ -183,7 +198,8 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
         <span><span className="mr-1 inline-block h-2.5 w-3 rounded-sm bg-red-700" />Higher methylation</span>
         <span><span className="mr-1 inline-block h-2.5 w-3 rounded-sm bg-blue-700" />Lower methylation</span>
         {hasMixed && <span><span className="mr-1 inline-block h-2.5 w-3 rounded-sm bg-amber-700" />Mixed/opposing selected probes</span>}
-        {summaryP != null && <><span><strong>*</strong> P &lt; 0.05</span><span><strong>**</strong> P &lt; 0.01</span><span><strong>***</strong> P &lt; 0.001</span></>}
+        <span><strong>*</strong> P &lt; 0.05</span><span><strong>**</strong> P &lt; 0.01</span><span><strong>***</strong> P &lt; 0.001</span><span>No star: P ≥ 0.05</span>
+        {!isCrossSubtype && <span className="font-semibold text-slate-800">Outlined bar: the only subtype passing FDR &lt; 0.05</span>}
       </div>
 
       <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50">
@@ -191,12 +207,12 @@ export const SubtypeComparisonChart: React.FC<ComparisonProps> = ({ geneData }) 
         <div className="overflow-x-auto border-t border-slate-200">
           <table className="w-full text-left text-xs">
             <caption className="sr-only">Observed subtype estimates for {result.gene}</caption>
-            <thead className="bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Subtype</th><th className="px-3 py-2">Mean top-three Δβ</th><th className="px-3 py-2">Direction</th><th className="px-3 py-2">Reported DMR FDR</th></tr></thead>
-            <tbody>{chartData.map((datum) => <tr key={datum.subtype} className="border-t border-slate-200"><td className="px-3 py-2 font-semibold">{datum.subtype}</td><td className="px-3 py-2 font-mono">{datum.deltaBeta.toFixed(4)}</td><td className="px-3 py-2">{datum.direction}</td><td className="px-3 py-2 font-mono">{formatProbability(datum.fdr)}</td></tr>)}</tbody>
+            <thead className="bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Subtype</th><th className="px-3 py-2">Mean top-three Δβ</th><th className="px-3 py-2">Direction</th><th className="px-3 py-2">Nominal P</th><th className="px-3 py-2">Reported FDR</th><th className="px-3 py-2">Probes P&lt;.05</th></tr></thead>
+            <tbody>{chartData.map((datum) => <tr key={datum.subtype} className={`border-t border-slate-200 ${datum.selected ? 'bg-slate-100 font-semibold' : ''}`}><td className="px-3 py-2">{datum.subtype}{datum.selected ? ' · selected' : ''}</td><td className="px-3 py-2 font-mono">{datum.deltaBeta.toFixed(4)}</td><td className="px-3 py-2">{datum.direction}</td><td className="px-3 py-2 font-mono">{formatProbability(datum.pValue)} {nominalPStars(datum.pValue)}</td><td className="px-3 py-2 font-mono">{formatProbability(datum.fdr)}</td><td className="px-3 py-2 font-mono">{datum.nSigProbes}</td></tr>)}</tbody>
           </table>
         </div>
       </details>
-      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">Δβ is a methylation-proportion difference, not a fold change. Significance stars use the cross-subtype nominal P only. Subtype-level and subtype-unique nominal P values are not supplied, so no per-bar stars are shown; reported FDR remains available in the data table but is not used as a display threshold. No confidence intervals or standard errors are available.</p>
+      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">All four bars are observed subtype summaries; none are placeholders. Stars use each subtype’s nominal P. The combined P is shown separately and must not be read as the significance of every bar. For a subtype-selected gene, only the outlined subtype met the source FDR &lt; 0.05 rule; a star in another subtype does not mean that subtype passed the adjusted threshold. No confidence intervals or standard errors are available.</p>
     </section>
   );
 };

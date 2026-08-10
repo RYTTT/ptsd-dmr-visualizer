@@ -41,10 +41,12 @@ credentials enabled.
 
 Large common annotation maps remain server-side and are parsed once per server
 process. The browser requests compact, validated per-gene DTOs from
-`/api/data/genes`; probe shards are loaded on demand with concurrent-request
-deduplication and a bounded LRU cache.
+`/api/data/genes`; the scientifically aligned PTSD probe shards are loaded on
+demand with concurrent-request deduplication and a bounded LRU cache. Treatment
+probe tracks remain hidden until matching unfiltered responder-versus-
+non-responder DMP exports are supplied.
 
-Treatment registry data is generated from the versioned cohort CSV exports:
+Treatment result data is generated from the versioned study CSV exports:
 
 ```bash
 npm run import:treatment -- /path/to/IPW_DMP_Analysis_2026_v2_CD4T_arrayWeights
@@ -52,14 +54,23 @@ npm run import:treatment -- /path/to/IPW_DMP_Analysis_2026_v2_CD4T_arrayWeights
 
 The importer validates all expected source files, row counts, columns,
 probability/count bounds, duplicate genes, N8+ selection criteria, and exact
-agreement between selected rows and their TotalProbes8plus coverage rows before
+agreement between selected rows and their AllGenes context rows before
 replacing `public/data/mdma/dmrData.json`.
+
+PTSD subtype data can be regenerated with:
+
+```bash
+npm run import:ptsd -- /path/to/result_10pct_na_meta
+```
+
+The PTSD importer preserves all four observed subtype statistics for every
+selected gene and validates the source adjusted-threshold partitions.
 
 ## Scientific interpretation
 
 Read the versioned [scientific data dictionary and display methods](docs/scientific-data-dictionary-v1.md)
-before interpreting or exporting results. It defines pooled versus
-timepoint-specific views, missing-value handling, direction rules, P/FDR fields,
+before interpreting or exporting results. It defines combined versus
+visit-specific views, missing-value handling, direction rules, P/FDR fields,
 and the distinct probe denominators. It also lists upstream methods and
 provenance metadata that are not present in the shipped dataset.
 

@@ -7,8 +7,8 @@ import { Dna, FlaskConical, ArrowRight, LogOut, Shield, TrendingDown, Users, Dat
 const PORTAL_STATS = [
   { value: '4,569', label: 'PTSD DMR result rows', icon: Database },
   { value: '168K+', label: 'Gene–probe assignments', icon: Microscope },
-  { value: '4', label: 'PTSD study cohorts', icon: Users },
-  { value: '850K', label: 'EPIC Array Probes', icon: Dna },
+  { value: '4', label: 'PTSD subtypes', icon: Users },
+  { value: '2', label: 'Analysis atlases', icon: Dna },
 ];
 
 const projects = [
@@ -23,15 +23,15 @@ const projects = [
     hoverBorder: 'hover:border-blue-600',
     badgeBg: 'bg-blue-800/60 text-blue-300 border-blue-700/40',
     title: 'PTSD Subtype DMR Atlas',
-    subtitle: 'Four-cohort meta-analysis',
+    subtitle: 'Four-subtype comparison',
     description:
-      'Explore cross-subtype and subtype-specific differentially methylated regions (DMRs) across the SSS, ADS, ICF, and ISS subtypes. Compare effect sizes, statistical evidence, gene annotations, and probe-level genomic context.',
+      'Explore adjusted results in 3–4 subtypes and genes selected by one subtype at FDR < 0.05 across SSS, ADS, ICF, and ISS. Compare effect sizes, statistical evidence, gene annotations, and probe-level genomic context.',
     keyFinding: 'Analysis focus: compare subtype direction, effect magnitude, and false discovery rate for each gene.',
     stats: [
       { label: 'Cross-subtype', value: '1,119' },
-      { label: 'Subtype-specific', value: '3,450' },
+      { label: 'Selected by one subtype (FDR<.05)', value: '3,450' },
       { label: 'Subtypes', value: '4' },
-      { label: 'Cohorts', value: '4' },
+      { label: 'Result rows', value: '4,569' },
     ],
   },
   {
@@ -48,9 +48,9 @@ const projects = [
     subtitle: 'MDMA, ketamine, and CPT response analysis',
     description:
       'Compare CD4+ T-cell methylation results for responders and non-responders across three trauma treatment cohorts. Review inverse-probability-weighted analyses at baseline and follow-up.',
-    keyFinding: 'AHRR differs at both assessed time points; its effect estimate is less negative at follow-up.',
+    keyFinding: 'Treatment and visit estimates can differ; inspect each study before interpreting apparent temporal change.',
     stats: [
-      { label: 'Common DMR genes', value: '1,843' },
+      { label: 'Combined-result genes', value: '1,839' },
       { label: 'Modalities', value: '3' },
       { label: 'Assessments', value: '2' },
       { label: 'Cell type', value: 'CD4+' },
@@ -186,7 +186,7 @@ export default function ProjectSelector() {
         {/* Footer Note */}
         <p className="mt-10 border-t border-slate-800 pt-8 text-center text-xs leading-relaxed text-slate-400">
           Restricted pre-publication research data. Do not distribute without principal investigator authorization.<br className="hidden sm:block" />
-          Illumina MethylationEPIC array · GRCh38/hg38 reference genome
+          Methylation-array results · genome build and manifest versions pending source confirmation
         </p>
       </main>
     </div>

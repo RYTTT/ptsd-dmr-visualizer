@@ -119,11 +119,11 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
       );
     }
 
-    // Paragraph 2: EPIC array coverage
+    // Paragraph 2: array-manifest coverage
     if (manifest) {
       const featureList = manifest.features.length > 0 ? manifest.features.join(', ') : 'no annotated features';
       paragraphs.push(
-        `The EPIC manifest maps ${manifest.totalProbes} probes to ${gene}; ${manifest.probesWithStats} have records in the compiled statistical inventory. The mapped probes span ${manifest.features.length} annotated feature categor${manifest.features.length === 1 ? 'y' : 'ies'} (${featureList}). ${manifest.nCpgIslands > 0 ? `${manifest.nCpgIslands} CpG island annotation${manifest.nCpgIslands > 1 ? 's' : ''} overlap the mapped probe footprint (${manifest.cpgIslands.join('; ')}).` : 'No CpG island annotation overlaps the mapped probe footprint.'}`
+        `The compiled array manifest maps ${manifest.totalProbes} probes to ${gene}; ${manifest.probesWithStats} have records in the compiled statistical inventory. The mapped probes span ${manifest.features.length} annotated feature categor${manifest.features.length === 1 ? 'y' : 'ies'} (${featureList}). ${manifest.nCpgIslands > 0 ? `${manifest.nCpgIslands} CpG island annotation${manifest.nCpgIslands > 1 ? 's' : ''} overlap the mapped probe footprint (${manifest.cpgIslands.join('; ')}).` : 'No CpG island annotation overlaps the mapped probe footprint.'}`
       );
     }
 
@@ -132,15 +132,15 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
       if (result.kind === 'cross-subtype') {
         const directions = Object.entries(result.result.subtypes).map(([subtype, stat]) => `${subtype}: ${stat.direction}, Δβ ${formatDeltaBeta(stat.deltaBeta)}, FDR ${formatProbability(stat.fdr)}`).join('; ');
         paragraphs.push(
-          `The active result is a cross-subtype PTSD DMR (${result.result.nSubtypesSig} of 4 subtype results are flagged significant by the upstream pipeline; the flagging threshold is not supplied; cross-subtype FDR ${formatProbability(result.result.crossFdr)}). Subtype estimates are ${directions}. “Mixed” means the selected probes have opposing directions; a negative or positive signed mean does not make a mixed result concordant.`
+          `The active result is a cross-subtype PTSD DMR (${result.result.nSubtypesSig} of 4 subtype results have FDR below 0.05; cross-subtype FDR ${formatProbability(result.result.crossFdr)}). Subtype estimates are ${directions}. “Mixed” means the selected probes have opposing directions; a negative or positive signed mean does not make a mixed result concordant.`
         );
       } else if (result.kind === 'subtype-unique') {
         paragraphs.push(
-          `The active result is unique to the ${result.subtype} result set: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, FDR ${formatProbability(result.result.fdr)}. Other subtype values are unavailable in this selection and are not treated as zero or non-significant.`
+          `This is a ${result.subtype}-selected gene: only ${result.subtype} passes the source FDR < 0.05 rule. Its Δβ is ${formatDeltaBeta(result.result.deltaBeta)}, direction is ${result.result.direction.toLowerCase()}, nominal P is ${formatProbability(result.result.pValue)}, and FDR is ${formatProbability(result.result.fdr)}. The application shows the observed SSS, ADS, ICF, and ISS values side by side; the other three are not missing or replaced with zero.`
         );
       } else if (result.kind === 'pooled-cross-cohort') {
         paragraphs.push(
-          `The active treatment result is the pooled cross-cohort analysis: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, nominal P ${formatProbability(result.result.pValue)}, and reported FDR ${formatProbability(result.result.fdr)}. This pooled result has no Baseline or Follow-up scope and does not imply that every cohort or timepoint is individually significant.`
+          `The active treatment result is the combined analysis across MDMA, ketamine, and CPT: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, nominal P ${formatProbability(result.result.pValue)}, and reported FDR ${formatProbability(result.result.fdr)}. ${result.result.nCohortsNominal} of 3 study component P values are below 0.05, and the three component mean Δβ signs ${result.result.componentSignsConsistent ? 'are consistent' : 'differ'}. This combined result is separate from the Baseline and Follow-up comparisons and does not imply that every study visit has the same effect.`
         );
       } else {
         const timepointLabel = result.timepoint === 'Pre'
@@ -149,7 +149,7 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
             ? 'Follow-up (FUP1 / E2)'
             : 'Follow-up (FUP2)';
         paragraphs.push(
-          `The active treatment result is from the ${result.cohort} N8+ registry at ${timepointLabel}: weighted Top-3 Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, nominal Fisher P ${formatProbability(result.result.pValue)}, reported FDR ${formatProbability(result.result.fdr)}, and ${result.result.nSigProbes} of ${result.result.totalProbes} mapped probes with P < 0.05. This is cohort/timepoint-specific and should not be generalized to the other cohorts or to the pooled cross-cohort result.`
+          `The active treatment result is from the ${result.cohort} study at ${timepointLabel}: weighted Top-3 Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, nominal Fisher P ${formatProbability(result.result.pValue)}, reported FDR ${formatProbability(result.result.fdr)}, and ${result.result.nSigProbes} of ${result.result.totalProbes} mapped probes with P < 0.05. This study-and-visit result should not be generalized to the other studies or to the overall combined result.`
         );
       }
     }
@@ -158,11 +158,11 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
     if (cross) {
       if (project === 'ptsd') {
         paragraphs.push(
-          `${gene} also meets the stored significance criterion in the Treatment Response Atlas (MDMA/Ketamine/CPT), with a summary direction of ${cross.mdma.direction.toLowerCase()} (${cross.mdma.type === 'cross' ? 'cross-cohort analysis' : `${cross.mdma.type}-specific analysis`}, FDR ${cross.mdma.fdr < 1e-15 ? '< 1×10⁻¹⁵' : cross.mdma.fdr.toExponential(2)}). This cross-project overlap is hypothesis-generating; it does not establish treatment responsiveness, mediation, or a therapeutic target.`
+          `${gene} also has a selected result in the Treatment Response Atlas (MDMA/Ketamine/CPT), with a summary direction of ${cross.mdma.direction.toLowerCase()} (${cross.mdma.type === 'pooled-cross-cohort' ? 'overall combined analysis' : 'individual study/visit analysis'}, FDR ${cross.mdma.fdr < 1e-15 ? '< 1×10⁻¹⁵' : cross.mdma.fdr.toExponential(2)}). This cross-project overlap is hypothesis-generating; it does not establish treatment responsiveness, mediation, or a therapeutic target.`
         );
       } else {
         paragraphs.push(
-          `${gene} also meets the stored significance criterion in the PTSD Subtype DMR Atlas, with a summary direction of ${cross.ptsd.direction.toLowerCase()} (${cross.ptsd.type === 'cross' ? 'cross-subtype analysis' : `${cross.ptsd.type}-specific analysis`}, FDR ${cross.ptsd.fdr < 1e-15 ? '< 1×10⁻¹⁵' : cross.ptsd.fdr.toExponential(2)}). The overlap is hypothesis-generating and does not establish a mechanistic marker of trauma or recovery.`
+          `${gene} also has a selected result in the PTSD Subtype DMR Atlas, with a summary direction of ${cross.ptsd.direction.toLowerCase()} (${cross.ptsd.type === 'cross-subtype' ? 'shared cross-subtype analysis' : 'subtype-selected analysis'}, FDR ${cross.ptsd.fdr < 1e-15 ? '< 1×10⁻¹⁵' : cross.ptsd.fdr.toExponential(2)}). The overlap is hypothesis-generating and does not establish a mechanistic marker of trauma or recovery.`
         );
       }
     }
@@ -222,14 +222,6 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
               {/* Quick links */}
               <div className="pt-3 border-t border-slate-100 flex flex-wrap gap-2">
                 <a
-                  href={`https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=${gene}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded border border-amber-200 hover:bg-amber-100 transition"
-                >
-                  UCSC <ExternalLink className="w-3 h-3" />
-                </a>
-                <a
                   href={`https://www.ewascatalog.org/search?query=${gene}`}
                   target="_blank"
                   rel="noreferrer"
@@ -262,7 +254,7 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
             {/* Modal Footer */}
             <div className="px-6 py-3 bg-slate-50 border-t border-slate-200 rounded-b-2xl">
               <p className="text-[10px] text-slate-400 italic">
-                This summary combines project data, the EPIC manifest, cross-project linkage, and curated annotations. It is a research navigation aid—not a causal interpretation, clinical claim, or peer-reviewed conclusion.
+                This summary combines project data, the compiled array manifest, cross-project linkage, and curated annotations. It is a research navigation aid—not a causal interpretation, clinical claim, or peer-reviewed conclusion.
               </p>
             </div>
           </div>

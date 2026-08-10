@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine, LabelList,
@@ -9,17 +9,16 @@ import {
 import type { LabelProps, ScatterPointItem } from 'recharts';
 import {
   Search, Filter, Download, ArrowUpDown, Dna, Loader2,
-  FlaskConical, ArrowLeft, LogOut, ChevronLeft, ChevronRight, MapPin, Clock,
+  FlaskConical, ArrowLeft, LogOut, ChevronLeft, ChevronRight, Clock,
 } from 'lucide-react';
-import { GenomicTrackPlot } from '@/components/GenomicTrackPlot';
 import { GeneAnnotationCard } from '@/components/GeneAnnotationCard';
-import type { GeneProbeData } from '@/types/probe';
 import { GeneAnnotationMap } from '@/types/annotation';
 import type {
   Direction,
   MdmaMasterData,
   SelectedTreatmentResult,
   TreatmentCohort,
+  TreatmentComponentStat,
   TreatmentGeneResult,
   TreatmentTimepoint,
 } from '@/types/dmr';
@@ -27,7 +26,6 @@ import { TREATMENT_COHORTS, TREATMENT_TIMEPOINTS } from '@/types/dmr';
 import {
   getGeneMetadata,
   loadGenesMetadata,
-  loadProbeData,
   readJsonResponse,
   SessionExpiredError,
 } from '@/lib/commonDatabase';
@@ -54,6 +52,10 @@ interface MdmaTableRow {
   avgPosDeltaBeta?: number | null;
   nNegTop3?: number;
   avgNegDeltaBeta?: number | null;
+  cohortPValues?: Record<TreatmentCohort, number>;
+  cohortComponents?: Record<TreatmentCohort, TreatmentComponentStat>;
+  nCohortsNominal?: number;
+  componentSignsConsistent?: boolean;
 }
 
 interface VolcanoPoint {
@@ -68,9 +70,10 @@ interface TreatmentBarDatum {
   cohort: TreatmentCohort;
   pre: TreatmentGeneResult | null;
   fup: TreatmentGeneResult | null;
-  deltaBeta_Pre: number | null;
-  deltaBeta_FUP: number | null;
-  color: string;
+  prePositive: number | null;
+  preNegative: number | null;
+  fupPositive: number | null;
+  fupNegative: number | null;
 }
 
 interface LoadError {
@@ -80,13 +83,12 @@ interface LoadError {
 
 // ---- Tab config ----
 const COHORT_TABS = [
-  { key: 'cross', label: 'Pooled cross-cohort', color: '#0f172a' },
-  { key: 'MDMA', label: 'MDMA cohort', color: '#7c3aed' },
-  { key: 'Ketamine', label: 'Ketamine cohort', color: '#0891b2' },
-  { key: 'CPT', label: 'CPT cohort', color: '#059669' },
+  { key: 'cross', label: 'Combined analysis', color: '#0f172a' },
+  { key: 'MDMA', label: 'MDMA', color: '#7c3aed' },
+  { key: 'Ketamine', label: 'Ketamine', color: '#0891b2' },
+  { key: 'CPT', label: 'CPT', color: '#059669' },
 ] as const;
 
-const COHORT_COLORS: Record<string, string> = { MDMA: '#7c3aed', Ketamine: '#0891b2', CPT: '#059669' };
 type AnalysisTab = 'cross' | TreatmentCohort;
 
 function formatProbability(value: number): string {
@@ -94,8 +96,16 @@ function formatProbability(value: number): string {
 }
 
 function significanceLabel(value: number | null | undefined): string {
-  if (value == null) return 'unavailable';
-  return nominalPStars(value) || 'ns';
+  if (value == null) return 'not provided';
+  return nominalPStars(value) || 'P ≥ 0.05';
+}
+
+function cohortSupportLabel(count: number): string {
+  return `${count}/3 studies have nominal P < 0.05`;
+}
+
+function componentSignLabel(consistent: boolean): string {
+  return consistent ? 'Component mean Δβ signs are consistent' : 'Component mean Δβ signs differ';
 }
 
 export default function MdmaPage() {
@@ -114,14 +124,8 @@ export default function MdmaPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 50;
 
-  // Probe data
-  const [selectedTrackData, setSelectedTrackData] = useState<GeneProbeData | null>(null);
-  const [trackLoading, setTrackLoading] = useState(false);
   // EPIC manifest for dynamic stats
   const [epicManifest, setEpicManifest] = useState<Record<string, EpicManifestEntry> | undefined>(undefined);
-
-  // Auto-scroll ref
-  const trackSectionRef = useRef<HTMLDivElement>(null);
 
   // Error state
   const [loadError, setLoadError] = useState<LoadError | null>(null);
@@ -143,7 +147,45 @@ export default function MdmaPage() {
       setAnnotationData(annotations);
       setEpicManifest(manifest);
       setLoading(false);
-      if (master.crossCohort.length > 0) setSelectedGene(master.crossCohort[0].gene);
+      const query = new URLSearchParams(window.location.search);
+      const requestedGene = query.get('gene')?.trim().toUpperCase();
+      const requestedStudy = query.get('study');
+      const requestedVisit = query.get('visit');
+      const exactStudy = TREATMENT_COHORTS.find((cohort) => cohort === requestedStudy);
+      const exactVisit = TREATMENT_TIMEPOINTS.find((visit) => visit === requestedVisit);
+      const exactResult = requestedGene && exactStudy && exactVisit
+        ? master.timepoints[exactVisit].cohorts[exactStudy].find((item) => item.gene.toUpperCase() === requestedGene)
+        : undefined;
+      const combined = requestedGene
+        ? master.crossCohort.find((item) => item.gene.toUpperCase() === requestedGene)
+        : undefined;
+      if (exactResult && exactStudy && exactVisit) {
+        setTimepoint(exactVisit);
+        setActiveTab(exactStudy);
+        setSelectedGene(exactResult.gene);
+      } else if (combined) {
+        setActiveTab('cross');
+        setSelectedGene(combined.gene);
+      } else if (requestedGene) {
+        let selected = false;
+        for (const candidateTimepoint of TREATMENT_TIMEPOINTS) {
+          for (const cohort of TREATMENT_COHORTS) {
+            const result = master.timepoints[candidateTimepoint].cohorts[cohort]
+              .find((item) => item.gene.toUpperCase() === requestedGene);
+            if (result) {
+              setTimepoint(candidateTimepoint);
+              setActiveTab(cohort);
+              setSelectedGene(result.gene);
+              selected = true;
+              break;
+            }
+          }
+          if (selected) break;
+        }
+        if (!selected && master.crossCohort.length > 0) setSelectedGene(master.crossCohort[0].gene);
+      } else if (master.crossCohort.length > 0) {
+        setSelectedGene(master.crossCohort[0].gene);
+      }
     }).catch((error: unknown) => {
       setLoadError({
         kind: error instanceof SessionExpiredError ? 'session-expired' : 'data',
@@ -152,31 +194,6 @@ export default function MdmaPage() {
       setLoading(false);
     });
   }, []);
-
-  useEffect(() => {
-    if (!selectedGene) {
-      return;
-    }
-    let cancelled = false;
-    queueMicrotask(() => {
-      if (!cancelled) {
-        setTrackLoading(true);
-        setSelectedTrackData(null);
-      }
-    });
-    loadProbeData('mdma', selectedGene)
-      .then((probeData) => { if (!cancelled) setSelectedTrackData(probeData); })
-      .catch((error: unknown) => {
-        if (cancelled) return;
-        if (error instanceof SessionExpiredError) {
-          setLoadError({ kind: 'session-expired', message: error.message });
-        } else {
-          setSelectedTrackData(null);
-        }
-      })
-      .finally(() => { if (!cancelled) setTrackLoading(false); });
-    return () => { cancelled = true; };
-  }, [selectedGene]);
 
   useEffect(() => {
     if (!selectedGene || annotationData?.[selectedGene]) return;
@@ -210,6 +227,8 @@ export default function MdmaPage() {
       list = data.crossCohort.map((g) => ({
         gene: g.gene, pValue: g.pValue, fdr: g.fdr, deltaBeta: g.deltaBeta, direction: g.direction,
         totalProbes: g.totalProbes, nSigProbes: g.nSigProbes,
+        cohortPValues: g.cohortPValues, cohortComponents: g.cohortComponents,
+        nCohortsNominal: g.nCohortsNominal, componentSignsConsistent: g.componentSignsConsistent,
       }));
     } else {
       const tpData = data.timepoints[timepoint];
@@ -288,11 +307,19 @@ export default function MdmaPage() {
         cohort,
         pre,
         fup,
-        deltaBeta_Pre: pre?.deltaBeta ?? null,
-        deltaBeta_FUP: fup?.deltaBeta ?? null,
-        color: COHORT_COLORS[cohort],
+        prePositive: pre && pre.nPosTop3 > 0 ? pre.avgPosDeltaBeta : null,
+        preNegative: pre && pre.nNegTop3 > 0 ? pre.avgNegDeltaBeta : null,
+        fupPositive: fup && fup.nPosTop3 > 0 ? fup.avgPosDeltaBeta : null,
+        fupNegative: fup && fup.nNegTop3 > 0 ? fup.avgNegDeltaBeta : null,
       };
-    });
+    }).filter((item) => item.pre !== null || item.fup !== null);
+  }, [data, selectedGene]);
+
+  const selectedGeneMissingStudies = useMemo(() => {
+    if (!data || !selectedGene) return [];
+    const context = data.geneContexts[selectedGene];
+    if (!context) return [...TREATMENT_COHORTS];
+    return TREATMENT_COHORTS.filter((cohort) => context.Pre[cohort] === null && context.FUP[cohort] === null);
   }, [data, selectedGene]);
 
   // Annotation
@@ -310,14 +337,20 @@ export default function MdmaPage() {
       direction: d.direction,
     }));
   }, [filteredData]);
+  const concordantVolcanoData = useMemo(() => volcanoData.filter((item) => item.direction !== 'Mixed'), [volcanoData]);
+  const mixedVolcanoData = useMemo(() => volcanoData.filter((item) => item.direction === 'Mixed'), [volcanoData]);
 
   // CSV Export
   const handleExportCSV = () => {
     const headers = activeTab === 'cross'
-      ? ['Gene', 'CrossP', 'CrossFDR', 'PooledDeltaBeta', 'Direction', 'DMR_TestedProbes', 'SignificantProbes']
+      ? ['Gene', 'CombinedP', 'CombinedFDR', 'CombinedDeltaBeta', 'Direction', 'DMR_TestedProbes', 'SignificantProbes', 'StudiesP05', 'ComponentSignsConsistent',
+          'MDMA_P', 'MDMA_DeltaBeta', 'MDMA_Direction', 'Ketamine_P', 'Ketamine_DeltaBeta', 'Ketamine_Direction', 'CPT_P', 'CPT_DeltaBeta', 'CPT_Direction']
       : ['Gene', 'Total_Gene_Probes', 'N_Sig_Probes_p05', 'Gene_Fisher_P', 'Gene_FDR', 'Pattern', 'N_Pos_Probes_Top3', 'Ave_Pos_Beta_Diff_Top3', 'N_Neg_Probes_Top3', 'Ave_Neg_Beta_Diff_Top3', 'Top3_Weighted_Beta_Diff'];
     const rows = filteredData.map((d) => activeTab === 'cross'
-      ? [d.gene, d.pValue, d.fdr, d.deltaBeta, d.direction, d.totalProbes, d.nSigProbes]
+      ? [d.gene, d.pValue, d.fdr, d.deltaBeta, d.direction, d.totalProbes, d.nSigProbes, d.nCohortsNominal, d.componentSignsConsistent,
+          d.cohortComponents?.MDMA.pValue, d.cohortComponents?.MDMA.deltaBeta, d.cohortComponents?.MDMA.direction,
+          d.cohortComponents?.Ketamine.pValue, d.cohortComponents?.Ketamine.deltaBeta, d.cohortComponents?.Ketamine.direction,
+          d.cohortComponents?.CPT.pValue, d.cohortComponents?.CPT.deltaBeta, d.cohortComponents?.CPT.direction]
       : [d.gene, d.totalProbes, d.nSigProbes, d.pValue, d.fdr, d.direction, d.nPosTop3, d.avgPosDeltaBeta, d.nNegTop3, d.avgNegDeltaBeta, d.deltaBeta]);
     const csv = `data:text/csv;charset=utf-8,${encodeURIComponent(serializeCsv([headers, ...rows]))}`;
     const link = document.createElement('a');
@@ -384,7 +417,7 @@ export default function MdmaPage() {
                 <FlaskConical className="h-4 w-4" aria-hidden="true" />
               </div>
               <div className="min-w-0">
-                <h1 className="truncate text-sm font-bold leading-tight tracking-tight text-slate-950 sm:text-base">Treatment Cohort DMR Atlas</h1>
+                <h1 className="truncate text-sm font-bold leading-tight tracking-tight text-slate-950 sm:text-base">Treatment Response DMR Atlas</h1>
                 <p className="mt-0.5 hidden text-xs font-medium text-slate-600 md:block">MDMA, ketamine, and CPT · IPW-adjusted CD4+ T-cell analysis</p>
               </div>
             </div>
@@ -399,14 +432,13 @@ export default function MdmaPage() {
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5">
         {/* Key Results / Landmark Treatment Response Genes Panel */}
         <KeyResultsPanel
-          projectTitle="Treatment Cohorts — Selected DMR Loci"
-          projectDescription="Selected loci from responder/comparison contrasts in MDMA-assisted therapy, ketamine, and CPT cohorts (IPW-adjusted, CD4+ T cells, 850K EPIC array). These contrasts do not by themselves establish treatment-induced remethylation."
+          projectTitle="Treatment Studies — Selected DMR Loci"
+          projectDescription="Selected loci from responder-versus-non-responder contrasts in MDMA-assisted therapy, ketamine, and CPT studies (IPW-adjusted, CD4+ T-cell methylation-array data). These contrasts do not by themselves establish treatment-induced remethylation."
           genes={MDMA_KEY_GENES}
           selectedGene={selectedGene}
           epicManifest={epicManifest}
           onSelectGene={(gene) => {
             selectGeneInAnalysis(gene);
-            setTimeout(() => trackSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
           }}
         />
 
@@ -424,6 +456,8 @@ export default function MdmaPage() {
                   onClick={() => {
                     setActiveTab(tab.key);
                     setCurrentPage(1);
+                    setSortField('pValue');
+                    setSortAsc(true);
                     const list = tab.key === 'cross'
                       ? data?.crossCohort ?? []
                       : tpd?.cohorts[tab.key] ?? [];
@@ -443,7 +477,7 @@ export default function MdmaPage() {
 
           {activeTab === 'cross' ? (
             <div className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-[11px] font-bold text-slate-700">
-              Pooled · not timepoint-specific
+              One combined result per gene
             </div>
           ) : (
             <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-0.5 border border-slate-200" aria-label="Analysis timepoint">
@@ -471,9 +505,9 @@ export default function MdmaPage() {
         </div>
 
         <div className="mb-5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-xs leading-relaxed text-blue-950">
-          <strong>Pooled cross-cohort</strong> is a meta-analysis and is not a Pre or Follow-up tab. The three cohort tabs are timepoint-specific N8+ registries
-          (at least 8 probes with nominal P &lt; 0.05; reported gene FDR &lt; 0.05). Selecting a gene also shows all available TotalProbes8plus context values,
-          including cohort/timepoint rows that do not reach N8+.
+          <strong>Combined analysis</strong>{' '}gives one overall result calculated across MDMA, ketamine, and CPT; it is separate from the Baseline and Follow-up comparisons.
+          {' '}The combination method and uncertainty estimates were not supplied.
+          Choose a study name to see its Baseline or Follow-up genes. Those study lists require at least 8 probes with P &lt; 0.05 and reported gene FDR &lt; 0.05.
         </div>
 
         {/* Filter Bar */}
@@ -503,9 +537,10 @@ export default function MdmaPage() {
 
         {/* ===== OVERVIEW: Volcano promoted above the table ===== */}
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs mb-6">
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4">
-            Effect–significance plot — {viewDescriptor.title} — {filteredData.length} DMRs
-          </h3>
+          <div className="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">Effect–significance plot — {viewDescriptor.title} — {filteredData.length} genes</h3>
+            <div className="flex flex-wrap gap-3 text-[10px] font-semibold text-slate-600"><span><span className="mr-1 inline-block h-2.5 w-2.5 rounded-full bg-red-600" />Hyper</span><span><span className="mr-1 inline-block h-2.5 w-2.5 rounded-full bg-blue-600" />Hypo</span><span><span className="mr-1 inline-block h-2.5 w-2.5 rotate-45 bg-amber-600" />Mixed</span></div>
+          </div>
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart accessibilityLayer margin={{ top: 10, right: 30, bottom: 30, left: 20 }}>
@@ -525,20 +560,26 @@ export default function MdmaPage() {
                       <div className="bg-white border border-slate-300 p-2.5 rounded shadow-lg text-xs space-y-0.5">
                         <div className="font-bold">{d.gene}</div>
                         <div>Δβ: <span className="font-mono">{d.deltaBeta.toFixed(4)}</span></div>
-                        <div>Nominal P: <span className="font-mono">{d.pValue < 1e-15 ? '< 1e-15' : d.pValue.toExponential(2)}</span> <strong>{nominalPStars(d.pValue) || 'ns'}</strong></div>
+                        <div>Nominal P: <span className="font-mono">{d.pValue < 1e-15 ? '< 1e-15' : d.pValue.toExponential(2)}</span> <strong>{significanceLabel(d.pValue)}</strong></div>
                       </div>
                     );
                   }
                   return null;
                 }} />
-                <Scatter data={volcanoData} onClick={(point: ScatterPointItem) => {
+                <Scatter data={concordantVolcanoData} shape="circle" onClick={(point: ScatterPointItem) => {
                   const datum = point.payload as VolcanoPoint | undefined;
                   if (datum?.gene) setSelectedGene(datum.gene);
                 }} cursor="pointer">
-                  {volcanoData.map((entry, idx) => (
-                    <Cell key={idx}
-                      fill={entry.gene === selectedGene ? '#f59e0b' : entry.direction === 'Hypermethylated' ? '#dc2626' : '#2563eb'}
-                      opacity={entry.gene === selectedGene ? 1 : 0.6} />
+                  {concordantVolcanoData.map((entry) => (
+                    <Cell key={entry.gene} fill={entry.direction === 'Hypermethylated' ? '#dc2626' : '#2563eb'} stroke={entry.gene === selectedGene ? '#0f172a' : 'none'} strokeWidth={entry.gene === selectedGene ? 2.5 : 0} opacity={entry.gene === selectedGene ? 1 : 0.65} />
+                  ))}
+                </Scatter>
+                <Scatter data={mixedVolcanoData} shape="diamond" onClick={(point: ScatterPointItem) => {
+                  const datum = point.payload as VolcanoPoint | undefined;
+                  if (datum?.gene) setSelectedGene(datum.gene);
+                }} cursor="pointer">
+                  {mixedVolcanoData.map((entry) => (
+                    <Cell key={entry.gene} fill="#d97706" stroke={entry.gene === selectedGene ? '#0f172a' : 'none'} strokeWidth={entry.gene === selectedGene ? 2.5 : 0} opacity={entry.gene === selectedGene ? 1 : 0.7} />
                   ))}
                 </Scatter>
               </ScatterChart>
@@ -567,9 +608,9 @@ export default function MdmaPage() {
                     <tr>
                       {([
                         { f: 'gene', l: 'Gene' },
-                        { f: 'pValue', l: activeTab === 'cross' ? 'Cross P' : 'Fisher P' },
-                        { f: 'deltaBeta', l: activeTab === 'cross' ? 'Pooled Δβ' : 'Δβ' },
-                        { f: 'nSigProbes', l: 'P<.05 / total' },
+                        { f: 'pValue', l: activeTab === 'cross' ? 'Combined P' : 'Fisher P' },
+                        { f: 'deltaBeta', l: activeTab === 'cross' ? 'Combined Δβ' : 'Δβ' },
+                        { f: (activeTab === 'cross' ? 'nCohortsNominal' : 'nSigProbes') as keyof MdmaTableRow, l: activeTab === 'cross' ? 'Study evidence' : 'P<.05 / total' },
                       ] as const).map(({ f, l }) => (
                         <th key={f} className="p-0" aria-sort={sortField === f ? (sortAsc ? 'ascending' : 'descending') : 'none'}>
                           <button type="button" className="flex w-full items-center gap-1 p-2.5 text-left hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-slate-900" onClick={() => { setSortField(f); setSortAsc(sortField === f ? !sortAsc : true); }}>
@@ -593,14 +634,16 @@ export default function MdmaPage() {
                           </td>
                           <td className="whitespace-nowrap p-2.5 font-mono text-slate-900">
                             {row.pValue < 1e-15 ? '< 1e-15' : row.pValue.toExponential(2)}{' '}
-                            <strong aria-label={`${nominalPStars(row.pValue).length || 0} significance stars`}>{nominalPStars(row.pValue) || 'ns'}</strong>
+                            <strong aria-label={`${nominalPStars(row.pValue).length || 0} significance stars`}>{significanceLabel(row.pValue)}</strong>
                           </td>
                           <td className="p-2.5 font-mono font-bold">
                             <span className={row.deltaBeta > 0 ? 'text-red-600' : 'text-blue-600'}>
                               {row.deltaBeta > 0 ? `+${row.deltaBeta.toFixed(3)}` : row.deltaBeta.toFixed(3)}
                             </span>
                           </td>
-                          <td className="p-2.5 font-mono text-slate-700">{row.nSigProbes}/{row.totalProbes}</td>
+                          <td className="p-2.5 font-mono text-slate-700">
+                            {activeTab === 'cross' ? <>{row.nCohortsNominal ?? 0}/3 P&lt;.05<br /><span className="text-[10px] text-slate-500">Δβ signs {row.componentSignsConsistent ? 'same' : 'differ'}</span></> : `${row.nSigProbes}/${row.totalProbes}`}
+                          </td>
                           <td className="p-2.5">
                             <span className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${
                               row.direction === 'Hypermethylated' ? 'bg-red-50 text-red-700' :
@@ -644,49 +687,62 @@ export default function MdmaPage() {
               </div>
             )}
 
+            {selectedResult?.kind === 'pooled-cross-cohort' && (
+              <section className="rounded-xl border border-slate-300 bg-white p-4 shadow-xs" aria-labelledby="combined-result-title">
+                <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                  <div>
+                    <h3 id="combined-result-title" className="text-sm font-bold text-slate-900">Overall combined result — {selectedResult.result.gene}</h3>
+                    <p className="mt-1 text-xs text-slate-500">One overall test across MDMA, ketamine, and CPT. This is not a Baseline or Follow-up result.</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 sm:justify-end">
+                    <span className="self-start rounded bg-slate-900 px-2.5 py-1 text-xs font-bold text-white">{cohortSupportLabel(selectedResult.result.nCohortsNominal)}</span>
+                    <span className={`self-start rounded border px-2.5 py-1 text-xs font-bold ${selectedResult.result.componentSignsConsistent ? 'border-emerald-300 bg-emerald-50 text-emerald-800' : 'border-amber-300 bg-amber-50 text-amber-900'}`}>{componentSignLabel(selectedResult.result.componentSignsConsistent)}</span>
+                  </div>
+                </div>
+                <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-3">
+                  <div className="rounded-lg bg-slate-50 p-2"><dt className="text-slate-500">Combined P</dt><dd className="mt-0.5 font-mono font-bold">{formatProbability(selectedResult.result.pValue)} {significanceLabel(selectedResult.result.pValue)}</dd></div>
+                  <div className="rounded-lg bg-slate-50 p-2"><dt className="text-slate-500">Combined FDR</dt><dd className="mt-0.5 font-mono font-bold">{formatProbability(selectedResult.result.fdr)}</dd></div>
+                  <div className="rounded-lg bg-slate-50 p-2"><dt className="text-slate-500">Combined Δβ</dt><dd className="mt-0.5 font-mono font-bold">{selectedResult.result.deltaBeta > 0 ? '+' : ''}{selectedResult.result.deltaBeta.toFixed(4)}</dd></div>
+                  {TREATMENT_COHORTS.map((cohort) => {
+                    const component = selectedResult.result.cohortComponents[cohort];
+                    return (
+                    <div key={cohort} className="rounded-lg border border-slate-200 bg-white p-2">
+                      <dt className="text-slate-500">{cohort} component</dt>
+                      <dd className="mt-0.5 font-mono font-bold">P {formatProbability(component.pValue)} {significanceLabel(component.pValue)}</dd>
+                      <dd className="mt-0.5 text-[11px] text-slate-700">Δβ <span className="font-mono font-semibold">{component.deltaBeta > 0 ? '+' : ''}{component.deltaBeta.toFixed(4)}</span> · {component.direction}</dd>
+                    </div>
+                    );
+                  })}
+                </dl>
+              </section>
+            )}
+
             {/* Bar Chart */}
-            {selectedGene && selectedGeneBarData && (() => {
+            {selectedGene && selectedGeneBarData && selectedGeneBarData.length > 0 && (() => {
               // Force symmetric Y-axis domain
               const allVals = selectedGeneBarData
-                .flatMap((d) => [d.deltaBeta_Pre, d.deltaBeta_FUP])
+                .flatMap((d) => [d.prePositive, d.preNegative, d.fupPositive, d.fupNegative])
                 .filter((value): value is number => value !== null);
               const maxAbs = Math.max(...allVals.map(Math.abs), 0.01);
               const pad = maxAbs * 1.35;
               const yDomain = [-pad, pad];
 
-              // Custom label for Pre bars
-              const renderPreLabel = (props: LabelProps) => {
+              const renderVisitLabel = (props: LabelProps, visit: 'pre' | 'fup', sign: 'positive' | 'negative') => {
                 const { index } = props;
                 if (index === undefined || !selectedGeneBarData[index]) return null;
                 const x = Number(props.x ?? 0);
                 const y = Number(props.y ?? 0);
                 const width = Number(props.width ?? 0);
                 const entry = selectedGeneBarData[index];
-                if (entry.deltaBeta_Pre === null || !entry.pre) return null;
-                const sig = significanceLabel(entry.pre.pValue);
-                const isPos = entry.deltaBeta_Pre >= 0;
-                const ly = isPos ? y - 5 : y + 15;
+                const result = visit === 'pre' ? entry.pre : entry.fup;
+                if (!result) return null;
+                const shouldRender = sign === 'positive' ? result.nPosTop3 > 0 : result.nPosTop3 === 0 && result.nNegTop3 > 0;
+                if (!shouldRender) return null;
+                const sig = nominalPStars(result.pValue);
+                if (!sig) return null;
+                const ly = sign === 'positive' ? y - 5 : y + 15;
                 return (
-                  <text x={x + width / 2} y={ly} textAnchor="middle" fill={sig === 'ns' ? '#94a3b8' : '#475569'} fontSize={sig === 'ns' ? 8 : 10} fontWeight={sig === 'ns' ? 400 : 700} fontStyle={sig === 'ns' ? 'italic' : 'normal'}>
-                    {sig}
-                  </text>
-                );
-              };
-
-              // Custom label for FUP bars
-              const renderFupLabel = (props: LabelProps) => {
-                const { index } = props;
-                if (index === undefined || !selectedGeneBarData[index]) return null;
-                const x = Number(props.x ?? 0);
-                const y = Number(props.y ?? 0);
-                const width = Number(props.width ?? 0);
-                const entry = selectedGeneBarData[index];
-                if (entry.deltaBeta_FUP === null || !entry.fup) return null;
-                const sig = significanceLabel(entry.fup.pValue);
-                const isPos = entry.deltaBeta_FUP >= 0;
-                const ly = isPos ? y - 5 : y + 15;
-                return (
-                  <text x={x + width / 2} y={ly} textAnchor="middle" fill={sig === 'ns' ? '#94a3b8' : '#7c3aed'} fontSize={sig === 'ns' ? 8 : 10} fontWeight={sig === 'ns' ? 400 : 700} fontStyle={sig === 'ns' ? 'italic' : 'normal'}>
+                  <text x={x + width / 2} y={ly} textAnchor="middle" fill="#0f172a" fontSize={10} fontWeight={800}>
                     {sig}
                   </text>
                 );
@@ -696,20 +752,16 @@ export default function MdmaPage() {
               <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h3 className="text-base font-bold text-slate-900">{selectedGene}</h3>
+                    <h3 className="text-base font-bold text-slate-900">Visit-specific results — {selectedGene}</h3>
                     <p className="text-xs text-slate-500">
-                      Six cohort/timepoint context estimates from TotalProbes8plus tables. A value can be shown here even when it is not in the N8+ cohort registry.
+                      Each visit group is a responder-versus-non-responder result. Positive and negative Top-3 means are drawn separately when both occur, so Mixed patterns are not collapsed into one net bar. The difference between visits is not itself a tested longitudinal change, and these six analyses are not the three component P values in the combined result.
                     </p>
+                    {selectedGeneMissingStudies.length > 0 && <p className="mt-2 rounded border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-900">Not shown: {selectedGeneMissingStudies.join(', ')} — this gene was not provided in those source gene-level results.</p>}
                   </div>
-                  <div className="flex items-center gap-3 text-[11px]">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-xs bg-slate-400 border border-slate-500" />
-                      <span className="text-slate-600 font-medium">Baseline (Pre)</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-xs bg-purple-600 border border-purple-700" />
-                      <span className="text-slate-600 font-medium">Follow-up (MDMA FUP1/E2; Ketamine/CPT FUP2)</span>
-                    </div>
+                  <div className="flex flex-wrap items-center gap-3 text-[11px]">
+                    <span className="font-semibold text-slate-700"><span className="mr-1 inline-block h-2.5 w-2.5 bg-red-600" />Higher methylation</span>
+                    <span className="font-semibold text-slate-700"><span className="mr-1 inline-block h-2.5 w-2.5 bg-blue-600" />Lower methylation</span>
+                    <span className="text-slate-600">Lighter: Baseline · darker: Follow-up</span>
                   </div>
                 </div>
                 <div className="h-60 w-full">
@@ -726,13 +778,13 @@ export default function MdmaPage() {
                             <div className={`${accent ? 'bg-purple-50/50 border-purple-200' : 'bg-slate-50 border-slate-200'} p-1.5 rounded border`}>
                               <div className={`text-[10px] font-bold uppercase ${accent ? 'text-purple-700' : 'text-slate-500'}`}>{label}</div>
                               {!result ? (
-                                <div className="font-semibold text-slate-500">Unavailable</div>
+                                <div className="font-semibold text-slate-500">Not provided in the source gene-level results</div>
                               ) : (<>
                                 <div>Δβ: <span className="font-mono font-bold">{result.deltaBeta > 0 ? `+${result.deltaBeta.toFixed(4)}` : result.deltaBeta.toFixed(4)}</span></div>
                                 <div>Nominal P: <span className="font-mono">{formatProbability(result.pValue)}</span> <strong>{significanceLabel(result.pValue)}</strong></div>
                                 <div>Reported FDR: <span className="font-mono">{formatProbability(result.fdr)}</span></div>
                                 <div>Significant/total probes: <strong>{result.nSigProbes}/{result.totalProbes}</strong></div>
-                                <div className={result.nSigProbes >= 8 ? 'text-emerald-700' : 'text-amber-700'}>{result.nSigProbes >= 8 ? 'Core N8+ row' : 'Context only · below N8'}</div>
+                                <div className={result.nSigProbes >= 8 ? 'text-emerald-700' : 'text-slate-500'}>{result.nSigProbes >= 8 ? 'Included in the study’s selected list' : 'Raw result; below the study-list cutoff'}</div>
                                 <div>Pattern: {result.direction}</div>
                                 <div>Top-3 +: {result.nPosTop3}, mean {result.avgPosDeltaBeta == null ? '—' : result.avgPosDeltaBeta.toFixed(4)}</div>
                                 <div>Top-3 −: {result.nNegTop3}, mean {result.avgNegDeltaBeta == null ? '—' : result.avgNegDeltaBeta.toFixed(4)}</div>
@@ -741,7 +793,7 @@ export default function MdmaPage() {
                           );
                           return (
                             <div className="bg-white border border-slate-300 p-3 rounded-xl shadow-xl text-xs space-y-1.5 min-w-[360px]">
-                              <div className="font-extrabold text-slate-900 border-b border-slate-100 pb-1">{d.cohort} Cohort</div>
+                              <div className="font-extrabold text-slate-900 border-b border-slate-100 pb-1">{d.cohort} study</div>
                               <div className="grid grid-cols-2 gap-2 text-[11px] pt-0.5">
                                 {resultCard(d.pre, 'Baseline (Pre)')}
                                 {resultCard(d.fup, d.cohort === 'MDMA' ? 'Follow-up (FUP1 / E2)' : 'Follow-up (FUP2)', true)}
@@ -752,37 +804,39 @@ export default function MdmaPage() {
                         return null;
                       }} />
                       <ReferenceLine y={0} stroke="#94a3b8" strokeWidth={1.2} />
-                      <Bar dataKey="deltaBeta_Pre" name="Baseline (Pre)" fill="#94a3b8" radius={[4, 4, 0, 0]}>
-                        <LabelList content={renderPreLabel} />
+                      <Bar dataKey="prePositive" name="Baseline positive mean" stackId="pre" fill="#dc2626" fillOpacity={0.45} stroke="#991b1b" strokeDasharray="3 2" radius={[4, 4, 0, 0]}>
+                        <LabelList content={(props) => renderVisitLabel(props, 'pre', 'positive')} />
                       </Bar>
-                      <Bar dataKey="deltaBeta_FUP" name="Follow-up (FUP)" radius={[4, 4, 0, 0]}>
-                        {selectedGeneBarData.map((entry, i) => (
-                          <Cell key={i} fill={entry.color} />
-                        ))}
-                        <LabelList content={renderFupLabel} />
+                      <Bar dataKey="preNegative" name="Baseline negative mean" stackId="pre" fill="#2563eb" fillOpacity={0.45} stroke="#1e40af" strokeDasharray="3 2" radius={[0, 0, 4, 4]}>
+                        <LabelList content={(props) => renderVisitLabel(props, 'pre', 'negative')} />
+                      </Bar>
+                      <Bar dataKey="fupPositive" name="Follow-up positive mean" stackId="fup" fill="#dc2626" fillOpacity={0.9} radius={[4, 4, 0, 0]}>
+                        <LabelList content={(props) => renderVisitLabel(props, 'fup', 'positive')} />
+                      </Bar>
+                      <Bar dataKey="fupNegative" name="Follow-up negative mean" stackId="fup" fill="#2563eb" fillOpacity={0.9} radius={[0, 0, 4, 4]}>
+                        <LabelList content={(props) => renderVisitLabel(props, 'fup', 'negative')} />
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
                 <div className="flex items-center justify-center gap-4 mt-1 text-[10px] text-slate-500 border-t border-slate-100 pt-2">
-                  <span><strong className="text-slate-900">***</strong> nominal P &lt; 0.001</span>
-                  <span><strong className="text-slate-900">**</strong> nominal P &lt; 0.01</span>
-                  <span><strong className="text-slate-900">*</strong> nominal P &lt; 0.05</span>
-                  <span><em className="text-slate-400">ns</em> not significant</span>
-                  <span><strong>—</strong> unavailable (not non-significant)</span>
+                  <span className="whitespace-nowrap"><strong className="text-slate-900">***</strong> nominal P &lt; 0.001</span>
+                  <span className="whitespace-nowrap"><strong className="text-slate-900">**</strong> nominal P &lt; 0.01</span>
+                  <span className="whitespace-nowrap"><strong className="text-slate-900">*</strong> nominal P &lt; 0.05</span>
+                  <span className="whitespace-nowrap">No star: nominal P ≥ 0.05</span>
                 </div>
                 <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50">
-                  <summary className="cursor-pointer px-3 py-2 text-xs font-semibold text-slate-700">Accessible cohort/timepoint data table</summary>
+                  <summary className="cursor-pointer px-3 py-2 text-xs font-semibold text-slate-700">Accessible study/visit data table</summary>
                   <div className="overflow-x-auto border-t border-slate-200">
                     <table className="w-full min-w-[980px] text-left text-xs">
-                      <caption className="sr-only">Observed cohort and timepoint estimates for {selectedGene}</caption>
+                      <caption className="sr-only">Observed study and visit estimates for {selectedGene}</caption>
                       <thead className="bg-slate-100 text-slate-600">
                         <tr>
-                          <th className="px-3 py-2">Cohort</th>
-                          <th className="px-3 py-2">Baseline Δβ</th>
+                          <th className="px-3 py-2">Study</th>
+                          <th className="px-3 py-2">Baseline weighted Δβ</th>
                           <th className="px-3 py-2">Baseline P / FDR</th>
                           <th className="px-3 py-2">Baseline probes / pattern</th>
-                          <th className="px-3 py-2">Follow-up Δβ</th>
+                          <th className="px-3 py-2">Follow-up weighted Δβ</th>
                           <th className="px-3 py-2">Follow-up P / FDR</th>
                           <th className="px-3 py-2">Follow-up probes / pattern</th>
                         </tr>
@@ -791,12 +845,12 @@ export default function MdmaPage() {
                         {selectedGeneBarData.map((entry) => (
                           <tr key={entry.cohort} className="border-t border-slate-200">
                             <td className="px-3 py-2 font-semibold">{entry.cohort}</td>
-                            <td className="px-3 py-2 font-mono">{entry.deltaBeta_Pre == null ? '—' : entry.deltaBeta_Pre.toFixed(4)}</td>
+                            <td className="px-3 py-2 font-mono">{entry.pre == null ? '—' : entry.pre.deltaBeta.toFixed(4)}</td>
                             <td className="whitespace-nowrap px-3 py-2 font-mono">{entry.pre ? <>P {formatProbability(entry.pre.pValue)} {significanceLabel(entry.pre.pValue)}<br />FDR {formatProbability(entry.pre.fdr)}</> : '—'}</td>
-                            <td className="px-3 py-2">{entry.pre ? <>{entry.pre.nSigProbes}/{entry.pre.totalProbes} · {entry.pre.direction}<br /><span className="text-slate-500">+{entry.pre.nPosTop3} / −{entry.pre.nNegTop3}</span></> : 'Unavailable'}</td>
-                            <td className="px-3 py-2 font-mono">{entry.deltaBeta_FUP == null ? '—' : entry.deltaBeta_FUP.toFixed(4)}</td>
+                            <td className="px-3 py-2">{entry.pre ? <>{entry.pre.nSigProbes}/{entry.pre.totalProbes} · {entry.pre.direction}<br /><span className="text-slate-500">+{entry.pre.nPosTop3} / −{entry.pre.nNegTop3}</span></> : 'Not provided in source results'}</td>
+                            <td className="px-3 py-2 font-mono">{entry.fup == null ? '—' : entry.fup.deltaBeta.toFixed(4)}</td>
                             <td className="whitespace-nowrap px-3 py-2 font-mono">{entry.fup ? <>P {formatProbability(entry.fup.pValue)} {significanceLabel(entry.fup.pValue)}<br />FDR {formatProbability(entry.fup.fdr)}</> : '—'}</td>
-                            <td className="px-3 py-2">{entry.fup ? <>{entry.fup.nSigProbes}/{entry.fup.totalProbes} · {entry.fup.direction}<br /><span className="text-slate-500">+{entry.fup.nPosTop3} / −{entry.fup.nNegTop3}</span></> : 'Unavailable'}</td>
+                            <td className="px-3 py-2">{entry.fup ? <>{entry.fup.nSigProbes}/{entry.fup.totalProbes} · {entry.fup.direction}<br /><span className="text-slate-500">+{entry.fup.nPosTop3} / −{entry.fup.nNegTop3}</span></> : 'Not provided in source results'}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -807,25 +861,13 @@ export default function MdmaPage() {
               );
             })()}
 
-            {/* Probe Track */}
-            <div ref={trackSectionRef} className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-              <div className="flex items-center space-x-2.5 mb-3">
-                <MapPin className="w-4 h-4 text-slate-800" />
-                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">CpG Locus Map — {selectedGene || 'Select Gene'}</h3>
+            {selectedGene && selectedGeneBarData?.length === 0 && (
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950 shadow-xs">
+                <h3 className="font-bold">No visit-specific figure for {selectedGene}</h3>
+                <p className="mt-1">This gene was not provided in any of the six source gene-level visit results. No values were estimated or substituted by this application.</p>
               </div>
-              {trackLoading ? (
-                <div className="text-center py-8 flex flex-col items-center gap-2">
-                  <Loader2 className="w-5 h-5 text-slate-500 animate-spin" />
-                  <span className="text-slate-400 text-xs">Loading probe data for <strong>{selectedGene}</strong>...</span>
-                </div>
-              ) : selectedTrackData ? (
-                <GenomicTrackPlot geneData={selectedTrackData} />
-              ) : selectedGene ? (
-                <div className="text-center py-8 text-slate-400 text-xs">No probe-level track data available for <strong>{selectedGene}</strong>.</div>
-              ) : (
-                <div className="text-center py-8 text-slate-400 text-xs">Select a gene from the registry to view its genomic track.</div>
-              )}
-            </div>
+            )}
+
           </div>
         </div>
 

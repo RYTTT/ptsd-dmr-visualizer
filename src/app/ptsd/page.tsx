@@ -47,6 +47,7 @@ interface DmrTableRow {
   fdr: number;
   pValue: number | null;
   deltaBeta: number;
+  effectDefinition: string;
   direction: Direction;
   rawItem: SelectedPtsdResult;
 }
@@ -92,7 +93,30 @@ export default function Home() {
       fetch('/data/dmrData.json').then((response) => readJsonResponse(response, 'Failed to load DMR data')),
       loadGenesMetadata(FTC_KEY_GENES.map(({ gene }) => gene)),
     ]).then(([dmr, metadata]) => {
-      setMasterData(validateMasterDMRData(dmr));
+      const master = validateMasterDMRData(dmr);
+      setMasterData(master);
+      const query = new URLSearchParams(window.location.search);
+      const requestedGene = query.get('gene')?.trim().toUpperCase();
+      const requestedSubtype = query.get('subtype');
+      if (requestedGene) {
+        const subtype = SUBTYPE_KEYS.find((key) => key === requestedSubtype && master.uniqueSubtypes[key].some((item) => item.gene.toUpperCase() === requestedGene));
+        const subtypeResult = subtype && master.uniqueSubtypes[subtype].find((item) => item.gene.toUpperCase() === requestedGene);
+        const cross = master.crossSubtype.find((item) => item.gene.toUpperCase() === requestedGene);
+        if (subtype && subtypeResult) {
+          setActiveTab(subtype);
+          setSelectedGene(subtypeResult.gene);
+        } else if (cross) {
+          setActiveTab('cross');
+          setSelectedGene(cross.gene);
+        } else {
+          const fallbackSubtype = SUBTYPE_KEYS.find((key) => master.uniqueSubtypes[key].some((item) => item.gene.toUpperCase() === requestedGene));
+          const result = fallbackSubtype && master.uniqueSubtypes[fallbackSubtype].find((item) => item.gene.toUpperCase() === requestedGene);
+          if (fallbackSubtype && result) {
+            setActiveTab(fallbackSubtype);
+            setSelectedGene(result.gene);
+          }
+        }
+      }
       const annotations: GeneAnnotationMap = {};
       const manifest: Record<string, EpicManifestEntry> = {};
       for (const { gene } of FTC_KEY_GENES) {
@@ -202,6 +226,7 @@ export default function Home() {
           fdr: item.crossFdr,
           pValue: item.crossP,
           deltaBeta: avgDeltaBeta,
+          effectDefinition: 'Arithmetic mean of 4 subtype Δβ summaries',
           direction: dir,
           rawItem: { kind: 'cross-subtype', result: item },
         };
@@ -215,8 +240,9 @@ export default function Home() {
         totalProbes: item.totalProbes,
         isPtsd: item.isPtsd,
         fdr: item.fdr,
-        pValue: null,
+        pValue: item.pValue,
         deltaBeta: item.deltaBeta,
+        effectDefinition: `${activeTab} mean selected-probe Δβ`,
         direction: item.direction,
         rawItem: { kind: 'subtype-unique', subtype: activeTab, result: item },
       }));
@@ -288,39 +314,45 @@ export default function Home() {
   const handleExportCSV = () => {
     if (activeTab === 'cross') {
       // Full cross-subtype export with all 4 subtype columns
-      const headers = ['Gene', 'Chr', 'DMR_TestedProbes', 'PTSD_Related', 'CrossP', 'CrossFDR',
-        'SSS_DeltaBeta', 'SSS_FDR', 'SSS_Direction',
-        'ADS_DeltaBeta', 'ADS_FDR', 'ADS_Direction',
-        'ICF_DeltaBeta', 'ICF_FDR', 'ICF_Direction',
-        'ISS_DeltaBeta', 'ISS_FDR', 'ISS_Direction',
+      const headers = ['Gene', 'Chr', 'DMR_TestedProbes', 'PTSD_Related', 'CrossP', 'CrossFDR', 'N_Subtypes_FDR_p05', 'DisplayOnly_ArithmeticMean_4Subtype_DeltaBeta',
+        ...SUBTYPE_KEYS.flatMap((subtype) => [`${subtype}_P`, `${subtype}_DeltaBeta`, `${subtype}_FDR`, `${subtype}_Direction`, `${subtype}_NSigProbesP05`]),
       ];
       const rows = filteredData.map((d) => {
         const item = d.rawItem.kind === 'cross-subtype' ? d.rawItem.result : null;
         const subtypes = item?.subtypes;
         return [
-          d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', item?.crossP, item?.crossFdr,
-          subtypes?.SSS.deltaBeta ?? '', subtypes?.SSS.fdr ?? '', subtypes?.SSS.direction ?? '',
-          subtypes?.ADS.deltaBeta ?? '', subtypes?.ADS.fdr ?? '', subtypes?.ADS.direction ?? '',
-          subtypes?.ICF.deltaBeta ?? '', subtypes?.ICF.fdr ?? '', subtypes?.ICF.direction ?? '',
-          subtypes?.ISS.deltaBeta ?? '', subtypes?.ISS.fdr ?? '', subtypes?.ISS.direction ?? '',
+          d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', item?.crossP, item?.crossFdr, item?.nSubtypesSig, d.deltaBeta,
+          subtypes?.SSS.pValue ?? '', subtypes?.SSS.deltaBeta ?? '', subtypes?.SSS.fdr ?? '', subtypes?.SSS.direction ?? '', subtypes?.SSS.nSigProbes ?? '',
+          subtypes?.ADS.pValue ?? '', subtypes?.ADS.deltaBeta ?? '', subtypes?.ADS.fdr ?? '', subtypes?.ADS.direction ?? '', subtypes?.ADS.nSigProbes ?? '',
+          subtypes?.ICF.pValue ?? '', subtypes?.ICF.deltaBeta ?? '', subtypes?.ICF.fdr ?? '', subtypes?.ICF.direction ?? '', subtypes?.ICF.nSigProbes ?? '',
+          subtypes?.ISS.pValue ?? '', subtypes?.ISS.deltaBeta ?? '', subtypes?.ISS.fdr ?? '', subtypes?.ISS.direction ?? '', subtypes?.ISS.nSigProbes ?? '',
         ];
       });
       const csvContent = `data:text/csv;charset=utf-8,${encodeURIComponent(serializeCsv([headers, ...rows]))}`;
       const link = document.createElement('a');
       link.setAttribute('href', csvContent);
-      link.setAttribute('download', `DMR_CrossSubtype_filtered.csv`);
+      link.setAttribute('download', `PTSD_DMR_cross-subtype_filtered.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } else {
-      const headers = ['Gene', 'Chr', 'TotalProbes', 'PTSD_Related', 'FDR', 'DeltaBeta', 'Direction'];
-      const rows = filteredData.map((d) => [
-        d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', d.fdr, d.deltaBeta, d.direction,
-      ]);
+      const headers = ['Gene', 'Chr', 'TotalProbes', 'PTSD_Related', 'SelectedSubtype', 'SelectedP', 'SelectedFDR', 'SelectedDeltaBeta', 'SelectedDirection',
+        ...SUBTYPE_KEYS.flatMap((subtype) => [`${subtype}_P`, `${subtype}_FDR`, `${subtype}_DeltaBeta`, `${subtype}_Direction`, `${subtype}_NSigProbesP05`]),
+      ];
+      const rows = filteredData.map((d) => {
+        const result = d.rawItem.kind === 'subtype-unique' ? d.rawItem.result : null;
+        return [
+          d.gene, d.chr, d.totalProbes, d.isPtsd ? 'YES' : 'NO', activeTab, d.pValue, d.fdr, d.deltaBeta, d.direction,
+          ...SUBTYPE_KEYS.flatMap((subtype) => {
+            const stat = result?.subtypes[subtype];
+            return [stat?.pValue, stat?.fdr, stat?.deltaBeta, stat?.direction, stat?.nSigProbes];
+          }),
+        ];
+      });
       const csvContent = `data:text/csv;charset=utf-8,${encodeURIComponent(serializeCsv([headers, ...rows]))}`;
       const link = document.createElement('a');
       link.setAttribute('href', csvContent);
-      link.setAttribute('download', `DMR_${activeTab}_Unique_filtered.csv`);
+      link.setAttribute('download', `PTSD_DMR_${activeTab}-selected_filtered.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -400,10 +432,18 @@ export default function Home() {
           issPtsdCount={issPtsdCount}
         />
 
+        <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-xs leading-relaxed text-blue-950">
+          {activeTab === 'cross' ? (
+            <><strong>Adjusted result in 3–4 subtypes:</strong> each listed gene has reported FDR &lt; 0.05 in 3 or 4 of the 4 PTSD subtypes. The figure shows every observed subtype result.</>
+          ) : (
+            <><strong>{activeTab}-selected genes:</strong> each listed gene met the source FDR &lt; 0.05 rule in {activeTab} only. Results from the other subtypes are still shown for comparison; a nominal P star there does not mean the adjusted threshold was met.</>
+          )}
+        </div>
+
         {/* Key Results / Landmark PTSD Genes Panel */}
         <KeyResultsPanel
-          projectTitle="FTC PTSD Cohort — Landmark Epigenetic Loci"
-          projectDescription="Key candidate genes identified across military & civilian trauma cohorts (Vet 450K & 850K EPIC array manifests). Click any landmark gene card to immediately view its genomic track plot."
+          projectTitle="PTSD Subtypes — Landmark Epigenetic Loci"
+          projectDescription="Key candidate genes included for inspection across the SSS, ADS, ICF, and ISS subtype analyses. Click a landmark gene card to open its result and genomic track."
           genes={FTC_KEY_GENES}
           selectedGene={selectedGene}
           epicManifest={epicManifest}
@@ -495,7 +535,7 @@ export default function Home() {
                 <div className="flex items-center space-x-2">
                   <Dna className="w-4 h-4 text-slate-700" />
                   <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                    DMR Gene Registry ({filteredData.length} genes)
+                    Genes in this view ({filteredData.length})
                   </h3>
                 </div>
                 <span className="text-[11px] text-slate-500 font-medium">
@@ -522,7 +562,7 @@ export default function Home() {
                       </th>
                       <th className="p-0" aria-sort={sortField === 'deltaBeta' ? (sortAsc ? 'ascending' : 'descending') : 'none'}>
                         <button type="button" className="flex w-full items-center space-x-1 p-2.5 text-left hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-slate-900" onClick={() => { setSortField('deltaBeta'); setSortAsc(sortField === 'deltaBeta' ? !sortAsc : true); }}>
-                          <span>Δβ</span>
+                          <span>{activeTab === 'cross' ? '4-subtype mean Δβ' : 'Δβ'}</span>
                           <ArrowUpDown className="w-3 h-3 text-slate-400" />
                         </button>
                       </th>

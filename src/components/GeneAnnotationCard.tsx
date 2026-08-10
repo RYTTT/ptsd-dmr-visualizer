@@ -27,13 +27,32 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
     return () => { cancelled = true; };
   }, [gene]);
 
-  const crossLinkHref = project === 'ptsd' ? '/mdma' : '/ptsd';
+  const targetStat = crossInfo ? (project === 'ptsd' ? crossInfo.mdma : crossInfo.ptsd) : null;
+  const crossLinkParams = new URLSearchParams({ gene });
+  if (project === 'ptsd' && targetStat?.type.startsWith('timepoint-cohort:')) {
+    const [, visit, study] = targetStat.type.split(':');
+    crossLinkParams.set('study', study);
+    crossLinkParams.set('visit', visit);
+  }
+  if (project === 'mdma' && targetStat?.type.startsWith('subtype-unique:')) {
+    crossLinkParams.set('subtype', targetStat.type.split(':')[1]);
+  }
+  const crossLinkHref = `${project === 'ptsd' ? '/mdma' : '/ptsd'}?${crossLinkParams.toString()}`;
   const crossLinkLabel = project === 'ptsd' ? 'Treatment Response Atlas' : 'PTSD DMR Atlas';
   const crossLinkIcon = project === 'ptsd' ? FlaskConical : Shield;
   const CrossIcon = crossLinkIcon;
 
   const crossFdr = crossInfo ? (project === 'ptsd' ? crossInfo.mdma.fdr : crossInfo.ptsd.fdr) : null;
   const crossDirection = crossInfo ? (project === 'ptsd' ? crossInfo.mdma.direction : crossInfo.ptsd.direction) : null;
+  const legacyStatisticalBoilerplate = 'Identified as a significant differentially methylated region (DMR) in the cross-cohort meta-analysis of PTSD stress subtypes.';
+  const displaySummary = annotation?.summary.includes(legacyStatisticalBoilerplate)
+    ? annotation.summary.replace(
+        legacyStatisticalBoilerplate,
+        project === 'ptsd'
+          ? 'Included in the PTSD subtype result database; consult the active result view for its exact selection context.'
+          : 'Included here as biological context; consult the active treatment result for current statistical evidence.',
+      )
+    : annotation?.summary;
 
   if (!annotation) {
     return (
@@ -43,7 +62,7 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
           <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-200">
             <CrossIcon className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             <span className="text-emerald-800 font-semibold text-[11px]">
-              Stored overlap in {crossLinkLabel} (FDR {crossFdr! < 1e-15 ? '< 1×10⁻¹⁵' : crossFdr!.toExponential(2)}; summary direction: {crossDirection})
+              Current result in {crossLinkLabel} (FDR {crossFdr! < 1e-15 ? '< 1×10⁻¹⁵' : crossFdr!.toExponential(2)}; summary direction: {crossDirection})
             </span>
             <a href={crossLinkHref} className="ml-auto text-emerald-700 hover:text-emerald-900 flex items-center gap-0.5 text-[11px] font-bold whitespace-nowrap">
               View <ArrowRight className="w-3 h-3" />
@@ -78,7 +97,7 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
           <div className="flex-1 min-w-0">
             <div className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Cross-project statistical overlap</div>
             <div className="text-xs text-emerald-900 font-medium">
-              Stored significant record in {crossLinkLabel}
+              Current selected result in {crossLinkLabel}
               <span className="ml-2 font-mono text-emerald-700">
                 FDR {crossFdr! < 1e-15 ? '< 1e-15' : crossFdr!.toExponential(2)}
               </span>
@@ -100,7 +119,7 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
         </div>
       )}
 
-      {crossInfo && <p className="-mt-2 text-[10px] leading-relaxed text-slate-500">Cross-project badges reproduce the stored project-level summary. “Mixed” denotes opposing selected-probe directions; overlap does not establish replication, mediation, or causality.</p>}
+      {crossInfo && <p className="-mt-2 text-[10px] leading-relaxed text-slate-500">Cross-project badges reproduce the current project-level summary. “Mixed” denotes opposing selected-probe directions; overlap does not establish replication, mediation, or causality.</p>}
 
       {/* Biological Function Summary */}
       <div className="text-xs text-slate-800 leading-relaxed bg-slate-50 border border-slate-200 p-3.5 rounded-lg">
@@ -108,7 +127,7 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
           <BrainCircuit className="w-4 h-4 text-slate-700" />
           Curated biological context
         </p>
-        <p className="text-slate-700 leading-normal">{annotation.summary}</p>
+        <p className="text-slate-700 leading-normal">{displaySummary}</p>
       </div>
 
       {/* Psychological / Psychiatric Disorders */}
@@ -168,14 +187,6 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
             
             {/* Database & External Resources */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
-              <a
-                href={`https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=${gene}&highlight=`}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-1.5 text-[11px] font-bold text-amber-800 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded border border-amber-200 transition"
-              >
-                UCSC Genome Browser <ExternalLink className="w-3 h-3" />
-              </a>
               <a
                 href={`https://www.ewascatalog.org/search?query=${gene}`}
                 target="_blank"

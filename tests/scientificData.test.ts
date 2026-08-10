@@ -25,38 +25,61 @@ test('pooled treatment results never inherit a timepoint label or filename', () 
   const followUp = treatmentViewDescriptor('cross', 'FUP');
   assert.deepEqual(baseline, followUp);
   assert.equal(baseline.kind, 'pooled-cross-cohort');
-  assert.match(baseline.shortLabel, /not timepoint-specific/u);
+  assert.equal(baseline.shortLabel, 'Combined result');
   assert.doesNotMatch(baseline.csvFilename, /Pre|FUP|Baseline|Follow/u);
 
   const cohort = treatmentViewDescriptor('MDMA', 'Pre');
   assert.equal(cohort.kind, 'timepoint-cohort');
   assert.match(cohort.title, /Baseline \(Pre\)/u);
-  assert.match(cohort.csvFilename, /Pre_MDMA_N8plus/u);
+  assert.match(cohort.csvFilename, /Pre_MDMA_screened/u);
 });
 
-test('treatment database ships exact N8+ registry counts and complete BDNF Ketamine context', () => {
+test('treatment database ships exact current screen counts and complete BDNF context', () => {
   const parsed = validateMdmaMasterData(readJson('../public/data/mdma/dmrData.json'));
   assert.deepEqual({
     Pre: Object.fromEntries(Object.entries(parsed.timepoints.Pre.cohorts).map(([key, rows]) => [key, rows.length])),
     FUP: Object.fromEntries(Object.entries(parsed.timepoints.FUP.cohorts).map(([key, rows]) => [key, rows.length])),
   }, {
-    Pre: { MDMA: 827, Ketamine: 475, CPT: 515 },
-    FUP: { MDMA: 1274, Ketamine: 878, CPT: 1410 },
+    Pre: { MDMA: 693, Ketamine: 404, CPT: 515 },
+    FUP: { MDMA: 1064, Ketamine: 661, CPT: 1409 },
   });
   const bdnf = parsed.geneContexts.BDNF;
   assert.equal('Ketamine' in bdnf, false, 'context is organized by timepoint first');
-  assert.equal(bdnf.Pre.Ketamine?.totalProbes, 88);
+  assert.equal(bdnf.Pre.Ketamine?.totalProbes, 75);
   assert.equal(bdnf.Pre.Ketamine?.nSigProbes, 6);
-  assert.equal(bdnf.FUP.Ketamine?.nSigProbes, 5);
+  assert.equal(bdnf.FUP.Ketamine?.nSigProbes, 4);
   assert.ok(bdnf.Pre.Ketamine?.deltaBeta !== 0);
   assert.ok(bdnf.FUP.Ketamine?.deltaBeta !== 0);
+  for (const context of Object.values(parsed.geneContexts)) {
+    for (const visit of Object.values(context)) {
+      assert.equal(Object.values(visit).some((result) => result === null), false);
+    }
+  }
+});
+
+test('combined treatment genes preserve exact three-study component support', () => {
+  const parsed = validateMdmaMasterData(readJson('../public/data/mdma/dmrData.json'));
+  assert.deepEqual(Object.fromEntries([1, 2, 3].map((count) => [
+    count,
+    parsed.crossCohort.filter((gene) => gene.nCohortsNominal === count).length,
+  ])), { 1: 85, 2: 859, 3: 895 });
+  assert.equal(parsed.crossCohort.filter((gene) => !gene.componentSignsConsistent).length, 1549);
+  assert.equal(parsed.crossCohort.filter((gene) => gene.nCohortsNominal === 3 && !gene.componentSignsConsistent).length, 748);
+  for (const gene of parsed.crossCohort) {
+    for (const component of Object.values(gene.cohortComponents)) {
+      assert.ok(Number.isFinite(component.deltaBeta));
+      assert.ok(Number.isFinite(component.pValue));
+    }
+  }
 });
 
 test('cross-subtype direction treats each stored Mixed classification as authoritative', () => {
   const stat = (direction: SubtypeStat['direction']): SubtypeStat => ({
     deltaBeta: direction === 'Hypomethylated' ? -0.1 : 0.1,
+    pValue: 0.001,
     fdr: 0.01,
     direction,
+    nSigProbes: 3,
   });
   assert.equal(deriveCrossSubtypeDirection({
     SSS: stat('Hypermethylated'),
@@ -74,7 +97,7 @@ test('cross-subtype direction treats each stored Mixed classification as authori
   }), 'Mixed');
 });
 
-test('subtype-unique selections remain subtype-specific and have no fabricated cross statistic', () => {
+test('subtype-selected results preserve all four observed subtype statistics without a fabricated cross statistic', () => {
   const data = validateMasterDMRData(readJson('../public/data/dmrData.json'));
   const unique = data.uniqueSubtypes.SSS[0];
   const selected = findPtsdResult(data, 'SSS', unique.gene);
@@ -83,7 +106,14 @@ test('subtype-unique selections remain subtype-specific and have no fabricated c
   assert.equal(selected.subtype, 'SSS');
   assert.equal(selected.result.fdr, unique.fdr);
   assert.equal('crossFdr' in selected.result, false);
-  assert.equal('subtypes' in selected.result, false);
+  assert.deepEqual(Object.keys(selected.result.subtypes).sort(), ['ADS', 'ICF', 'ISS', 'SSS']);
+  assert.equal(selected.result.subtypes.SSS.pValue, selected.result.pValue);
+  assert.equal(selected.result.subtypes.SSS.fdr, selected.result.fdr);
+  for (const subtype of Object.values(selected.result.subtypes)) {
+    assert.ok(Number.isFinite(subtype.pValue));
+    assert.ok(Number.isFinite(subtype.fdr));
+    assert.ok(Number.isFinite(subtype.deltaBeta));
+  }
 });
 
 test('treatment selection preserves pooled versus timepoint/cohort statistic scope', () => {

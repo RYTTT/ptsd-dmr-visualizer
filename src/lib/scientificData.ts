@@ -9,6 +9,7 @@ import type {
   SubtypeKey,
   SubtypeStat,
   TreatmentCohort,
+  TreatmentComponentStat,
   TreatmentGeneContext,
   TreatmentGeneResult,
   TreatmentTimepoint,
@@ -102,9 +103,11 @@ function parseSubtypeStat(value: unknown, path: string): SubtypeStat {
     fail(path, 'consistent with a maximum of three summarized probes');
   }
   return {
+    pValue: probability(item.pValue, `${path}.pValue`),
     deltaBeta: finite(item.deltaBeta, `${path}.deltaBeta`),
     fdr: probability(item.fdr, `${path}.fdr`),
     direction: direction(item.direction, `${path}.direction`),
+    nSigProbes: count(item.nSigProbes, `${path}.nSigProbes`),
     avgPosLogFC: optionalFinite(item.avgPosLogFC, `${path}.avgPosLogFC`),
     avgNegLogFC: optionalFinite(item.avgNegLogFC, `${path}.avgNegLogFC`),
     ...(nPosTop3 === undefined ? {} : { nPosTop3 }),
@@ -120,6 +123,9 @@ function parseCrossSubtype(value: unknown, path: string): CrossSubtypeDMR {
   ) as CrossSubtypeDMR['subtypes'];
   const nSubtypesSig = count(item.nSubtypesSig, `${path}.nSubtypesSig`);
   if (nSubtypesSig > SUBTYPE_KEYS.length) fail(`${path}.nSubtypesSig`, 'at most 4');
+  if (nSubtypesSig !== SUBTYPE_KEYS.filter((key) => subtypes[key].fdr < 0.05).length) {
+    fail(`${path}.nSubtypesSig`, 'equal to the number of subtype FDR values below 0.05');
+  }
   return {
     gene: string(item.gene, `${path}.gene`),
     chr: string(item.chr, `${path}.chr`),
@@ -134,6 +140,10 @@ function parseCrossSubtype(value: unknown, path: string): CrossSubtypeDMR {
 
 function parseUniqueDmr(value: unknown, path: string): UniqueDMR {
   const item = record(value, path);
+  const subtypeSource = record(item.subtypes, `${path}.subtypes`);
+  const subtypes = Object.fromEntries(
+    SUBTYPE_KEYS.map((key) => [key, parseSubtypeStat(subtypeSource[key], `${path}.subtypes.${key}`)]),
+  ) as UniqueDMR['subtypes'];
   const nPosTop3 = optionalCount(item.nPosTop3, `${path}.nPosTop3`);
   const nNegTop3 = optionalCount(item.nNegTop3, `${path}.nNegTop3`);
   if ((nPosTop3 ?? 0) + (nNegTop3 ?? 0) > 3) {
@@ -144,9 +154,12 @@ function parseUniqueDmr(value: unknown, path: string): UniqueDMR {
     chr: string(item.chr, `${path}.chr`),
     totalProbes: count(item.totalProbes, `${path}.totalProbes`),
     isPtsd: boolean(item.isPtsd, `${path}.isPtsd`),
+    pValue: probability(item.pValue, `${path}.pValue`),
     fdr: probability(item.fdr, `${path}.fdr`),
     deltaBeta: finite(item.deltaBeta, `${path}.deltaBeta`),
     direction: direction(item.direction, `${path}.direction`),
+    nSigProbes: count(item.nSigProbes, `${path}.nSigProbes`),
+    subtypes,
     avgPosLogFC: optionalFinite(item.avgPosLogFC, `${path}.avgPosLogFC`),
     avgNegLogFC: optionalFinite(item.avgNegLogFC, `${path}.avgNegLogFC`),
     ...(nPosTop3 === undefined ? {} : { nPosTop3 }),
@@ -167,6 +180,12 @@ export function validateMasterDMRData(value: unknown): MasterDMRData {
     if (!Array.isArray(items)) fail(`uniqueSubtypes.${key}`, 'an array');
     const parsed = items.map((item, index) => parseUniqueDmr(item, `uniqueSubtypes.${key}[${index}]`));
     assertUniqueGenes(parsed, `uniqueSubtypes.${key}`);
+    for (const result of parsed) {
+      if (result.subtypes[key].fdr >= 0.05) fail(`uniqueSubtypes.${key}.${result.gene}`, `selected ${key} FDR below 0.05`);
+      if (SUBTYPE_KEYS.some((comparison) => comparison !== key && result.subtypes[comparison].fdr < 0.05)) {
+        fail(`uniqueSubtypes.${key}.${result.gene}`, `only ${key} subtype FDR below 0.05`);
+      }
+    }
     return [key, parsed];
   })) as MasterDMRData['uniqueSubtypes'];
 
@@ -175,7 +194,7 @@ export function validateMasterDMRData(value: unknown): MasterDMRData {
   return { crossSubtype, uniqueSubtypes, ptsdGenesList };
 }
 
-function parseTreatmentGeneResult(value: unknown, path: string): TreatmentGeneResult {
+function parseTreatmentGeneResult(value: unknown, path: string, minimumProbes = 1): TreatmentGeneResult {
   const item = record(value, path);
   const totalProbes = count(item.totalProbes, `${path}.totalProbes`);
   const nSigProbes = count(item.nSigProbes, `${path}.nSigProbes`);
@@ -184,7 +203,7 @@ function parseTreatmentGeneResult(value: unknown, path: string): TreatmentGeneRe
   const avgPosDeltaBeta = optionalFinite(item.avgPosDeltaBeta, `${path}.avgPosDeltaBeta`) ?? null;
   const avgNegDeltaBeta = optionalFinite(item.avgNegDeltaBeta, `${path}.avgNegDeltaBeta`) ?? null;
   const deltaBeta = finite(item.deltaBeta, `${path}.deltaBeta`);
-  if (totalProbes < 8) fail(`${path}.totalProbes`, 'at least 8');
+  if (totalProbes < minimumProbes) fail(`${path}.totalProbes`, `at least ${minimumProbes}`);
   if (nSigProbes > totalProbes) fail(`${path}.nSigProbes`, 'no greater than totalProbes');
   if (nPosTop3 + nNegTop3 < 1 || nPosTop3 + nNegTop3 > 3) fail(path, 'consistent with one to three summarized probes');
   if ((nPosTop3 === 0) !== (avgPosDeltaBeta === null)) fail(`${path}.avgPosDeltaBeta`, 'present exactly when nPosTop3 is positive');
@@ -210,6 +229,47 @@ function parseTreatmentGeneResult(value: unknown, path: string): TreatmentGeneRe
 
 function parseCrossCohortGene(value: unknown, path: string): CrossCohortGene {
   const item = record(value, path);
+  const cohortPSource = record(item.cohortPValues, `${path}.cohortPValues`);
+  const cohortPValues = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => [
+    cohort,
+    probability(cohortPSource[cohort], `${path}.cohortPValues.${cohort}`),
+  ])) as CrossCohortGene['cohortPValues'];
+  const componentSource = record(item.cohortComponents, `${path}.cohortComponents`);
+  const cohortComponents = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => {
+    const componentPath = `${path}.cohortComponents.${cohort}`;
+    const component = record(componentSource[cohort], componentPath);
+    const nPosTop3 = count(component.nPosTop3, `${componentPath}.nPosTop3`);
+    const nNegTop3 = count(component.nNegTop3, `${componentPath}.nNegTop3`);
+    const avgPosDeltaBeta = optionalFinite(component.avgPosDeltaBeta, `${componentPath}.avgPosDeltaBeta`) ?? null;
+    const avgNegDeltaBeta = optionalFinite(component.avgNegDeltaBeta, `${componentPath}.avgNegDeltaBeta`) ?? null;
+    if (nPosTop3 + nNegTop3 < 1 || nPosTop3 + nNegTop3 > 3) fail(componentPath, 'consistent with one to three summarized probes');
+    if ((nPosTop3 === 0) !== (avgPosDeltaBeta === null)) fail(`${componentPath}.avgPosDeltaBeta`, 'present exactly when nPosTop3 is positive');
+    if ((nNegTop3 === 0) !== (avgNegDeltaBeta === null)) fail(`${componentPath}.avgNegDeltaBeta`, 'present exactly when nNegTop3 is positive');
+    const deltaBeta = finite(component.deltaBeta, `${componentPath}.deltaBeta`);
+    const expectedDeltaBeta = (nPosTop3 * (avgPosDeltaBeta ?? 0) + nNegTop3 * (avgNegDeltaBeta ?? 0)) / (nPosTop3 + nNegTop3);
+    if (Math.abs(deltaBeta - expectedDeltaBeta) > 1e-12) fail(`${componentPath}.deltaBeta`, 'the count-weighted positive/negative Top-3 mean');
+    const parsed: TreatmentComponentStat = {
+      pValue: probability(component.pValue, `${componentPath}.pValue`),
+      deltaBeta,
+      direction: direction(component.direction, `${componentPath}.direction`),
+      nPosTop3,
+      avgPosDeltaBeta,
+      nNegTop3,
+      avgNegDeltaBeta,
+    };
+    if (parsed.pValue !== cohortPValues[cohort]) fail(`${componentPath}.pValue`, `equal to cohortPValues.${cohort}`);
+    return [cohort, parsed];
+  })) as CrossCohortGene['cohortComponents'];
+  const nCohortsNominal = count(item.nCohortsNominal, `${path}.nCohortsNominal`);
+  if (nCohortsNominal > TREATMENT_COHORTS.length) fail(`${path}.nCohortsNominal`, 'at most 3');
+  if (nCohortsNominal !== TREATMENT_COHORTS.filter((cohort) => cohortPValues[cohort] < 0.05).length) {
+    fail(`${path}.nCohortsNominal`, 'equal to the number of cohort P values below 0.05');
+  }
+  const componentSignsConsistent = boolean(item.componentSignsConsistent, `${path}.componentSignsConsistent`);
+  const componentSigns = TREATMENT_COHORTS.map((cohort) => Math.sign(cohortComponents[cohort].deltaBeta));
+  if (componentSignsConsistent !== componentSigns.every((sign) => sign !== 0 && sign === componentSigns[0])) {
+    fail(`${path}.componentSignsConsistent`, 'equal to the observed component mean-sign consistency');
+  }
   const totalProbes = count(item.totalProbes, `${path}.totalProbes`);
   const nSigProbes = count(item.nSigProbes, `${path}.nSigProbes`);
   if (nSigProbes > totalProbes) fail(`${path}.nSigProbes`, 'no greater than totalProbes');
@@ -221,6 +281,10 @@ function parseCrossCohortGene(value: unknown, path: string): CrossCohortGene {
     direction: direction(item.direction, `${path}.direction`),
     totalProbes,
     nSigProbes,
+    cohortPValues,
+    cohortComponents,
+    nCohortsNominal,
+    componentSignsConsistent,
   };
 }
 
@@ -244,10 +308,11 @@ export function validateMdmaMasterData(value: unknown): MdmaMasterData {
     version: string(metadataSource.version, 'metadata.version'),
     generatedAt,
     selectionRule: string(metadataSource.selectionRule, 'metadata.selectionRule'),
-    coverageRule: string(metadataSource.coverageRule, 'metadata.coverageRule'),
+    contextRule: string(metadataSource.contextRule, 'metadata.contextRule'),
     pooledSource: string(metadataSource.pooledSource, 'metadata.pooledSource'),
+    pooledComponentSource: string(metadataSource.pooledComponentSource, 'metadata.pooledComponentSource'),
     cohortSources: parseSourceMatrix(metadataSource.cohortSources, 'metadata.cohortSources'),
-    coverageSources: parseSourceMatrix(metadataSource.coverageSources, 'metadata.coverageSources'),
+    contextSources: parseSourceMatrix(metadataSource.contextSources, 'metadata.contextSources'),
   };
   if (!Array.isArray(source.crossCohort)) fail('crossCohort', 'an array');
   const crossCohort = source.crossCohort.map((item, index) => parseCrossCohortGene(item, `crossCohort[${index}]`));
@@ -259,7 +324,7 @@ export function validateMdmaMasterData(value: unknown): MdmaMasterData {
     const cohorts = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => {
       const items = cohortSource[cohort];
       if (!Array.isArray(items)) fail(`timepoints.${timepoint}.cohorts.${cohort}`, 'an array');
-      const parsed = items.map((item, index) => parseTreatmentGeneResult(item, `timepoints.${timepoint}.cohorts.${cohort}[${index}]`));
+      const parsed = items.map((item, index) => parseTreatmentGeneResult(item, `timepoints.${timepoint}.cohorts.${cohort}[${index}]`, 8));
       assertUniqueGenes(parsed, `timepoints.${timepoint}.cohorts.${cohort}`);
       for (const result of parsed) {
         if (result.nSigProbes < 8) fail(`timepoints.${timepoint}.cohorts.${cohort}.${result.gene}.nSigProbes`, 'at least 8 for an N8+ registry row');
@@ -342,9 +407,9 @@ export function treatmentViewDescriptor(
   if (context === 'cross') {
     return {
       kind: 'pooled-cross-cohort',
-      title: 'Pooled cross-cohort DMR results',
-      shortLabel: 'Pooled · not timepoint-specific',
-      csvFilename: 'Treatment_DMR_pooled_cross-cohort.csv',
+      title: 'Combined results across the three studies',
+      shortLabel: 'Combined result',
+      csvFilename: 'Treatment_DMR_all-treatments-combined.csv',
     };
   }
   const label = timepoint === 'Pre'
@@ -354,9 +419,9 @@ export function treatmentViewDescriptor(
       : 'Follow-up (FUP2)';
   return {
     kind: 'timepoint-cohort',
-    title: `${context} cohort DMR results · ${label}`,
+    title: `${context} · ${label}`,
     shortLabel: label,
-    csvFilename: `Treatment_DMR_${timepoint}_${context}_N8plus.csv`,
+    csvFilename: `Treatment_DMR_${timepoint}_${context}_screened.csv`,
   };
 }
 

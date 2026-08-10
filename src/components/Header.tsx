@@ -36,7 +36,7 @@ export const Header: React.FC = () => {
               </span>
             </div>
             <p className="mt-0.5 hidden text-xs text-slate-600 sm:block">
-              Common and subtype-specific differentially methylated regions across four cohorts
+              Adjusted results in 3–4 subtypes and results selected by one subtype
             </p>
           </div>
         </div>
@@ -44,7 +44,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-2 text-xs lg:justify-end">
           <div className="hidden items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700 xl:flex">
             <Sparkles className="h-3.5 w-3.5 text-amber-600" aria-hidden="true" />
-            <span className="font-medium">4 cohorts</span>
+            <span className="font-medium">4 subtypes</span>
           </div>
           <div className="hidden items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700 sm:flex">
             <ShieldAlert className="h-3.5 w-3.5 text-rose-600" aria-hidden="true" />

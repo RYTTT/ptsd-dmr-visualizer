@@ -8,6 +8,7 @@ import type {
   TreatmentCohort,
   TreatmentGeneContext,
   TreatmentGeneResult,
+  TreatmentComponentStat,
   TreatmentTimepoint,
 } from '../src/types/dmr.ts';
 import { TREATMENT_COHORTS, TREATMENT_TIMEPOINTS } from '../src/types/dmr.ts';
@@ -17,6 +18,7 @@ type CsvRow = Record<string, string>;
 const DEFAULT_SOURCE_ROOT = '/Users/ruotingyang/Documents/manuscripts/MDMA_antigravity/result/IPW_DMP_Analysis_2026_v2_CD4T_arrayWeights';
 const OUTPUT_FILE = new URL('../public/data/mdma/dmrData.json', import.meta.url);
 const POOLED_SOURCE = 'Meta_Analysis_Gene_Level_DMRs_Top3_Primary_Strict.csv';
+const POOLED_COMPONENT_SOURCE = 'Meta_Analysis_Gene_Level_DMRs_Top3_FULL.csv';
 
 const cohortSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>> = {
   Pre: {
@@ -31,27 +33,27 @@ const cohortSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>>
   },
 };
 
-const coverageSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>> = {
+const contextSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>> = {
   Pre: {
-    MDMA: 'MDMA/MDMA_Pre_Responder_vs_NonResponder_Gene_DMRs_TotalProbes8plus.csv',
-    Ketamine: 'Ketamine/Ketamine_Pre_Responder_vs_NonResponder_Gene_DMRs_TotalProbes8plus.csv',
-    CPT: 'CPT/CPT_Pre_Responder_vs_NonResponder_Gene_DMRs_TotalProbes8plus.csv',
+    MDMA: 'MDMA/MDMA_Pre_Responder_vs_NonResponder_Gene_DMRs_AllGenes.csv',
+    Ketamine: 'Ketamine/Ketamine_Pre_Responder_vs_NonResponder_Gene_DMRs_AllGenes.csv',
+    CPT: 'CPT/CPT_Pre_Responder_vs_NonResponder_Gene_DMRs_AllGenes.csv',
   },
   FUP: {
-    MDMA: 'MDMA/MDMA_FUP1_Responder_vs_NonResponder_Gene_DMRs_TotalProbes8plus.csv',
-    Ketamine: 'Ketamine/Ketamine_FUP2_Responder_vs_NonResponder_Gene_DMRs_TotalProbes8plus.csv',
-    CPT: 'CPT/CPT_FUP2_Responder_vs_NonResponder_Gene_DMRs_TotalProbes8plus.csv',
+    MDMA: 'MDMA/MDMA_FUP1_Responder_vs_NonResponder_Gene_DMRs_AllGenes.csv',
+    Ketamine: 'Ketamine/Ketamine_FUP2_Responder_vs_NonResponder_Gene_DMRs_AllGenes.csv',
+    CPT: 'CPT/CPT_FUP2_Responder_vs_NonResponder_Gene_DMRs_AllGenes.csv',
   },
 };
 
 const expectedSelectedCounts: Record<TreatmentTimepoint, Record<TreatmentCohort, number>> = {
-  Pre: { MDMA: 827, Ketamine: 475, CPT: 515 },
-  FUP: { MDMA: 1274, Ketamine: 878, CPT: 1410 },
+  Pre: { MDMA: 693, Ketamine: 404, CPT: 515 },
+  FUP: { MDMA: 1064, Ketamine: 661, CPT: 1409 },
 };
-const expectedCoverageCounts: Record<TreatmentCohort, number> = {
-  MDMA: 17307,
-  Ketamine: 18032,
-  CPT: 16423,
+const expectedContextCounts: Record<TreatmentCohort, number> = {
+  MDMA: 24084,
+  Ketamine: 24084,
+  CPT: 24084,
 };
 
 const requiredGeneColumns = [
@@ -166,7 +168,7 @@ function weightedTop3Mean(
   return (nPositive * (positiveMean ?? 0) + nNegative * (negativeMean ?? 0)) / count;
 }
 
-function treatmentResult(row: CsvRow, source: string): TreatmentGeneResult {
+function treatmentResult(row: CsvRow, source: string, minimumProbes = 1): TreatmentGeneResult {
   for (const column of requiredGeneColumns) {
     if (!(column in row)) throw new Error(`${source}: missing column ${column}`);
   }
@@ -179,7 +181,7 @@ function treatmentResult(row: CsvRow, source: string): TreatmentGeneResult {
   const avgPosDeltaBeta = optionalNumber(row, 'Ave_Pos_Beta_Diff_Top3', source);
   const nNegTop3 = integerValue(row, 'N_Neg_Probes_Top3', source);
   const avgNegDeltaBeta = optionalNumber(row, 'Ave_Neg_Beta_Diff_Top3', source);
-  if (totalProbes < 8) throw new Error(`${source}: Total_Gene_Probes must be at least 8`);
+  if (totalProbes < minimumProbes) throw new Error(`${source}: Total_Gene_Probes must be at least ${minimumProbes}`);
   if (nSigProbes > totalProbes) throw new Error(`${source}: significant probes exceed total probes`);
   if (pValue < 0 || pValue > 1 || fdr < 0 || fdr > 1) throw new Error(`${source}: P/FDR outside [0,1]`);
   return {
@@ -197,11 +199,30 @@ function treatmentResult(row: CsvRow, source: string): TreatmentGeneResult {
   };
 }
 
-function pooledResult(row: CsvRow, source: string): CrossCohortGene {
+function pooledResult(row: CsvRow, componentRow: CsvRow, source: string): CrossCohortGene {
   const directionValue = required(row, 'Direction', source);
   if (directionValue !== 'Hypermethylated' && directionValue !== 'Hypomethylated' && directionValue !== 'Mixed') {
     throw new Error(`${source}: unsupported Direction ${directionValue}`);
   }
+  const componentSource = `${POOLED_COMPONENT_SOURCE}:${required(row, 'Gene', source)}`;
+  const cohortComponents = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => {
+    const nPosTop3 = integerValue(componentRow, `${cohort}_N_Hyper`, componentSource);
+    const avgPosDeltaBeta = optionalNumber(componentRow, `${cohort}_Ave_Hyper_Beta`, componentSource);
+    const nNegTop3 = integerValue(componentRow, `${cohort}_N_Hypo`, componentSource);
+    const avgNegDeltaBeta = optionalNumber(componentRow, `${cohort}_Ave_Hypo_Beta`, componentSource);
+    const component: TreatmentComponentStat = {
+      pValue: numberValue(componentRow, `${cohort}_P_Top3`, componentSource),
+      deltaBeta: weightedTop3Mean(nPosTop3, avgPosDeltaBeta, nNegTop3, avgNegDeltaBeta, componentSource),
+      direction: nPosTop3 > 0 && nNegTop3 > 0 ? 'Mixed' : nPosTop3 > 0 ? 'Hypermethylated' : 'Hypomethylated',
+      nPosTop3,
+      avgPosDeltaBeta,
+      nNegTop3,
+      avgNegDeltaBeta,
+    };
+    return [cohort, component];
+  })) as CrossCohortGene['cohortComponents'];
+  const cohortPValues = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => [cohort, cohortComponents[cohort].pValue])) as CrossCohortGene['cohortPValues'];
+  const componentSigns = TREATMENT_COHORTS.map((cohort) => Math.sign(cohortComponents[cohort].deltaBeta));
   return {
     gene: required(row, 'Gene', source),
     fdr: numberValue(row, 'Gene_Meta_FDR_Top3', source),
@@ -210,6 +231,10 @@ function pooledResult(row: CsvRow, source: string): CrossCohortGene {
     direction: directionValue,
     totalProbes: integerValue(row, 'Total_Gene_Probes', source),
     nSigProbes: integerValue(row, 'N_Sig_Probes_p05', source),
+    cohortPValues,
+    cohortComponents,
+    nCohortsNominal: TREATMENT_COHORTS.filter((cohort) => cohortPValues[cohort] < 0.05).length,
+    componentSignsConsistent: componentSigns.every((sign) => sign !== 0 && sign === componentSigns[0]),
   };
 }
 
@@ -223,37 +248,62 @@ function indexByGene(items: TreatmentGeneResult[], source: string): Map<string, 
   return result;
 }
 
+function indexCsvByGene(items: CsvRow[], source: string): Map<string, CsvRow> {
+  const result = new Map<string, CsvRow>();
+  for (const [index, item] of items.entries()) {
+    const gene = required(item, 'Gene', `${source}:${index + 2}`);
+    const key = gene.toUpperCase();
+    if (result.has(key)) throw new Error(`${source}: duplicate gene ${gene}`);
+    result.set(key, item);
+  }
+  return result;
+}
+
 function sameTreatmentResult(left: TreatmentGeneResult, right: TreatmentGeneResult): boolean {
-  return JSON.stringify(left) === JSON.stringify(right);
+  const close = (a: number | null, b: number | null) => {
+    if (a === null || b === null) return a === b;
+    return Math.abs(a - b) <= Math.max(1e-12, Math.abs(a) * 1e-10, Math.abs(b) * 1e-10);
+  };
+  return left.gene.toUpperCase() === right.gene.toUpperCase()
+    && left.totalProbes === right.totalProbes
+    && left.nSigProbes === right.nSigProbes
+    && left.direction === right.direction
+    && left.nPosTop3 === right.nPosTop3
+    && left.nNegTop3 === right.nNegTop3
+    && close(left.pValue, right.pValue)
+    && close(left.fdr, right.fdr)
+    && close(left.deltaBeta, right.deltaBeta)
+    && close(left.avgPosDeltaBeta, right.avgPosDeltaBeta)
+    && close(left.avgNegDeltaBeta, right.avgNegDeltaBeta);
 }
 
 async function main() {
   const sourceRoot = path.resolve(process.argv[2] ?? DEFAULT_SOURCE_ROOT);
   const selected = {} as Record<TreatmentTimepoint, Record<TreatmentCohort, TreatmentGeneResult[]>>;
-  const coverageIndexes = {} as Record<TreatmentTimepoint, Record<TreatmentCohort, Map<string, TreatmentGeneResult>>>;
+  const coverageIndexes = {} as Record<TreatmentTimepoint, Record<TreatmentCohort, Map<string, CsvRow>>>;
 
   for (const timepoint of TREATMENT_TIMEPOINTS) {
     selected[timepoint] = {} as Record<TreatmentCohort, TreatmentGeneResult[]>;
-    coverageIndexes[timepoint] = {} as Record<TreatmentCohort, Map<string, TreatmentGeneResult>>;
+    coverageIndexes[timepoint] = {} as Record<TreatmentCohort, Map<string, CsvRow>>;
     for (const cohort of TREATMENT_COHORTS) {
       const selectedFile = path.join(sourceRoot, cohortSources[timepoint][cohort]);
-      const coverageFile = path.join(sourceRoot, coverageSources[timepoint][cohort]);
+      const coverageFile = path.join(sourceRoot, contextSources[timepoint][cohort]);
       const selectedRows = await csvRows(selectedFile);
       const coverageRows = await csvRows(coverageFile);
       if (selectedRows.length !== expectedSelectedCounts[timepoint][cohort]) {
         throw new Error(`${selectedFile}: expected ${expectedSelectedCounts[timepoint][cohort]} rows, found ${selectedRows.length}`);
       }
-      if (coverageRows.length !== expectedCoverageCounts[cohort]) {
-        throw new Error(`${coverageFile}: expected ${expectedCoverageCounts[cohort]} rows, found ${coverageRows.length}`);
+      if (coverageRows.length !== expectedContextCounts[cohort]) {
+        throw new Error(`${coverageFile}: expected ${expectedContextCounts[cohort]} rows, found ${coverageRows.length}`);
       }
-      const selectedResults = selectedRows.map((row, index) => treatmentResult(row, `${selectedFile}:${index + 2}`));
-      const coverageResults = coverageRows.map((row, index) => treatmentResult(row, `${coverageFile}:${index + 2}`));
+      const selectedResults = selectedRows.map((row, index) => treatmentResult(row, `${selectedFile}:${index + 2}`, 8));
       const selectedIndex = indexByGene(selectedResults, selectedFile);
-      const coverageIndex = indexByGene(coverageResults, coverageFile);
+      const coverageIndex = indexCsvByGene(coverageRows, coverageFile);
       for (const [gene, result] of selectedIndex) {
         if (result.nSigProbes < 8) throw new Error(`${selectedFile}: ${gene} has fewer than 8 significant probes`);
         if (result.fdr >= 0.05) throw new Error(`${selectedFile}: ${gene} has Gene_FDR >= 0.05`);
-        const coverageResult = coverageIndex.get(gene);
+        const coverageRow = coverageIndex.get(gene);
+        const coverageResult = coverageRow ? treatmentResult(coverageRow, `${coverageFile}:${gene}`, 1) : null;
         if (!coverageResult || !sameTreatmentResult(result, coverageResult)) {
           throw new Error(`${selectedFile}: ${gene} does not exactly match its coverage-table record`);
         }
@@ -264,7 +314,14 @@ async function main() {
   }
 
   const pooledRows = await csvRows(path.join(sourceRoot, POOLED_SOURCE));
-  const crossCohort = pooledRows.map((row, index) => pooledResult(row, `${POOLED_SOURCE}:${index + 2}`));
+  const pooledComponentRows = await csvRows(path.join(sourceRoot, POOLED_COMPONENT_SOURCE));
+  const pooledComponentIndex = indexCsvByGene(pooledComponentRows, POOLED_COMPONENT_SOURCE);
+  const crossCohort = pooledRows.map((row, index) => {
+    const gene = required(row, 'Gene', `${POOLED_SOURCE}:${index + 2}`);
+    const componentRow = pooledComponentIndex.get(gene.toUpperCase());
+    if (!componentRow) throw new Error(`${POOLED_COMPONENT_SOURCE}: missing pooled gene ${gene}`);
+    return pooledResult(row, componentRow, `${POOLED_SOURCE}:${index + 2}`);
+  });
   const pooledGenes = new Set(crossCohort.map((item) => item.gene.toUpperCase()));
   const contextGenes = new Map<string, string>();
   for (const item of crossCohort) contextGenes.set(item.gene.toUpperCase(), item.gene);
@@ -280,7 +337,10 @@ async function main() {
       timepoint,
       Object.fromEntries(TREATMENT_COHORTS.map((cohort) => [
         cohort,
-        coverageIndexes[timepoint][cohort].get(normalizedGene) ?? null,
+        (() => {
+          const row = coverageIndexes[timepoint][cohort].get(normalizedGene);
+          return row ? treatmentResult(row, `${contextSources[timepoint][cohort]}:${gene}`, 1) : null;
+        })(),
       ])),
     ])) as TreatmentGeneContext;
   }
@@ -290,10 +350,11 @@ async function main() {
       version: 'IPW_DMP_Analysis_2026_v2_CD4T_arrayWeights',
       generatedAt: new Date().toISOString(),
       selectionRule: 'N_Sig_Probes_p05 >= 8 and Gene_FDR < 0.05',
-      coverageRule: 'Total_Gene_Probes >= 8',
+      contextRule: 'All gene-level rows available for the responder versus non-responder comparison',
       pooledSource: POOLED_SOURCE,
+      pooledComponentSource: POOLED_COMPONENT_SOURCE,
       cohortSources,
-      coverageSources,
+      contextSources,
     },
     crossCohort,
     timepoints: Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => [
