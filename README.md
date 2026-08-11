@@ -46,11 +46,12 @@ demand with concurrent-request deduplication and a bounded LRU cache. Treatment
 probe tracks offer two separate 3×2 views: responder-versus-non-responder
 Baseline/Follow-up panels for MDMA, ketamine, and CPT; and an independent CPT
 reference with responder-versus-non-responder, responder-versus-healthy-control,
-and non-responder-versus-healthy-control rows. The supplied DMP exports are
-filtered to nominal P < 0.01; the importer retains their intersection with the
-common three-study probe annotation so positions remain comparable. The
-healthy-control reference is displayed independently and does not filter the
-Treatment result set.
+and non-responder-versus-healthy-control rows. All ten sources are unfiltered
+all-probe exports (602,031 probes for each responder-versus-non-responder
+comparison and 602,313 for each healthy-control comparison). The importer
+retains their intersection with the common three-study probe annotation so
+positions remain comparable. The website applies no P-value filter, and the
+healthy-control reference does not filter the Treatment result set.
 
 Treatment result data is generated from the versioned study CSV exports:
 

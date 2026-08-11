@@ -777,7 +777,7 @@ export default function MdmaPage() {
               <section className="rounded-xl border border-slate-300 bg-white p-4 shadow-xs" aria-labelledby="treatment-probe-title">
                 <div className="mb-3">
                   <h3 id="treatment-probe-title" className="text-sm font-bold text-slate-900">Treatment probe-level results — {selectedGene}</h3>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-600">Choose the primary three-study treatment view or the independent CPT healthy-control reference. Every source DMP export contains only probes with nominal P &lt; 0.01; an empty panel means that no common probe for this gene appeared in that filtered export.</p>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-600">Choose the primary three-study treatment view or the independent CPT healthy-control reference. Every panel uses an unfiltered all-probe export; the website applies no P-value filter and retains all probes that map to the selected gene in the common three-study annotation.</p>
                 </div>
                 <div className="mb-4 inline-flex max-w-full gap-1 overflow-x-auto rounded-lg border border-slate-200 bg-slate-100 p-1" role="tablist" aria-label="Treatment probe figure view">
                   <button

@@ -149,16 +149,28 @@ function isProbeEntry(value: unknown): value is ProbeEntry {
 }
 
 function isProbeDatasetMetadata(value: unknown): value is ProbeDatasetMetadata {
+  const expectedCoverage = {
+    MDMA_Pre: 'all-probes', MDMA_FUP: 'all-probes',
+    Ketamine_Pre: 'all-probes', Ketamine_FUP: 'all-probes',
+    CPT_Pre: 'all-probes', CPT_FUP: 'all-probes',
+    CPT_RvHC_Pre: 'all-probes', CPT_RvHC_FUP: 'all-probes',
+    CPT_NRvHC_Pre: 'all-probes', CPT_NRvHC_FUP: 'all-probes',
+  } as const;
+  const coverageByAnalysis = isRecord(value) && isRecord(value.coverageByAnalysis)
+    ? value.coverageByAnalysis
+    : null;
   if (
     !isRecord(value) ||
     !Array.isArray(value.sourceFiles) ||
     value.sourceFiles.length !== 10 ||
-    !value.sourceFiles.every((sourceFile) => typeof sourceFile === 'string' && sourceFile.trim() !== '')
+    !value.sourceFiles.every((sourceFile) => typeof sourceFile === 'string' && sourceFile.trim() !== '') ||
+    coverageByAnalysis === null ||
+    Object.entries(expectedCoverage).some(([key, coverage]) => coverageByAnalysis[key] !== coverage)
   ) return false;
   return (
     value.scope === 'treatment-study-timepoint-with-cpt-reference' &&
     value.comparison === 'Responder versus non-responder across three studies, plus CPT healthy-control references, at Baseline and Follow-up' &&
-    value.selectionRule === 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes'
+    value.selectionRule === 'All ten sources contain unfiltered all-probe statistics; panels are restricted to common three-study probes'
   );
 }
 

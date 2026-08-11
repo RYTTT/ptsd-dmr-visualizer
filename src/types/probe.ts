@@ -18,8 +18,9 @@ export interface CpGIsland {
 export interface ProbeDatasetMetadata {
   scope: 'treatment-study-timepoint-with-cpt-reference';
   comparison: 'Responder versus non-responder across three studies, plus CPT healthy-control references, at Baseline and Follow-up';
-  selectionRule: 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes';
+  selectionRule: 'All ten sources contain unfiltered all-probe statistics; panels are restricted to common three-study probes';
   sourceFiles: string[];
+  coverageByAnalysis: Record<string, 'all-probes' | 'nominal-p-lt-0.01'>;
 }
 
 export type TreatmentProbeView = 'three-cohort' | 'cpt-healthy-control';

@@ -1,8 +1,8 @@
 # Scientific data dictionary and display methods — version 1.0
 
-**Document version:** 1.3
+**Document version:** 1.4
 **Application contract:** `scientific-data-v1`  
-**Last updated:** 2026-08-10
+**Last updated:** 2026-08-11
 
 This document defines what the application can infer from the shipped JSON. It
 does not substitute for the upstream statistical analysis plan. Items marked
@@ -125,11 +125,17 @@ exclude, define, or replace the primary Treatment results. Every panel is a
 cross-sectional contrast at one visit; the paired display does not test
 within-person change between visits.
 
-All ten supplied DMP exports are filtered to nominal P < 0.01. The importer
-restricts those rows to probes in `Common_Probes_3Cohorts_Full_Statistics.csv`,
-providing a shared positional universe across panels. An empty panel means that
-no common probe for the gene appeared in that comparison/visit's filtered source
-export; it is not interpreted as a zero effect or a non-significant estimate.
+The four CPT healthy-control exports contain all 602,313 probes per comparison:
+7 responders versus 33 healthy controls at Baseline, 6 non-responders versus 33
+healthy controls at Baseline, 7 responders versus 22 healthy controls at
+Follow-up, and 6 non-responders versus 22 healthy controls at Follow-up. The six
+responder-versus-non-responder exports contain all 602,031 probes per
+comparison. The website applies no P-value filter to any Treatment probe panel.
+
+The importer restricts all rows to probes in
+`Common_Probes_3Cohorts_Full_Statistics.csv`, providing a shared positional
+universe across panels. An empty panel means no common statistic was available;
+it is not interpreted as a zero effect or a non-significant estimate.
 
 ## Direction rule
 

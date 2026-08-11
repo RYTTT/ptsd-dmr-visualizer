@@ -16,16 +16,16 @@ interface SelectedGene {
 const DEFAULT_SOURCE_ROOT = '/Users/ruotingyang/Documents/manuscripts/MDMA_antigravity/result/IPW_DMP_Analysis_2026_v2_CD4T_arrayWeights';
 const ANNOTATION_SOURCE = 'Common_Probes_3Cohorts_Full_Statistics.csv';
 const DMP_SOURCES = [
-  { key: 'MDMA_Pre', file: 'MDMA/MDMA_Pre_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'Unnamed: 0', effectColumn: 'Beta_Diff_R_vs_NR' },
-  { key: 'MDMA_FUP', file: 'MDMA/MDMA_FUP1_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'Unnamed: 0', effectColumn: 'Beta_Diff_R_vs_NR' },
-  { key: 'Ketamine_Pre', file: 'Ketamine/Ketamine_Pre_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
-  { key: 'Ketamine_FUP', file: 'Ketamine/Ketamine_FUP2_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
-  { key: 'CPT_Pre', file: 'CPT/CPT_Pre_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
-  { key: 'CPT_FUP', file: 'CPT/CPT_FUP2_Responder_vs_NonResponder_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
-  { key: 'CPT_RvHC_Pre', file: 'CPT/CPT_Pre_Responder_vs_HC_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
-  { key: 'CPT_RvHC_FUP', file: 'CPT/CPT_FUP2_Responder_vs_HC_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
-  { key: 'CPT_NRvHC_Pre', file: 'CPT/CPT_Pre_NonResponder_vs_HC_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
-  { key: 'CPT_NRvHC_FUP', file: 'CPT/CPT_FUP2_NonResponder_vs_HC_DMPs.csv', probeColumn: 'CpG', effectColumn: 'Beta_Diff' },
+  { key: 'MDMA_Pre', file: 'MDMA/MDMA_Pre_Responder_vs_NonResponder_DMPs_AllProbes.csv', probeColumn: 'Probe_ID', effectColumn: 'Beta_Diff', coverage: 'all-probes', expectedRows: 602_031 },
+  { key: 'MDMA_FUP', file: 'MDMA/MDMA_FUP1_Responder_vs_NonResponder_DMPs_AllProbes.csv', probeColumn: 'Probe_ID', effectColumn: 'Beta_Diff', coverage: 'all-probes', expectedRows: 602_031 },
+  { key: 'Ketamine_Pre', file: 'Ketamine/Ketamine_Pre_Responder_vs_NonResponder_DMPs_AllProbes.csv', probeColumn: 'Probe_ID', effectColumn: 'Beta_Diff', coverage: 'all-probes', expectedRows: 602_031 },
+  { key: 'Ketamine_FUP', file: 'Ketamine/Ketamine_FUP2_Responder_vs_NonResponder_DMPs_AllProbes.csv', probeColumn: 'Probe_ID', effectColumn: 'Beta_Diff', coverage: 'all-probes', expectedRows: 602_031 },
+  { key: 'CPT_Pre', file: 'CPT/CPT_Pre_Responder_vs_NonResponder_DMPs_AllProbes.csv', probeColumn: 'Probe_ID', effectColumn: 'Beta_Diff', coverage: 'all-probes', expectedRows: 602_031 },
+  { key: 'CPT_FUP', file: 'CPT/CPT_FUP2_Responder_vs_NonResponder_DMPs_AllProbes.csv', probeColumn: 'Probe_ID', effectColumn: 'Beta_Diff', coverage: 'all-probes', expectedRows: 602_031 },
+  { key: 'CPT_RvHC_Pre', file: 'CPT/CPT_Pre_Responder_vs_HC_DMPs_AllProbes.csv', probeColumn: 'Probe_ID', effectColumn: 'Beta_Diff', coverage: 'all-probes', expectedRows: 602_313 },
+  { key: 'CPT_RvHC_FUP', file: 'CPT/CPT_FUP2_Responder_vs_HC_DMPs_AllProbes.csv', probeColumn: 'Probe_ID', effectColumn: 'Beta_Diff', coverage: 'all-probes', expectedRows: 602_313 },
+  { key: 'CPT_NRvHC_Pre', file: 'CPT/CPT_Pre_NonResponder_vs_HC_DMPs_AllProbes.csv', probeColumn: 'Probe_ID', effectColumn: 'Beta_Diff', coverage: 'all-probes', expectedRows: 602_313 },
+  { key: 'CPT_NRvHC_FUP', file: 'CPT/CPT_FUP2_NonResponder_vs_HC_DMPs_AllProbes.csv', probeColumn: 'Probe_ID', effectColumn: 'Beta_Diff', coverage: 'all-probes', expectedRows: 602_313 },
 ] as const;
 const DMR_DATA_FILE = new URL('../public/data/mdma/dmrData.json', import.meta.url);
 const OUTPUT_ROOT = new URL('../public/data/mdma/treatment-probes/', import.meta.url);
@@ -176,7 +176,6 @@ async function main() {
       if (seenInSource.has(probe)) throw new Error(`${source}: duplicate probe ${probe}`);
       seenInSource.add(probe);
       const nominalP = probability(row, 'P.Value', source);
-      if (nominalP >= 0.01) throw new Error(`${source}: expected the source-exported probe P to be < 0.01`);
       const entry = probeById.get(probe);
       if (!entry) continue;
       entry[`${dmpSource.key}_logFC`] = finiteNumber(row, dmpSource.effectColumn, source);
@@ -184,7 +183,11 @@ async function main() {
       entry[`${dmpSource.key}_FDR`] = probability(row, 'adj.P.Val', source);
       commonRows += 1;
     }
-    sourceCounts[dmpSource.key] = { rows: Math.max(0, dmpRowNumber - 1), commonRows };
+    const rows = Math.max(0, dmpRowNumber - 1);
+    if ('expectedRows' in dmpSource && rows !== dmpSource.expectedRows) {
+      throw new Error(`${dmpPath}: expected ${dmpSource.expectedRows} probe rows, found ${rows}`);
+    }
+    sourceCounts[dmpSource.key] = { rows, commonRows };
   }
 
   await rm(OUTPUT_ROOT, { recursive: true, force: true });
@@ -208,17 +211,18 @@ async function main() {
       probeDataset: {
         scope: 'treatment-study-timepoint-with-cpt-reference',
         comparison: 'Responder versus non-responder across three studies, plus CPT healthy-control references, at Baseline and Follow-up',
-        selectionRule: 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes',
+        selectionRule: 'All ten sources contain unfiltered all-probe statistics; panels are restricted to common three-study probes',
         sourceFiles: DMP_SOURCES.map(({ file }) => file),
+        coverageByAnalysis: Object.fromEntries(DMP_SOURCES.map(({ key, coverage }) => [key, coverage])),
       },
     };
     totalProbeRows += probes.length;
     await writeFile(new URL(`${selected.gene}.json`, directory), JSON.stringify(shard));
   }
   await writeFile(new URL('index.json', OUTPUT_ROOT), JSON.stringify({
-    version: 'treatment_study_timepoint_probes_with_cpt_reference_v2',
+    version: 'treatment_all_probe_study_timepoint_and_cpt_reference_v4',
     annotationSource: ANNOTATION_SOURCE,
-    sources: DMP_SOURCES.map(({ key, file }) => ({ key, file, ...sourceCounts[key] })),
+    sources: DMP_SOURCES.map(({ key, file, coverage }) => ({ key, file, coverage, ...sourceCounts[key] })),
     selectedGenes: selectedGenes.size,
     totalProbeRows,
   }));

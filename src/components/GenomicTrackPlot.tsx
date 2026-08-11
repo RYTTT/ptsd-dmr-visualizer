@@ -489,7 +489,14 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
             ctx.fillStyle = '#64748b';
             ctx.font = 'italic 10px Inter, system-ui, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('No common probes in the P < 0.01 source export', colLeft + colWidth / 2, areaTop + areaH / 2);
+            const coverage = geneData.probeDataset?.coverageByAnalysis[colSlot.key];
+            ctx.fillText(
+              coverage === 'all-probes'
+                ? 'No common probe statistics available'
+                : 'No common probes in the P < 0.01 source export',
+              colLeft + colWidth / 2,
+              areaTop + areaH / 2,
+            );
           }
 
           for (const probe of drawableProbes) {
@@ -1017,11 +1024,10 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
       {geneData.probeDataset && (
         <div className="mb-3 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-xs leading-relaxed text-violet-950">
           {treatmentView === 'cpt-healthy-control' ? (
-            <><strong>Independent CPT healthy-control reference.</strong>{' '}Rows compare responder vs non-responder, responder vs healthy control, and non-responder vs healthy control; columns show Baseline and Follow-up. The healthy-control comparisons are displayed separately and are not used to filter the Treatment results. These are cross-sectional contrasts at each visit, not within-person change tests.</>
+            <><strong>Independent CPT healthy-control reference.</strong>{' '}Rows compare responder vs non-responder, responder vs healthy control, and non-responder vs healthy control; columns show Baseline and Follow-up. All six panels use unfiltered all-probe exports and are restricted here to common three-study probes for the selected gene. The healthy-control comparisons are not used to filter the Treatment results. These are cross-sectional contrasts at each visit, not within-person change tests.</>
           ) : (
-            <><strong>Three-cohort Treatment comparison.</strong>{' '}Each panel compares responders with non-responders at Baseline or Follow-up for MDMA, ketamine, or CPT. It does not test within-person change from Baseline to Follow-up.</>
-          )}{' '}
-          All supplied DMP files are filtered to nominal P &lt; 0.01, and the figure restricts them to probes shared across the three studies so genomic positions are directly comparable.
+            <><strong>Three-cohort Treatment comparison.</strong>{' '}Each panel compares responders with non-responders at Baseline or Follow-up for MDMA, ketamine, or CPT. All six panels use unfiltered all-probe exports. It does not test within-person change from Baseline to Follow-up.</>
+          )}{' '}All panels are restricted to probes shared across the three studies so genomic positions are directly comparable.
         </div>
       )}
       {accessibleRows.length === 0 && <p role="status" className="mb-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-center text-xs text-slate-500">No probe-level statistics are available for this gene in the configured comparisons. No value has been imputed.</p>}
@@ -1108,7 +1114,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
           </table>
         </div>
       </details>
-      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">{geneData.probeDataset ? 'The Treatment source exports include only probes with uncorrected P < 0.01; no additional significance filter is applied by this figure.' : 'The probe figure uses uncorrected P values.'} Thresholds at P &lt; 0.05, P &lt; 0.01, and P &lt; 0.001 are descriptive and do not control the high-throughput multiple-testing error rate. Interpret them with Δβ and independent validation. Missing statistics are not converted to zero or “not significant”; confidence intervals and standard errors are not present in the probe dataset.</p>
+      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">{geneData.probeDataset ? 'All Treatment panels use unfiltered all-probe source exports; the figure applies no P-value filter.' : 'The probe figure uses uncorrected P values.'} Thresholds at P &lt; 0.05, P &lt; 0.01, and P &lt; 0.001 are descriptive and do not control the high-throughput multiple-testing error rate. Interpret them with Δβ and independent validation. Missing statistics are not converted to zero or “not significant”; confidence intervals and standard errors are not present in the probe dataset.</p>
       {isPtsdSubtypeFigure && <p className="mt-1 text-[10px] font-medium text-slate-600">Subtype and control-group definitions were not supplied with these result files. Confirm SSS, ADS, ICF, and ISS definitions against the study protocol before interpretation.</p>}
       {hasClippedP && <p className="mt-1 text-[10px] font-medium text-slate-600">Nominal P values below 1×10⁻⁸ are plotted at the fixed upper boundary (−log₁₀P = 8) so the three reference thresholds remain legible. Exact P values remain available in the tooltip and table.</p>}
       {hasZeroP && <p className="mt-1 text-[10px] font-medium text-amber-800">One or more stored nominal P values equal numeric zero (underflow/rounding). They are reported as zero in the table and plotted at the upper display boundary, not interpreted as literally zero probability.</p>}

@@ -165,36 +165,45 @@ test('master and probe runtime validators accept shipped data and reject identit
   assert.deepEqual(treatmentProbe.probeDataset, {
     scope: 'treatment-study-timepoint-with-cpt-reference',
     comparison: 'Responder versus non-responder across three studies, plus CPT healthy-control references, at Baseline and Follow-up',
-    selectionRule: 'Source-exported probes with nominal P < 0.01, restricted to common three-study probes',
+    selectionRule: 'All ten sources contain unfiltered all-probe statistics; panels are restricted to common three-study probes',
     sourceFiles: [
-      'MDMA/MDMA_Pre_Responder_vs_NonResponder_DMPs.csv',
-      'MDMA/MDMA_FUP1_Responder_vs_NonResponder_DMPs.csv',
-      'Ketamine/Ketamine_Pre_Responder_vs_NonResponder_DMPs.csv',
-      'Ketamine/Ketamine_FUP2_Responder_vs_NonResponder_DMPs.csv',
-      'CPT/CPT_Pre_Responder_vs_NonResponder_DMPs.csv',
-      'CPT/CPT_FUP2_Responder_vs_NonResponder_DMPs.csv',
-      'CPT/CPT_Pre_Responder_vs_HC_DMPs.csv',
-      'CPT/CPT_FUP2_Responder_vs_HC_DMPs.csv',
-      'CPT/CPT_Pre_NonResponder_vs_HC_DMPs.csv',
-      'CPT/CPT_FUP2_NonResponder_vs_HC_DMPs.csv',
+      'MDMA/MDMA_Pre_Responder_vs_NonResponder_DMPs_AllProbes.csv',
+      'MDMA/MDMA_FUP1_Responder_vs_NonResponder_DMPs_AllProbes.csv',
+      'Ketamine/Ketamine_Pre_Responder_vs_NonResponder_DMPs_AllProbes.csv',
+      'Ketamine/Ketamine_FUP2_Responder_vs_NonResponder_DMPs_AllProbes.csv',
+      'CPT/CPT_Pre_Responder_vs_NonResponder_DMPs_AllProbes.csv',
+      'CPT/CPT_FUP2_Responder_vs_NonResponder_DMPs_AllProbes.csv',
+      'CPT/CPT_Pre_Responder_vs_HC_DMPs_AllProbes.csv',
+      'CPT/CPT_FUP2_Responder_vs_HC_DMPs_AllProbes.csv',
+      'CPT/CPT_Pre_NonResponder_vs_HC_DMPs_AllProbes.csv',
+      'CPT/CPT_FUP2_NonResponder_vs_HC_DMPs_AllProbes.csv',
     ],
+    coverageByAnalysis: {
+      MDMA_Pre: 'all-probes',
+      MDMA_FUP: 'all-probes',
+      Ketamine_Pre: 'all-probes',
+      Ketamine_FUP: 'all-probes',
+      CPT_Pre: 'all-probes',
+      CPT_FUP: 'all-probes',
+      CPT_RvHC_Pre: 'all-probes',
+      CPT_RvHC_FUP: 'all-probes',
+      CPT_NRvHC_Pre: 'all-probes',
+      CPT_NRvHC_FUP: 'all-probes',
+    },
   });
   assert.ok((treatmentProbe.probes as unknown[]).length > 0);
   assert.ok((treatmentProbe.probes as unknown[]).length <= (treatmentProbe.totalProbes as number));
   const probeRows = treatmentProbe.probes as Record<string, unknown>[];
-  for (const key of ['MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP']) {
-    assert.ok(probeRows.some((probeRow) => typeof probeRow[`${key}_P`] === 'number'));
-  }
-  for (const key of ['CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP']) {
-    assert.ok(probeRows.every((probeRow) => probeRow[`${key}_P`] === null || typeof probeRow[`${key}_P`] === 'number'));
+  for (const key of ['MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP']) {
+    assert.ok(probeRows.every((probeRow) => typeof probeRow[`${key}_P`] === 'number'));
   }
 
   const treatmentProbeIndex = readJson('../public/data/mdma/treatment-probes/index.json') as {
     version: string;
     sources: { key: string; commonRows: number }[];
   };
-  assert.equal(treatmentProbeIndex.version, 'treatment_study_timepoint_probes_with_cpt_reference_v2');
-  for (const key of ['CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP']) {
-    assert.ok((treatmentProbeIndex.sources.find((source) => source.key === key)?.commonRows ?? 0) > 0);
+  assert.equal(treatmentProbeIndex.version, 'treatment_all_probe_study_timepoint_and_cpt_reference_v4');
+  for (const key of ['MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP']) {
+    assert.equal(treatmentProbeIndex.sources.find((source) => source.key === key)?.commonRows, 152_923);
   }
 });
