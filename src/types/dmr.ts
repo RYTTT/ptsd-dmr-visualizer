@@ -56,6 +56,8 @@ export const TREATMENT_COHORTS = ['MDMA', 'Ketamine', 'CPT'] as const;
 export type TreatmentCohort = (typeof TREATMENT_COHORTS)[number];
 export const TREATMENT_TIMEPOINTS = ['Pre', 'FUP'] as const;
 export type TreatmentTimepoint = (typeof TREATMENT_TIMEPOINTS)[number];
+export const CPT_HC_GROUPS = ['Responder', 'NonResponder'] as const;
+export type CptHealthyControlGroup = (typeof CPT_HC_GROUPS)[number];
 
 export interface TreatmentComponentStat {
   pValue: number;
@@ -109,21 +111,31 @@ export interface TreatmentDatasetMetadata {
   generatedAt: string;
   selectionRule: string;
   contextRule: string;
-  pooledSource: string;
-  pooledComponentSource: string;
+  metaSources: Record<TreatmentTimepoint, { selected: string; full: string }>;
+  cptHealthyControlSources: Record<TreatmentTimepoint, Record<CptHealthyControlGroup, string>>;
   cohortSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>>;
   contextSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>>;
 }
 
 export interface MdmaMasterData {
   metadata: TreatmentDatasetMetadata;
-  crossCohort: CrossCohortGene[];
+  metaAnalyses: Record<TreatmentTimepoint, CrossCohortGene[]>;
+  cptHealthyControl: Record<
+    TreatmentTimepoint,
+    { groups: Record<CptHealthyControlGroup, TreatmentGeneResult[]> }
+  >;
   timepoints: Record<TreatmentTimepoint, TreatmentTimepointData>;
   geneContexts: Record<string, TreatmentGeneContext>;
 }
 
 export type SelectedTreatmentResult =
-  | { kind: 'pooled-cross-cohort'; result: CrossCohortGene }
+  | { kind: 'timepoint-meta-analysis'; timepoint: TreatmentTimepoint; result: CrossCohortGene }
+  | {
+      kind: 'cpt-healthy-control';
+      timepoint: TreatmentTimepoint;
+      group: CptHealthyControlGroup;
+      result: TreatmentGeneResult;
+    }
   | {
       kind: 'timepoint-cohort';
       timepoint: TreatmentTimepoint;

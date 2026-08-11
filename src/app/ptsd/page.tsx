@@ -476,7 +476,7 @@ export default function Home() {
               <li>Evidence for the same CpG was combined across the three cohorts at probe level; effect estimates used inverse-variance weighting and P values used Fisher&apos;s method.</li>
               <li>Within each gene, up to three probes with the smallest meta-analysis P values were combined into a gene P value, followed by FDR adjustment across genes.</li>
             </ol>
-            <p className="mt-2"><strong>Why there is no Treatment-style N8+ rule:</strong> the PTSD analysis uses probes shared across 450K and EPIC platforms and a variance-filtered set. The median gene has only 3 tested probes, versus 13 in the full Treatment combined table, so requiring 8 would preferentially remove genes with lower array coverage.</p>
+            <p className="mt-2"><strong>Why there is no Treatment-style N8+ rule:</strong> the PTSD analysis uses probes shared across 450K and EPIC platforms and a variance-filtered set. The median gene has only 3 tested probes, versus 13 in the full Treatment meta-analysis table, so requiring 8 would preferentially remove genes with lower array coverage.</p>
           </details>
         </section>
 

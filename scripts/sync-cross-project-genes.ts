@@ -24,7 +24,7 @@ interface PtsdMaster {
 }
 
 interface TreatmentMaster {
-  crossCohort: ResultStat[];
+  metaAnalyses: Record<Timepoint, ResultStat[]>;
   timepoints: Record<Timepoint, { cohorts: Record<Cohort, ResultStat[]> }>;
 }
 
@@ -134,15 +134,13 @@ export function buildCrossProjectIndex(
       }
     }
   }
-  if (!Array.isArray(treatment.crossCohort)) throw new Error('Missing treatment crossCohort array');
-  for (const [index, result] of treatment.crossCohort.entries()) {
-    validateStat(result, `crossCohort[${index}]`);
-    treatmentResults.set(result.gene, {
-      type: 'pooled-cross-cohort',
-      fdr: result.fdr,
-      deltaBeta: result.deltaBeta,
-      direction: result.direction,
-    });
+  for (const timepoint of timepoints) {
+    const results = treatment.metaAnalyses[timepoint];
+    if (!Array.isArray(results)) throw new Error(`Missing treatment meta-analysis ${timepoint}`);
+    for (const [index, result] of results.entries()) {
+      validateStat(result, `metaAnalyses.${timepoint}[${index}]`);
+      setLowestFdr(treatmentResults, result, `timepoint-meta-analysis:${timepoint}`, true);
+    }
   }
 
   const overlapGenes = [...ptsdResults.keys()]

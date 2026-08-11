@@ -1,6 +1,7 @@
 import type {
   CrossCohortGene,
   CrossSubtypeDMR,
+  CptHealthyControlGroup,
   Direction,
   MasterDMRData,
   MdmaMasterData,
@@ -16,6 +17,7 @@ import type {
   UniqueDMR,
 } from '../types/dmr.ts';
 import {
+  CPT_HC_GROUPS,
   SUBTYPE_KEYS,
   TREATMENT_COHORTS,
   TREATMENT_TIMEPOINTS,
@@ -309,14 +311,52 @@ export function validateMdmaMasterData(value: unknown): MdmaMasterData {
     generatedAt,
     selectionRule: string(metadataSource.selectionRule, 'metadata.selectionRule'),
     contextRule: string(metadataSource.contextRule, 'metadata.contextRule'),
-    pooledSource: string(metadataSource.pooledSource, 'metadata.pooledSource'),
-    pooledComponentSource: string(metadataSource.pooledComponentSource, 'metadata.pooledComponentSource'),
+    metaSources: Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => {
+      const timepointSource = record(record(metadataSource.metaSources, 'metadata.metaSources')[timepoint], `metadata.metaSources.${timepoint}`);
+      return [timepoint, {
+        selected: string(timepointSource.selected, `metadata.metaSources.${timepoint}.selected`),
+        full: string(timepointSource.full, `metadata.metaSources.${timepoint}.full`),
+      }];
+    })) as MdmaMasterData['metadata']['metaSources'],
+    cptHealthyControlSources: Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => {
+      const timepointSource = record(record(metadataSource.cptHealthyControlSources, 'metadata.cptHealthyControlSources')[timepoint], `metadata.cptHealthyControlSources.${timepoint}`);
+      return [timepoint, Object.fromEntries(CPT_HC_GROUPS.map((group) => [
+        group,
+        string(timepointSource[group], `metadata.cptHealthyControlSources.${timepoint}.${group}`),
+      ]))];
+    })) as MdmaMasterData['metadata']['cptHealthyControlSources'],
     cohortSources: parseSourceMatrix(metadataSource.cohortSources, 'metadata.cohortSources'),
     contextSources: parseSourceMatrix(metadataSource.contextSources, 'metadata.contextSources'),
   };
-  if (!Array.isArray(source.crossCohort)) fail('crossCohort', 'an array');
-  const crossCohort = source.crossCohort.map((item, index) => parseCrossCohortGene(item, `crossCohort[${index}]`));
-  assertUniqueGenes(crossCohort, 'crossCohort');
+  const metaSource = record(source.metaAnalyses, 'metaAnalyses');
+  const metaAnalyses = Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => {
+    const items = metaSource[timepoint];
+    if (!Array.isArray(items)) fail(`metaAnalyses.${timepoint}`, 'an array');
+    const parsed = items.map((item, index) => parseCrossCohortGene(item, `metaAnalyses.${timepoint}[${index}]`));
+    assertUniqueGenes(parsed, `metaAnalyses.${timepoint}`);
+    for (const result of parsed) {
+      if (result.pValue >= 5e-6) fail(`metaAnalyses.${timepoint}.${result.gene}.pValue`, 'below 5e-6 for a selected meta-analysis row');
+      if (result.nSigProbes < 8) fail(`metaAnalyses.${timepoint}.${result.gene}.nSigProbes`, 'at least 8 for a selected meta-analysis row');
+    }
+    return [timepoint, parsed];
+  })) as MdmaMasterData['metaAnalyses'];
+  const cptHealthyControlSource = record(source.cptHealthyControl, 'cptHealthyControl');
+  const cptHealthyControl = Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => {
+    const timepointItem = record(cptHealthyControlSource[timepoint], `cptHealthyControl.${timepoint}`);
+    const groupSource = record(timepointItem.groups, `cptHealthyControl.${timepoint}.groups`);
+    const groups = Object.fromEntries(CPT_HC_GROUPS.map((group) => {
+      const items = groupSource[group];
+      if (!Array.isArray(items)) fail(`cptHealthyControl.${timepoint}.groups.${group}`, 'an array');
+      const parsed = items.map((item, index) => parseTreatmentGeneResult(item, `cptHealthyControl.${timepoint}.groups.${group}[${index}]`, 8));
+      assertUniqueGenes(parsed, `cptHealthyControl.${timepoint}.groups.${group}`);
+      for (const result of parsed) {
+        if (result.pValue >= 5e-6) fail(`cptHealthyControl.${timepoint}.${group}.${result.gene}.pValue`, 'below 5e-6');
+        if (result.nSigProbes < 8) fail(`cptHealthyControl.${timepoint}.${group}.${result.gene}.nSigProbes`, 'at least 8');
+      }
+      return [group, parsed];
+    })) as MdmaMasterData['cptHealthyControl'][TreatmentTimepoint]['groups'];
+    return [timepoint, { groups }];
+  })) as MdmaMasterData['cptHealthyControl'];
   const timepointSource = record(source.timepoints, 'timepoints');
   const timepoints = Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => {
     const timepointItem = record(timepointSource[timepoint], `timepoints.${timepoint}`);
@@ -350,7 +390,7 @@ export function validateMdmaMasterData(value: unknown): MdmaMasterData {
     })) as TreatmentGeneContext;
     return [gene, parsedContext];
   })) as MdmaMasterData['geneContexts'];
-  return { metadata, crossCohort, timepoints, geneContexts };
+  return { metadata, metaAnalyses, cptHealthyControl, timepoints, geneContexts };
 }
 
 /**
@@ -379,13 +419,18 @@ export function findPtsdResult(
 
 export function findTreatmentResult(
   data: MdmaMasterData,
-  context: 'cross' | TreatmentCohort,
+  context: 'cross' | 'CPT-HC' | TreatmentCohort,
   timepoint: TreatmentTimepoint,
   gene: string,
+  cptHealthyControlGroup: CptHealthyControlGroup = 'Responder',
 ): SelectedTreatmentResult | null {
   if (context === 'cross') {
-    const result = data.crossCohort.find((item) => item.gene === gene);
-    return result ? { kind: 'pooled-cross-cohort', result } : null;
+    const result = data.metaAnalyses[timepoint].find((item) => item.gene === gene);
+    return result ? { kind: 'timepoint-meta-analysis', timepoint, result } : null;
+  }
+  if (context === 'CPT-HC') {
+    const result = data.cptHealthyControl[timepoint].groups[cptHealthyControlGroup].find((item) => item.gene === gene);
+    return result ? { kind: 'cpt-healthy-control', timepoint, group: cptHealthyControlGroup, result } : null;
   }
   const result = data.timepoints[timepoint].cohorts[context].find((item) => item.gene === gene);
   return result
@@ -394,22 +439,34 @@ export function findTreatmentResult(
 }
 
 export interface TreatmentViewDescriptor {
-  kind: 'pooled-cross-cohort' | 'timepoint-cohort';
+  kind: 'timepoint-meta-analysis' | 'timepoint-cohort' | 'cpt-healthy-control';
   title: string;
   shortLabel: string;
   csvFilename: string;
 }
 
 export function treatmentViewDescriptor(
-  context: 'cross' | TreatmentCohort,
+  context: 'cross' | 'CPT-HC' | TreatmentCohort,
   timepoint: TreatmentTimepoint,
+  cptHealthyControlGroup: CptHealthyControlGroup = 'Responder',
 ): TreatmentViewDescriptor {
   if (context === 'cross') {
+    const label = timepoint === 'Pre' ? 'Baseline (Pre)' : 'Follow-up (Post)';
     return {
-      kind: 'pooled-cross-cohort',
-      title: 'Combined results across the three studies',
-      shortLabel: 'Combined result',
-      csvFilename: 'Treatment_DMR_all-treatments-combined.csv',
+      kind: 'timepoint-meta-analysis',
+      title: `Three-study meta-analysis · ${label}`,
+      shortLabel: label,
+      csvFilename: `Treatment_DMR_${timepoint}_three-study-meta-analysis.csv`,
+    };
+  }
+  if (context === 'CPT-HC') {
+    const visit = timepoint === 'Pre' ? 'Baseline (Pre)' : 'Follow-up (FUP2)';
+    const groupLabel = cptHealthyControlGroup === 'Responder' ? 'Responder vs HC' : 'NonResponder vs HC';
+    return {
+      kind: 'cpt-healthy-control',
+      title: `CPT ${groupLabel} · ${visit}`,
+      shortLabel: groupLabel,
+      csvFilename: `Treatment_DMR_CPT_${timepoint}_${cptHealthyControlGroup}-vs-HC.csv`,
     };
   }
   const label = timepoint === 'Pre'

@@ -138,9 +138,16 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
         paragraphs.push(
           `This is a ${result.subtype}-selected gene: only ${result.subtype} passes the source FDR < 0.05 rule. Its Δβ is ${formatDeltaBeta(result.result.deltaBeta)}, direction is ${result.result.direction.toLowerCase()}, nominal P is ${formatProbability(result.result.pValue)}, and FDR is ${formatProbability(result.result.fdr)}. The application shows the observed SSS, ADS, ICF, and ISS values side by side; the other three are not missing or replaced with zero.`
         );
-      } else if (result.kind === 'pooled-cross-cohort') {
+      } else if (result.kind === 'timepoint-meta-analysis') {
+        const timepointLabel = result.timepoint === 'Pre' ? 'Baseline (Pre)' : 'Follow-up (Post)';
         paragraphs.push(
-          `The active treatment result is the combined analysis across MDMA, ketamine, and CPT: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, nominal P ${formatProbability(result.result.pValue)}, and reported FDR ${formatProbability(result.result.fdr)}. ${result.result.nCohortsNominal} of 3 study component P values are below 0.05, and the three component mean Δβ signs ${result.result.componentSignsConsistent ? 'are consistent' : 'differ'}. This combined result is separate from the Baseline and Follow-up comparisons and does not imply that every study visit has the same effect.`
+          `The active treatment result is the ${timepointLabel} three-study meta-analysis across MDMA, ketamine, and CPT: Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, nominal P ${formatProbability(result.result.pValue)}, and reported FDR ${formatProbability(result.result.fdr)}. ${result.result.nCohortsNominal} of 3 same-visit study component P values are below 0.05, and the three component mean Δβ signs ${result.result.componentSignsConsistent ? 'are consistent' : 'differ'}. This result does not imply that every study has the same effect.`
+        );
+      } else if (result.kind === 'cpt-healthy-control') {
+        const visit = result.timepoint === 'Pre' ? 'Baseline (Pre)' : 'Follow-up (FUP2)';
+        const group = result.group === 'Responder' ? 'responders' : 'nonresponders';
+        paragraphs.push(
+          `The active CPT healthy-control reference compares ${group} with healthy controls at ${visit}: Top-3 weighted Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, Fisher P ${formatProbability(result.result.pValue)}, BH FDR ${formatProbability(result.result.fdr)}, and ${result.result.nSigProbes} of ${result.result.totalProbes} mapped probes with nominal P < 0.05. This is a cross-sectional group contrast at the selected visit, not a treatment-change test.`
         );
       } else {
         const timepointLabel = result.timepoint === 'Pre'
@@ -149,7 +156,7 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
             ? 'Follow-up (FUP1 / E2)'
             : 'Follow-up (FUP2)';
         paragraphs.push(
-          `The active treatment result is from the ${result.cohort} study at ${timepointLabel}: weighted Top-3 Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, nominal Fisher P ${formatProbability(result.result.pValue)}, reported FDR ${formatProbability(result.result.fdr)}, and ${result.result.nSigProbes} of ${result.result.totalProbes} mapped probes with P < 0.05. This study-and-visit result should not be generalized to the other studies or to the overall combined result.`
+          `The active treatment result is from the ${result.cohort} study at ${timepointLabel}: weighted Top-3 Δβ ${formatDeltaBeta(result.result.deltaBeta)}, ${result.result.direction.toLowerCase()}, nominal Fisher P ${formatProbability(result.result.pValue)}, reported FDR ${formatProbability(result.result.fdr)}, and ${result.result.nSigProbes} of ${result.result.totalProbes} mapped probes with P < 0.05. This study-and-visit result should not be generalized to the other studies or to the same-visit three-study meta-analysis.`
         );
       }
     }
@@ -158,7 +165,7 @@ export const GeneStoryButton: React.FC<GeneStoryProps> = ({
     if (cross) {
       if (project === 'ptsd') {
         paragraphs.push(
-          `${gene} also has a selected result in the Treatment Response Atlas (MDMA/Ketamine/CPT), with a summary direction of ${cross.mdma.direction.toLowerCase()} (${cross.mdma.type === 'pooled-cross-cohort' ? 'overall combined analysis' : 'individual study/visit analysis'}, FDR ${cross.mdma.fdr < 1e-15 ? '< 1×10⁻¹⁵' : cross.mdma.fdr.toExponential(2)}). This cross-project overlap is hypothesis-generating; it does not establish treatment responsiveness, mediation, or a therapeutic target.`
+          `${gene} also has a selected result in the Treatment Response Atlas (MDMA/Ketamine/CPT), with a summary direction of ${cross.mdma.direction.toLowerCase()} (${cross.mdma.type.startsWith('timepoint-meta-analysis:') ? `${cross.mdma.type.endsWith(':Pre') ? 'Baseline' : 'Follow-up'} three-study meta-analysis` : 'individual study/visit analysis'}, FDR ${cross.mdma.fdr < 1e-15 ? '< 1×10⁻¹⁵' : cross.mdma.fdr.toExponential(2)}). This cross-project overlap is hypothesis-generating; it does not establish treatment responsiveness, mediation, or a therapeutic target.`
         );
       } else {
         paragraphs.push(

@@ -1,6 +1,6 @@
 # Scientific data dictionary and display methods — version 1.0
 
-**Document version:** 1.4
+**Document version:** 1.6
 **Application contract:** `scientific-data-v1`  
 **Last updated:** 2026-08-11
 
@@ -38,18 +38,21 @@ reproduced or used in a scientific publication.
 The PTSD analysis is restricted to probes shared across 450K and EPIC platforms
 and retains the highest-variance 50% before cohort-specific EWAS. Its median gene
 has 3 tested probes and only 4,424 genes have at least 8. The full Treatment
-combined table has a median of 13 mapped probes and 16,422 genes have at least
+meta-analysis table has a median of 13 mapped probes and 16,422 genes have at least
 8. Applying Treatment's fixed N8+ screen to PTSD would therefore select heavily
 for array coverage rather than impose an equivalent evidentiary threshold.
 PTSD keeps its source shared/subtype-selected rules; Treatment keeps N8+.
 
 ### Treatment atlas
 
-- **All treatments combined** records are the top-level `crossCohort` results.
-  Their P value, FDR, Δβ, direction, and probe counts are combined fields and are
-  **not Baseline or Follow-up results**. The application shows this result in a
-  separate card and hides the visit control in this view.
-- The combined source also provides a component P value, count-weighted Top-3
+- **Baseline (Pre) three-study meta-analysis** records combine CPT Pre,
+  ketamine Pre, and MDMA Pre. The selected table contains 347 genes satisfying
+  meta-analysis P < 5×10⁻⁶ and `N_Sig_Probes_p05 >= 8`; its corresponding full
+  source contains 24,084 unfiltered genes.
+- **Follow-up (Post) three-study meta-analysis** records combine CPT FUP2,
+  ketamine FUP2, and MDMA FUP1. The selected table contains 1,115 genes under
+  the same P and probe-count screen; its full source also contains 24,084 genes.
+- Each timepoint-specific meta-analysis source provides a component P value, count-weighted Top-3
   Δβ, direction, and positive/negative probe summaries for each treatment
   study. The application reports only the factual count of 1/3, 2/3, or 3/3
   component P values below 0.05 and separately states whether the three
@@ -58,6 +61,23 @@ PTSD keeps its source shared/subtype-selected rules; Treatment keeps N8+.
 - **Genes meeting this screen** are supplied separately for Baseline (`Pre`) and
   Follow-up (`FUP`) under MDMA, ketamine, and CPT. A row is included when
   `N_Sig_Probes_p05 >= 8` and `Gene_FDR < 0.05`.
+- **CPT versus healthy-control reference DMRs** are kept separate from the
+  responder-versus-nonresponder treatment-response results. Four registries
+  are derived from the unfiltered 602,313-probe sources: Pre responder vs HC
+  (44 genes), Pre nonresponder vs HC (23), FUP2 responder vs HC (172), and
+  FUP2 nonresponder vs HC (335). For each of 24,085 annotated genes, the app
+  Fisher-combines the three smallest probe P values, applies BH across all
+  genes, and computes positive/negative Top-3 Δβ summaries. Selection requires
+  Fisher P < 5×10⁻⁶ and at least eight probes with nominal P < 0.05; the BH FDR
+  is reported but is not an additional selection threshold. The stated sample
+  sizes are Pre: 7 responders or 6 nonresponders vs 33 HC; FUP2: 7 responders
+  or 6 nonresponders vs 22 HC.
+- The CPT-vs-HC tab includes a same-visit gene-set Venn comparing its active
+  registry with the corresponding three-study meta-analysis registry. Exact
+  intersections are Pre responder 27, Pre nonresponder 15, FUP2 responder 129,
+  and FUP2 nonresponder 201 genes. Circle areas are explicitly schematic; the
+  overlap is a descriptive gene-symbol intersection and does not test effect
+  concordance, replication, enrichment, or longitudinal change.
 - **Visit context** comes from the six `AllGenes` files. For any selected gene,
   the chart looks up its source-backed Baseline and Follow-up rows. A bar can be
   visible even when that row has fewer than eight probes with nominal P < 0.05.
@@ -75,14 +95,14 @@ PTSD keeps its source shared/subtype-selected rules; Treatment keeps N8+.
 |---|---|---|
 | `gene` | all records | Gene symbol or source feature identifier. |
 | `chr` | PTSD/track | Chromosome label as supplied; the validator does not add or remove a `chr` prefix. |
-| `deltaBeta` | result/measurement | Difference in methylation proportion (responder minus non-responder for the treatment study files). For treatment study/visit rows, the app derives a count-weighted mean from the positive and negative Top-3 means. It is not a fold change and has no physical unit. The cross-subtype PTSD volcano uses an explicitly labeled display-only arithmetic mean of the four subtype Δβ summaries because no source combined Δβ was supplied. |
+| `deltaBeta` | result/measurement | Difference in methylation proportion: responder minus nonresponder for the treatment-response files, and CPT clinical group minus healthy controls for the CPT reference. The app derives gene summaries as count-weighted means of positive and negative Top-3 effects. It is not a fold change and has no physical unit. The cross-subtype PTSD volcano uses an explicitly labeled display-only arithmetic mean of the four subtype Δβ summaries because no source combined Δβ was supplied. |
 | `direction` | result/measurement | `Hypermethylated`, `Hypomethylated`, or `Mixed`; `null` means unavailable after normalization. |
-| `fdr`, `crossFdr` | result | Multiple-testing adjusted probability in [0, 1]. The adjustment method and tested family are **not supplied**. |
-| `pValue`, `crossP` | result | Unadjusted/combined P value in [0, 1]. The cross-result combination method is **not supplied**. |
-| `cohortPValues` | treatment combined result | The MDMA, ketamine, and CPT component P values supplied by `Meta_Analysis_Gene_Level_DMRs_Top3_FULL.csv`. These are distinct from the six visit-specific analyses. |
-| `cohortComponents` | treatment combined result | Source component P, count-weighted Top-3 Δβ, direction, and positive/negative counts and means for MDMA, ketamine, and CPT. |
-| `nCohortsNominal` | treatment combined result | Number of the three component P values below 0.05; this is not a replication claim. |
-| `componentSignsConsistent` | treatment combined result | Whether all three component mean Δβ values have the same nonzero sign. Mixed probe patterns remain visible separately. |
+| `fdr`, `crossFdr` | result | Multiple-testing adjusted probability in [0, 1]. For the CPT healthy-control registry, this is app-derived BH across 24,085 genes; adjustment details for other supplied result tables are noted in provenance. |
+| `pValue`, `crossP` | result | Unadjusted/combined P value in [0, 1]. CPT healthy-control gene P is Fisher-combined from the three smallest probe P values; other combination methods are documented separately where known. |
+| `cohortPValues` | treatment timepoint meta-analysis | The MDMA, ketamine, and CPT component P values for the same selected Baseline or Follow-up visit. |
+| `cohortComponents` | treatment timepoint meta-analysis | Source component P, count-weighted Top-3 Δβ, direction, and positive/negative counts and means for MDMA, ketamine, and CPT. |
+| `nCohortsNominal` | treatment timepoint meta-analysis | Number of the three same-visit component P values below 0.05; this is not a replication claim. |
+| `componentSignsConsistent` | treatment timepoint meta-analysis | Whether all three component mean Δβ values have the same nonzero sign. Mixed probe patterns remain visible separately. |
 | `totalProbes` | DMR result | Number of probes tested or represented for that DMR record. This is labeled “DMR tested probes,” not “all EPIC probes.” |
 | `nSigProbes` | treatment result | Number of mapped gene probes with nominal P < 0.05 (`N_Sig_Probes_p05`). The N8+ registry requires at least eight. |
 | `nPosTop3`, `nNegTop3` | treatment result | Positive- and negative-effect probe counts among the Top-3 Fisher summary probes. Counts sum to 1–3. |
@@ -98,7 +118,7 @@ The treatment `AllGenes` tables contain observed rows rather than the old
 `direction: "N/A"`, `deltaBeta: 0`, `fdr: 1` sentinel. A missing lookup remains
 `null` and is displayed as “Not provided in the source gene-level results.” An
 observed Δβ of zero or FDR of one is retained. Missing is never labeled “not
-significant.” In the current generated database, all 2,441 selected genes have
+significant.” In the current generated database, all 2,301 selected genes have
 all six source-backed visit results and there are no null visit cells.
 
 All figure stars use uncorrected nominal P only: `*` for P < 0.05, `**` for
@@ -193,8 +213,8 @@ ranges. Island arrays are not required to be position-sorted because legitimate
 shipped shards are unsorted.
 
 CSV uses RFC-style quoting for commas, quotes, and line breaks; missing values
-are blank and numeric zero remains `0`. Filenames state combined versus
-study/visit screen scope.
+are blank and numeric zero remains `0`. Filenames state Baseline/Follow-up
+meta-analysis versus study/visit screen scope.
 
 ## Provenance required from upstream
 
@@ -205,10 +225,11 @@ study/visit screen scope.
 | Source repository/commit | **Not supplied** |
 | Genome build and annotation release | **Not supplied** |
 | Array manifest version(s) | **Not supplied**; the UI therefore uses generic array-manifest wording |
-| Sample sizes and exclusions | **Not supplied** |
+| Sample sizes and exclusions | CPT healthy-control group sizes are stated above; exclusions and other analysis sample sizes are **not supplied** |
 | DMR caller, parameters, and probe ranking | **Not supplied** |
-| Multiple-testing method and family | Gene-level FDR is supplied; adjustment method/family are **not supplied** |
-| Cross-subtype/cross-cohort combination method | **Not supplied** |
+| Multiple-testing method and family | CPT healthy-control gene FDR uses BH across 24,085 genes; details for other supplied gene-level FDR fields are **not supplied** |
+| Cross-subtype combination method | Fisher combination is documented above from the inspected PTSD analysis script |
+| Treatment three-study meta-analysis combination method | **Not supplied** |
 | IPW model, estimand, diagnostics, and truncation | **Not supplied** |
 
 These gaps should remain visible in customer/scientific-review materials until

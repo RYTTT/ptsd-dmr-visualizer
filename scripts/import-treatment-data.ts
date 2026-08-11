@@ -1,8 +1,11 @@
+import { createReadStream } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { createInterface } from 'node:readline';
 
 import type {
   CrossCohortGene,
+  CptHealthyControlGroup,
   Direction,
   MdmaMasterData,
   TreatmentCohort,
@@ -11,14 +14,41 @@ import type {
   TreatmentComponentStat,
   TreatmentTimepoint,
 } from '../src/types/dmr.ts';
-import { TREATMENT_COHORTS, TREATMENT_TIMEPOINTS } from '../src/types/dmr.ts';
+import { CPT_HC_GROUPS, TREATMENT_COHORTS, TREATMENT_TIMEPOINTS } from '../src/types/dmr.ts';
 
 type CsvRow = Record<string, string>;
 
 const DEFAULT_SOURCE_ROOT = '/Users/ruotingyang/Documents/manuscripts/MDMA_antigravity/result/IPW_DMP_Analysis_2026_v2_CD4T_arrayWeights';
 const OUTPUT_FILE = new URL('../public/data/mdma/dmrData.json', import.meta.url);
-const POOLED_SOURCE = 'Meta_Analysis_Gene_Level_DMRs_Top3_Primary_Strict.csv';
-const POOLED_COMPONENT_SOURCE = 'Meta_Analysis_Gene_Level_DMRs_Top3_FULL.csv';
+const metaSources: Record<TreatmentTimepoint, { selected: string; full: string }> = {
+  Pre: {
+    selected: 'Meta_Analysis_Pre_Gene_Level_DMRs_Top3_1000Genes_Primary.csv',
+    full: 'Meta_Analysis_Pre_Gene_Level_DMRs_Top3_FULL.csv',
+  },
+  FUP: {
+    selected: 'Meta_Analysis_Post_Gene_Level_DMRs_Top3_1000Genes_Primary.csv',
+    full: 'Meta_Analysis_Post_Gene_Level_DMRs_Top3_FULL.csv',
+  },
+};
+const expectedMetaCounts: Record<TreatmentTimepoint, { selected: number; full: number }> = {
+  Pre: { selected: 347, full: 24_084 },
+  FUP: { selected: 1_115, full: 24_084 },
+};
+const cptHealthyControlSources: Record<TreatmentTimepoint, Record<CptHealthyControlGroup, string>> = {
+  Pre: {
+    Responder: 'CPT/CPT_Pre_Responder_vs_HC_DMPs_AllProbes.csv',
+    NonResponder: 'CPT/CPT_Pre_NonResponder_vs_HC_DMPs_AllProbes.csv',
+  },
+  FUP: {
+    Responder: 'CPT/CPT_FUP2_Responder_vs_HC_DMPs_AllProbes.csv',
+    NonResponder: 'CPT/CPT_FUP2_NonResponder_vs_HC_DMPs_AllProbes.csv',
+  },
+};
+const expectedCptHealthyControlCounts: Record<TreatmentTimepoint, Record<CptHealthyControlGroup, number>> = {
+  Pre: { Responder: 44, NonResponder: 23 },
+  FUP: { Responder: 172, NonResponder: 335 },
+};
+const EXPECTED_CPT_HC_PROBE_ROWS = 602_313;
 
 const cohortSources: Record<TreatmentTimepoint, Record<TreatmentCohort, string>> = {
   Pre: {
@@ -121,6 +151,35 @@ async function csvRows(file: string): Promise<CsvRow[]> {
   });
 }
 
+function parseCsvLine(text: string): string[] {
+  const row: string[] = [];
+  let field = '';
+  let quoted = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (quoted) {
+      if (character === '"' && text[index + 1] === '"') {
+        field += '"';
+        index += 1;
+      } else if (character === '"') {
+        quoted = false;
+      } else {
+        field += character;
+      }
+    } else if (character === '"') {
+      quoted = true;
+    } else if (character === ',') {
+      row.push(field);
+      field = '';
+    } else {
+      field += character;
+    }
+  }
+  if (quoted) throw new Error('CSV row ends inside a quoted field');
+  row.push(field.replace(/\r$/u, ''));
+  return row;
+}
+
 function required(row: CsvRow, key: string, source: string): string {
   const value = row[key]?.trim();
   if (!value) throw new Error(`${source}: ${key} is required`);
@@ -168,6 +227,110 @@ function weightedTop3Mean(
   return (nPositive * (positiveMean ?? 0) + nNegative * (negativeMean ?? 0)) / count;
 }
 
+interface CptHealthyControlAccumulator {
+  gene: string;
+  totalProbes: number;
+  nSigProbes: number;
+  topProbes: Array<{ pValue: number; deltaBeta: number }>;
+}
+
+function fisherProbability(pValues: readonly number[], source: string): number {
+  if (pValues.length < 1 || pValues.length > 3) throw new Error(`${source}: Fisher combination requires one to three P values`);
+  if (pValues.some((value) => value <= 0 || value > 1)) throw new Error(`${source}: Fisher P values must be in (0,1]`);
+  const lambda = -pValues.reduce((sum, value) => sum + Math.log(value), 0);
+  let series = 1;
+  let term = 1;
+  for (let order = 1; order < pValues.length; order += 1) {
+    term *= lambda / order;
+    series += term;
+  }
+  return Math.max(Number.MIN_VALUE, Math.min(1, Math.exp(-lambda) * series));
+}
+
+function applyBenjaminiHochberg<T extends { pValue: number; fdr: number }>(results: T[]): void {
+  const ranked = [...results].sort((left, right) => left.pValue - right.pValue);
+  let runningMinimum = 1;
+  for (let index = ranked.length - 1; index >= 0; index -= 1) {
+    runningMinimum = Math.min(runningMinimum, ranked[index].pValue * ranked.length / (index + 1));
+    ranked[index].fdr = Math.min(1, runningMinimum);
+  }
+}
+
+async function deriveCptHealthyControlResults(file: string): Promise<{ fullCount: number; selected: TreatmentGeneResult[] }> {
+  const input = createReadStream(file);
+  const lines = createInterface({ input, crlfDelay: Infinity });
+  const accumulators = new Map<string, CptHealthyControlAccumulator>();
+  let headers: string[] | null = null;
+  let rowNumber = 0;
+  for await (const line of lines) {
+    rowNumber += 1;
+    const values = parseCsvLine(line);
+    if (!headers) {
+      headers = values;
+      for (const column of ['Gene_Symbol', 'P.Value', 'Beta_Diff']) {
+        if (!headers.includes(column)) throw new Error(`${file}: missing column ${column}`);
+      }
+      continue;
+    }
+    if (values.length !== headers.length) throw new Error(`${file}:${rowNumber}: expected ${headers.length} columns, found ${values.length}`);
+    const row = Object.fromEntries(headers.map((header, index) => [header, values[index]]));
+    const source = `${file}:${rowNumber}`;
+    const pValue = numberValue(row, 'P.Value', source);
+    const deltaBeta = numberValue(row, 'Beta_Diff', source);
+    if (pValue <= 0 || pValue > 1) throw new Error(`${source}: P.Value must be in (0,1]`);
+    const gene = row.Gene_Symbol?.trim();
+    if (!gene) continue;
+    const key = gene.toUpperCase();
+    const accumulator = accumulators.get(key) ?? { gene, totalProbes: 0, nSigProbes: 0, topProbes: [] };
+    accumulator.totalProbes += 1;
+    if (pValue < 0.05) accumulator.nSigProbes += 1;
+    accumulator.topProbes.push({ pValue, deltaBeta });
+    accumulator.topProbes.sort((left, right) => left.pValue - right.pValue);
+    if (accumulator.topProbes.length > 3) accumulator.topProbes.pop();
+    accumulators.set(key, accumulator);
+  }
+  if (rowNumber - 1 !== EXPECTED_CPT_HC_PROBE_ROWS) {
+    throw new Error(`${file}: expected ${EXPECTED_CPT_HC_PROBE_ROWS} probe rows, found ${rowNumber - 1}`);
+  }
+  const summaries = [...accumulators.values()].map((accumulator) => ({
+    accumulator,
+    pValue: fisherProbability(accumulator.topProbes.map((probe) => probe.pValue), `${file}:${accumulator.gene}`),
+    fdr: 1,
+  }));
+  applyBenjaminiHochberg(summaries);
+  const selected = summaries
+    .filter(({ accumulator, pValue }) => pValue < 5e-6 && accumulator.nSigProbes >= 8)
+    .map(({ accumulator, pValue, fdr }) => {
+    const positive = accumulator.topProbes.filter((probe) => probe.deltaBeta > 0);
+    const negative = accumulator.topProbes.filter((probe) => probe.deltaBeta < 0);
+    if (positive.length + negative.length < 1) throw new Error(`${file}:${accumulator.gene}: selected result has all-zero Top-3 effects`);
+    const avgPosDeltaBeta = positive.length > 0
+      ? positive.reduce((sum, probe) => sum + probe.deltaBeta, 0) / positive.length
+      : null;
+    const avgNegDeltaBeta = negative.length > 0
+      ? negative.reduce((sum, probe) => sum + probe.deltaBeta, 0) / negative.length
+      : null;
+    const source = `${file}:${accumulator.gene}`;
+    const result: TreatmentGeneResult = {
+      gene: accumulator.gene,
+      totalProbes: accumulator.totalProbes,
+      nSigProbes: accumulator.nSigProbes,
+      pValue,
+      fdr,
+      deltaBeta: weightedTop3Mean(positive.length, avgPosDeltaBeta, negative.length, avgNegDeltaBeta, source),
+      direction: positive.length > 0 && negative.length > 0
+        ? 'Mixed'
+        : positive.length > 0 ? 'Hypermethylated' : 'Hypomethylated',
+      nPosTop3: positive.length,
+      avgPosDeltaBeta,
+      nNegTop3: negative.length,
+      avgNegDeltaBeta,
+    };
+    return result;
+  });
+  return { fullCount: summaries.length, selected };
+}
+
 function treatmentResult(row: CsvRow, source: string, minimumProbes = 1): TreatmentGeneResult {
   for (const column of requiredGeneColumns) {
     if (!(column in row)) throw new Error(`${source}: missing column ${column}`);
@@ -199,20 +362,16 @@ function treatmentResult(row: CsvRow, source: string, minimumProbes = 1): Treatm
   };
 }
 
-function pooledResult(row: CsvRow, componentRow: CsvRow, source: string): CrossCohortGene {
-  const directionValue = required(row, 'Direction', source);
-  if (directionValue !== 'Hypermethylated' && directionValue !== 'Hypomethylated' && directionValue !== 'Mixed') {
-    throw new Error(`${source}: unsupported Direction ${directionValue}`);
-  }
-  const componentSource = `${POOLED_COMPONENT_SOURCE}:${required(row, 'Gene', source)}`;
+function metaAnalysisResult(row: CsvRow, source: string): CrossCohortGene {
+  const directionValue = patternDirection(required(row, 'Meta_Pattern', source), source);
   const cohortComponents = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => {
-    const nPosTop3 = integerValue(componentRow, `${cohort}_N_Hyper`, componentSource);
-    const avgPosDeltaBeta = optionalNumber(componentRow, `${cohort}_Ave_Hyper_Beta`, componentSource);
-    const nNegTop3 = integerValue(componentRow, `${cohort}_N_Hypo`, componentSource);
-    const avgNegDeltaBeta = optionalNumber(componentRow, `${cohort}_Ave_Hypo_Beta`, componentSource);
+    const nPosTop3 = integerValue(row, `${cohort}_N_Hyper`, source);
+    const avgPosDeltaBeta = optionalNumber(row, `${cohort}_Ave_Hyper_Beta`, source);
+    const nNegTop3 = integerValue(row, `${cohort}_N_Hypo`, source);
+    const avgNegDeltaBeta = optionalNumber(row, `${cohort}_Ave_Hypo_Beta`, source);
     const component: TreatmentComponentStat = {
-      pValue: numberValue(componentRow, `${cohort}_P_Top3`, componentSource),
-      deltaBeta: weightedTop3Mean(nPosTop3, avgPosDeltaBeta, nNegTop3, avgNegDeltaBeta, componentSource),
+      pValue: numberValue(row, `${cohort}_P_Top3`, source),
+      deltaBeta: weightedTop3Mean(nPosTop3, avgPosDeltaBeta, nNegTop3, avgNegDeltaBeta, source),
       direction: nPosTop3 > 0 && nNegTop3 > 0 ? 'Mixed' : nPosTop3 > 0 ? 'Hypermethylated' : 'Hypomethylated',
       nPosTop3,
       avgPosDeltaBeta,
@@ -223,11 +382,15 @@ function pooledResult(row: CsvRow, componentRow: CsvRow, source: string): CrossC
   })) as CrossCohortGene['cohortComponents'];
   const cohortPValues = Object.fromEntries(TREATMENT_COHORTS.map((cohort) => [cohort, cohortComponents[cohort].pValue])) as CrossCohortGene['cohortPValues'];
   const componentSigns = TREATMENT_COHORTS.map((cohort) => Math.sign(cohortComponents[cohort].deltaBeta));
+  const metaNPosTop3 = integerValue(row, 'Meta_N_Hyper', source);
+  const metaAvgPosDeltaBeta = optionalNumber(row, 'Meta_Ave_Hyper_Beta', source);
+  const metaNNegTop3 = integerValue(row, 'Meta_N_Hypo', source);
+  const metaAvgNegDeltaBeta = optionalNumber(row, 'Meta_Ave_Hypo_Beta', source);
   return {
     gene: required(row, 'Gene', source),
     fdr: numberValue(row, 'Gene_Meta_FDR_Top3', source),
     pValue: numberValue(row, 'Gene_Meta_P_Top3', source),
-    deltaBeta: numberValue(row, 'Mean_Beta_Diff_Top3', source),
+    deltaBeta: weightedTop3Mean(metaNPosTop3, metaAvgPosDeltaBeta, metaNNegTop3, metaAvgNegDeltaBeta, source),
     direction: directionValue,
     totalProbes: integerValue(row, 'Total_Gene_Probes', source),
     nSigProbes: integerValue(row, 'N_Sig_Probes_p05', source),
@@ -332,18 +495,56 @@ async function main() {
     }
   }
 
-  const pooledRows = await csvRows(path.join(sourceRoot, POOLED_SOURCE));
-  const pooledComponentRows = await csvRows(path.join(sourceRoot, POOLED_COMPONENT_SOURCE));
-  const pooledComponentIndex = indexCsvByGene(pooledComponentRows, POOLED_COMPONENT_SOURCE);
-  const crossCohort = pooledRows.map((row, index) => {
-    const gene = required(row, 'Gene', `${POOLED_SOURCE}:${index + 2}`);
-    const componentRow = pooledComponentIndex.get(gene.toUpperCase());
-    if (!componentRow) throw new Error(`${POOLED_COMPONENT_SOURCE}: missing pooled gene ${gene}`);
-    return pooledResult(row, componentRow, `${POOLED_SOURCE}:${index + 2}`);
-  });
-  const pooledGenes = new Set(crossCohort.map((item) => item.gene.toUpperCase()));
+  const metaAnalyses = {} as Record<TreatmentTimepoint, CrossCohortGene[]>;
+  for (const timepoint of TREATMENT_TIMEPOINTS) {
+    const { selected: selectedSource, full: fullSource } = metaSources[timepoint];
+    const selectedRows = await csvRows(path.join(sourceRoot, selectedSource));
+    const fullRows = await csvRows(path.join(sourceRoot, fullSource));
+    if (selectedRows.length !== expectedMetaCounts[timepoint].selected) {
+      throw new Error(`${selectedSource}: expected ${expectedMetaCounts[timepoint].selected} rows, found ${selectedRows.length}`);
+    }
+    if (fullRows.length !== expectedMetaCounts[timepoint].full) {
+      throw new Error(`${fullSource}: expected ${expectedMetaCounts[timepoint].full} rows, found ${fullRows.length}`);
+    }
+    const fullIndex = indexCsvByGene(fullRows, fullSource);
+    metaAnalyses[timepoint] = selectedRows.map((row, index) => {
+      const source = `${selectedSource}:${index + 2}`;
+      const gene = required(row, 'Gene', source);
+      const fullRow = fullIndex.get(gene.toUpperCase());
+      if (!fullRow) throw new Error(`${fullSource}: missing selected gene ${gene}`);
+      if (JSON.stringify(row) !== JSON.stringify(fullRow)) {
+        throw new Error(`${selectedSource}: ${gene} does not exactly match the full-table record`);
+      }
+      const result = metaAnalysisResult(row, source);
+      if (result.pValue >= 5e-6 || result.nSigProbes < 8) {
+        throw new Error(`${source}: selected meta-analysis row fails P < 5e-6 and N_Sig_Probes_p05 >= 8`);
+      }
+      return result;
+    });
+  }
+  const cptHealthyControl = {} as MdmaMasterData['cptHealthyControl'];
+  for (const timepoint of TREATMENT_TIMEPOINTS) {
+    const groups = {} as Record<CptHealthyControlGroup, TreatmentGeneResult[]>;
+    for (const group of CPT_HC_GROUPS) {
+      const source = cptHealthyControlSources[timepoint][group];
+      const derived = await deriveCptHealthyControlResults(path.join(sourceRoot, source));
+      if (derived.fullCount !== 24_085) throw new Error(`${source}: expected 24,085 annotated genes, found ${derived.fullCount}`);
+      groups[group] = derived.selected
+        .sort((left, right) => left.pValue - right.pValue || left.gene.localeCompare(right.gene));
+      if (groups[group].length !== expectedCptHealthyControlCounts[timepoint][group]) {
+        throw new Error(`${source}: expected ${expectedCptHealthyControlCounts[timepoint][group]} selected genes, found ${groups[group].length}`);
+      }
+    }
+    cptHealthyControl[timepoint] = { groups };
+  }
+  const metaGenes = new Set(TREATMENT_TIMEPOINTS.flatMap((timepoint) => metaAnalyses[timepoint].map((item) => item.gene.toUpperCase())));
   const contextGenes = new Map<string, string>();
-  for (const item of crossCohort) contextGenes.set(item.gene.toUpperCase(), item.gene);
+  for (const timepoint of TREATMENT_TIMEPOINTS) {
+    for (const item of metaAnalyses[timepoint]) contextGenes.set(item.gene.toUpperCase(), item.gene);
+    for (const group of CPT_HC_GROUPS) {
+      for (const item of cptHealthyControl[timepoint].groups[group]) contextGenes.set(item.gene.toUpperCase(), item.gene);
+    }
+  }
   for (const timepoint of TREATMENT_TIMEPOINTS) {
     for (const cohort of TREATMENT_COHORTS) {
       for (const item of selected[timepoint][cohort]) contextGenes.set(item.gene.toUpperCase(), item.gene);
@@ -370,12 +571,13 @@ async function main() {
       generatedAt: new Date().toISOString(),
       selectionRule: 'N_Sig_Probes_p05 >= 8 and Gene_FDR < 0.05',
       contextRule: 'All gene-level rows available for the responder versus non-responder comparison',
-      pooledSource: POOLED_SOURCE,
-      pooledComponentSource: POOLED_COMPONENT_SOURCE,
+      metaSources,
+      cptHealthyControlSources,
       cohortSources,
       contextSources,
     },
-    crossCohort,
+    metaAnalyses,
+    cptHealthyControl,
     timepoints: Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => [
       timepoint,
       { cohorts: selected[timepoint] },
@@ -389,7 +591,13 @@ async function main() {
     timepoint,
     Object.fromEntries(TREATMENT_COHORTS.map((cohort) => [cohort, selected[timepoint][cohort].length])),
   ]));
-  console.log(JSON.stringify({ output: OUTPUT_FILE.pathname, pooled: crossCohort.length, contextGenes: geneContexts ? Object.keys(geneContexts).length : pooledGenes.size, cohorts: summary }, null, 2));
+  console.log(JSON.stringify({
+    output: OUTPUT_FILE.pathname,
+    meta: Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => [timepoint, metaAnalyses[timepoint].length])),
+    cptHealthyControl: Object.fromEntries(TREATMENT_TIMEPOINTS.map((timepoint) => [timepoint, Object.fromEntries(CPT_HC_GROUPS.map((group) => [group, cptHealthyControl[timepoint].groups[group].length]))])),
+    contextGenes: geneContexts ? Object.keys(geneContexts).length : metaGenes.size,
+    cohorts: summary,
+  }, null, 2));
 }
 
 await main();

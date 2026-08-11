@@ -84,7 +84,12 @@ function loadSelectedGenes(master: MdmaMasterData): Map<string, SelectedGene> {
     const current = selected.get(normalized);
     if (!current || totalProbes > current.totalProbes) selected.set(normalized, { gene, totalProbes });
   };
-  for (const result of master.crossCohort) add(result.gene, result.totalProbes);
+  for (const timepoint of ['Pre', 'FUP'] as const) {
+    for (const result of master.metaAnalyses[timepoint]) add(result.gene, result.totalProbes);
+    for (const group of ['Responder', 'NonResponder'] as const) {
+      for (const result of master.cptHealthyControl[timepoint].groups[group]) add(result.gene, result.totalProbes);
+    }
+  }
   for (const timepoint of ['Pre', 'FUP'] as const) {
     for (const cohort of ['MDMA', 'Ketamine', 'CPT'] as const) {
       for (const result of master.timepoints[timepoint].cohorts[cohort]) add(result.gene, result.totalProbes);
@@ -220,7 +225,7 @@ async function main() {
     await writeFile(new URL(`${selected.gene}.json`, directory), JSON.stringify(shard));
   }
   await writeFile(new URL('index.json', OUTPUT_ROOT), JSON.stringify({
-    version: 'treatment_all_probe_study_timepoint_and_cpt_reference_v4',
+    version: 'treatment_all_probe_study_timepoint_and_cpt_reference_v6',
     annotationSource: ANNOTATION_SOURCE,
     sources: DMP_SOURCES.map(({ key, file, coverage }) => ({ key, file, coverage, ...sourceCounts[key] })),
     selectedGenes: selectedGenes.size,

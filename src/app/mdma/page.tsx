@@ -14,6 +14,7 @@ import {
 import { GeneAnnotationCard } from '@/components/GeneAnnotationCard';
 import { GeneAnnotationMap } from '@/types/annotation';
 import type {
+  CptHealthyControlGroup,
   Direction,
   MdmaMasterData,
   SelectedTreatmentResult,
@@ -22,7 +23,7 @@ import type {
   TreatmentGeneResult,
   TreatmentTimepoint,
 } from '@/types/dmr';
-import { TREATMENT_COHORTS, TREATMENT_TIMEPOINTS } from '@/types/dmr';
+import { CPT_HC_GROUPS, TREATMENT_COHORTS, TREATMENT_TIMEPOINTS } from '@/types/dmr';
 import {
   getGeneMetadata,
   loadTreatmentProbeData,
@@ -42,6 +43,7 @@ import {
 import { KeyResultsPanel, MDMA_KEY_GENES, EpicManifestEntry } from '@/components/KeyResultsPanel';
 import { GeneStoryButton } from '@/components/GeneStoryButton';
 import { GenomicTrackPlot } from '@/components/GenomicTrackPlot';
+import { TreatmentDmrVenn } from '@/components/TreatmentDmrVenn';
 
 interface MdmaTableRow {
   gene: string;
@@ -86,13 +88,14 @@ interface LoadError {
 
 // ---- Tab config ----
 const COHORT_TABS = [
-  { key: 'cross', label: 'Combined analysis', color: '#0f172a' },
+  { key: 'cross', label: 'Three-study meta-analysis', color: '#0f172a' },
   { key: 'MDMA', label: 'MDMA', color: '#7c3aed' },
   { key: 'Ketamine', label: 'Ketamine', color: '#0891b2' },
   { key: 'CPT', label: 'CPT', color: '#059669' },
+  { key: 'CPT-HC', label: 'CPT vs healthy controls', color: '#ea580c' },
 ] as const;
 
-type AnalysisTab = 'cross' | TreatmentCohort;
+type AnalysisTab = 'cross' | 'CPT-HC' | TreatmentCohort;
 
 function formatProbability(value: number): string {
   return value < 1e-15 ? '< 1e-15' : value.toExponential(2);
@@ -119,6 +122,7 @@ export default function MdmaPage() {
   // UI state
   const [timepoint, setTimepoint] = useState<TreatmentTimepoint>('FUP');
   const [activeTab, setActiveTab] = useState<AnalysisTab>('cross');
+  const [cptHealthyControlGroup, setCptHealthyControlGroup] = useState<CptHealthyControlGroup>('Responder');
   const [searchQuery, setSearchQuery] = useState('');
   const [directionFilter, setDirectionFilter] = useState('All');
   const [selectedGene, setSelectedGene] = useState<string | null>(null);
@@ -177,13 +181,15 @@ export default function MdmaPage() {
         ? master.timepoints[exactVisit].cohorts[exactStudy].find((item) => item.gene.toUpperCase() === requestedGene)
         : undefined;
       const combined = requestedGene
-        ? master.crossCohort.find((item) => item.gene.toUpperCase() === requestedGene)
+        ? (exactVisit ? master.metaAnalyses[exactVisit] : master.metaAnalyses.FUP)
+            .find((item) => item.gene.toUpperCase() === requestedGene)
         : undefined;
       if (exactResult && exactStudy && exactVisit) {
         setTimepoint(exactVisit);
         setActiveTab(exactStudy);
         setSelectedGene(exactResult.gene);
       } else if (combined) {
+        if (exactVisit) setTimepoint(exactVisit);
         setActiveTab('cross');
         setSelectedGene(combined.gene);
       } else if (requestedGene) {
@@ -202,9 +208,9 @@ export default function MdmaPage() {
           }
           if (selected) break;
         }
-        if (!selected && master.crossCohort.length > 0) setSelectedGene(master.crossCohort[0].gene);
-      } else if (master.crossCohort.length > 0) {
-        setSelectedGene(master.crossCohort[0].gene);
+        if (!selected && master.metaAnalyses.FUP.length > 0) setSelectedGene(master.metaAnalyses.FUP[0].gene);
+      } else if (master.metaAnalyses.FUP.length > 0) {
+        setSelectedGene(master.metaAnalyses.FUP[0].gene);
       }
     }).catch((error: unknown) => {
       setLoadError({
@@ -273,11 +279,18 @@ export default function MdmaPage() {
     let list: MdmaTableRow[] = [];
 
     if (activeTab === 'cross') {
-      list = data.crossCohort.map((g) => ({
+      list = data.metaAnalyses[timepoint].map((g) => ({
         gene: g.gene, pValue: g.pValue, fdr: g.fdr, deltaBeta: g.deltaBeta, direction: g.direction,
         totalProbes: g.totalProbes, nSigProbes: g.nSigProbes,
         cohortPValues: g.cohortPValues, cohortComponents: g.cohortComponents,
         nCohortsNominal: g.nCohortsNominal, componentSignsConsistent: g.componentSignsConsistent,
+      }));
+    } else if (activeTab === 'CPT-HC') {
+      list = data.cptHealthyControl[timepoint].groups[cptHealthyControlGroup].map((g) => ({
+        gene: g.gene, pValue: g.pValue, fdr: g.fdr, deltaBeta: g.deltaBeta, direction: g.direction,
+        totalProbes: g.totalProbes, nSigProbes: g.nSigProbes,
+        nPosTop3: g.nPosTop3, avgPosDeltaBeta: g.avgPosDeltaBeta,
+        nNegTop3: g.nNegTop3, avgNegDeltaBeta: g.avgNegDeltaBeta,
       }));
     } else {
       const tpData = data.timepoints[timepoint];
@@ -303,32 +316,49 @@ export default function MdmaPage() {
       if (typeof va === 'string') return sortAsc ? va.localeCompare(vb as string) : (vb as string).localeCompare(va);
       return sortAsc ? (va as number) - (vb as number) : (vb as number) - (va as number);
     });
-  }, [data, timepoint, activeTab, searchQuery, directionFilter, sortField, sortAsc]);
+  }, [data, timepoint, activeTab, cptHealthyControlGroup, searchQuery, directionFilter, sortField, sortAsc]);
 
   const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
   const paginatedData = filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-  const viewDescriptor = treatmentViewDescriptor(activeTab, timepoint);
+  const viewDescriptor = treatmentViewDescriptor(activeTab, timepoint, cptHealthyControlGroup);
 
   const selectedResult = useMemo<SelectedTreatmentResult | null>(() => {
     if (!data || !selectedGene) return null;
-    return findTreatmentResult(data, activeTab, timepoint, selectedGene);
-  }, [data, selectedGene, activeTab, timepoint]);
+    return findTreatmentResult(data, activeTab, timepoint, selectedGene, cptHealthyControlGroup);
+  }, [data, selectedGene, activeTab, timepoint, cptHealthyControlGroup]);
 
   const selectGeneInAnalysis = (gene: string) => {
     if (!data) return;
     const activeList = activeTab === 'cross'
-      ? data.crossCohort
-      : data.timepoints[timepoint].cohorts[activeTab];
+      ? data.metaAnalyses[timepoint]
+      : activeTab === 'CPT-HC'
+        ? data.cptHealthyControl[timepoint].groups[cptHealthyControlGroup]
+        : data.timepoints[timepoint].cohorts[activeTab];
     if (activeList.some((item) => item.gene === gene)) {
       setSelectedGene(gene);
       return;
     }
-    if (data.crossCohort.some((item) => item.gene === gene)) {
-      setActiveTab('cross');
-      setSelectedGene(gene);
-      setCurrentPage(1);
-      return;
+    for (const candidateTimepoint of [timepoint, ...TREATMENT_TIMEPOINTS.filter((item) => item !== timepoint)]) {
+      if (data.metaAnalyses[candidateTimepoint].some((item) => item.gene === gene)) {
+        setTimepoint(candidateTimepoint);
+        setActiveTab('cross');
+        setSelectedGene(gene);
+        setCurrentPage(1);
+        return;
+      }
+    }
+    for (const candidateTimepoint of [timepoint, ...TREATMENT_TIMEPOINTS.filter((item) => item !== timepoint)]) {
+      for (const group of CPT_HC_GROUPS) {
+        if (data.cptHealthyControl[candidateTimepoint].groups[group].some((item) => item.gene === gene)) {
+          setTimepoint(candidateTimepoint);
+          setCptHealthyControlGroup(group);
+          setActiveTab('CPT-HC');
+          setSelectedGene(gene);
+          setCurrentPage(1);
+          return;
+        }
+      }
     }
     for (const candidateTimepoint of [timepoint, ...TREATMENT_TIMEPOINTS.filter((item) => item !== timepoint)]) {
       const cohort = TREATMENT_COHORTS.find((candidate) =>
@@ -391,8 +421,9 @@ export default function MdmaPage() {
 
   // CSV Export
   const handleExportCSV = () => {
+    const metaPrefix = timepoint === 'Pre' ? 'Pre' : 'Post';
     const headers = activeTab === 'cross'
-      ? ['Gene', 'CombinedP', 'CombinedFDR', 'CombinedDeltaBeta', 'Direction', 'DMR_TestedProbes', 'SignificantProbes', 'StudiesP05', 'ComponentSignsConsistent',
+      ? ['Gene', `${metaPrefix}_Meta_P`, `${metaPrefix}_Meta_FDR`, `${metaPrefix}_Meta_DeltaBeta`, 'Direction', 'DMR_TestedProbes', 'SignificantProbes', 'StudiesP05', 'ComponentSignsConsistent',
           'MDMA_P', 'MDMA_DeltaBeta', 'MDMA_Direction', 'Ketamine_P', 'Ketamine_DeltaBeta', 'Ketamine_Direction', 'CPT_P', 'CPT_DeltaBeta', 'CPT_Direction']
       : ['Gene', 'Total_Gene_Probes', 'N_Sig_Probes_p05', 'Gene_Fisher_P', 'Gene_FDR', 'Pattern', 'N_Pos_Probes_Top3', 'Ave_Pos_Beta_Diff_Top3', 'N_Neg_Probes_Top3', 'Ave_Neg_Beta_Diff_Top3', 'Top3_Weighted_Beta_Diff'];
     const rows = filteredData.map((d) => activeTab === 'cross'
@@ -497,8 +528,10 @@ export default function MdmaPage() {
             {COHORT_TABS.map((tab) => {
               const tpd = data?.timepoints[timepoint];
               const actualCount = tab.key === 'cross'
-                ? (data?.crossCohort.length ?? 0)
-                : (tpd?.cohorts[tab.key]?.length ?? 0);
+                ? (data?.metaAnalyses[timepoint].length ?? 0)
+                : tab.key === 'CPT-HC'
+                  ? (data?.cptHealthyControl[timepoint].groups[cptHealthyControlGroup].length ?? 0)
+                  : (tpd?.cohorts[tab.key]?.length ?? 0);
               return (
                 <button
                   key={tab.key}
@@ -508,8 +541,10 @@ export default function MdmaPage() {
                     setSortField('pValue');
                     setSortAsc(true);
                     const list = tab.key === 'cross'
-                      ? data?.crossCohort ?? []
-                      : tpd?.cohorts[tab.key] ?? [];
+                      ? data?.metaAnalyses[timepoint] ?? []
+                      : tab.key === 'CPT-HC'
+                        ? data?.cptHealthyControl[timepoint].groups[cptHealthyControlGroup] ?? []
+                        : tpd?.cohorts[tab.key] ?? [];
                     setSelectedGene(list[0]?.gene ?? null);
                   }}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold border transition whitespace-nowrap ${
@@ -524,14 +559,29 @@ export default function MdmaPage() {
             })}
           </div>
 
-          {activeTab === 'cross' ? (
-            <div className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-[11px] font-bold text-slate-700">
-              One combined result per gene
-            </div>
-          ) : (
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            {activeTab === 'CPT-HC' && (
+              <div className="flex items-center gap-1 rounded-lg border border-orange-200 bg-orange-50 p-0.5" aria-label="CPT healthy-control comparison group">
+                {CPT_HC_GROUPS.map((group) => (
+                  <button
+                    type="button"
+                    key={group}
+                    aria-pressed={cptHealthyControlGroup === group}
+                    onClick={() => {
+                      setCptHealthyControlGroup(group);
+                      setCurrentPage(1);
+                      setSelectedGene(data.cptHealthyControl[timepoint].groups[group][0]?.gene ?? null);
+                    }}
+                    className={`rounded-md px-3 py-1.5 text-[11px] font-bold transition ${cptHealthyControlGroup === group ? 'bg-white text-orange-950 shadow-xs' : 'text-orange-700 hover:text-orange-950'}`}
+                  >
+                    {group === 'Responder' ? 'Responder vs HC' : 'NonResponder vs HC'}
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-0.5 border border-slate-200" aria-label="Analysis timepoint">
               <Clock className="w-3.5 h-3.5 text-slate-400 ml-2" aria-hidden="true" />
-              {([['Pre', 'Baseline (Pre)'], ['FUP', activeTab === 'MDMA' ? 'Follow-up (FUP1 / E2)' : 'Follow-up (FUP2)']] as const).map(([tp, label]) => (
+              {([['Pre', 'Baseline (Pre)'], ['FUP', activeTab === 'cross' ? 'Follow-up (Post)' : activeTab === 'MDMA' ? 'Follow-up (FUP1 / E2)' : 'Follow-up (FUP2)']] as const).map(([tp, label]) => (
                 <button
                   type="button"
                   key={tp}
@@ -539,7 +589,11 @@ export default function MdmaPage() {
                   onClick={() => {
                     setTimepoint(tp);
                     setCurrentPage(1);
-                    const list = data.timepoints[tp].cohorts[activeTab];
+                    const list = activeTab === 'cross'
+                      ? data.metaAnalyses[tp]
+                      : activeTab === 'CPT-HC'
+                        ? data.cptHealthyControl[tp].groups[cptHealthyControlGroup]
+                        : data.timepoints[tp].cohorts[activeTab];
                     setSelectedGene(list[0]?.gene ?? null);
                   }}
                   className={`px-3 py-1.5 rounded-md text-[11px] font-bold transition ${
@@ -550,21 +604,33 @@ export default function MdmaPage() {
                 </button>
               ))}
             </div>
-          )}
+          </div>
         </div>
 
         <section className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs leading-relaxed text-emerald-950" aria-labelledby="treatment-view-definition">
           <h2 id="treatment-view-definition" className="text-sm font-bold text-emerald-950">What qualifies for this view?</h2>
           {activeTab === 'cross' ? (
-            <p className="mt-1"><strong>Combined analysis:</strong> one overall gene result combines evidence from the MDMA, ketamine, and CPT studies. It is not a Baseline or Follow-up comparison, and combined significance does not by itself mean that all three study effects agree.</p>
+            <p className="mt-1"><strong>{timepoint === 'Pre' ? 'Baseline (Pre)' : 'Follow-up (Post)'} three-study meta-analysis:</strong> combines the same-visit responder-versus-non-responder gene results from MDMA, ketamine, and CPT. The selected table requires meta-analysis P &lt; 5×10<sup>−6</sup> and at least 8 probes with nominal P &lt; 0.05. Combined significance does not by itself mean that all three study effects agree.</p>
+          ) : activeTab === 'CPT-HC' ? (
+            <p className="mt-1"><strong>CPT {timepoint === 'Pre' ? 'Baseline' : 'Follow-up'} · {cptHealthyControlGroup === 'Responder' ? 'Responder vs healthy controls' : 'NonResponder vs healthy controls'}:</strong> the application groups the unfiltered CPT all-probe source by gene, combines the three smallest probe P values with Fisher&apos;s method, and retains genes with Fisher P &lt; 5×10<sup>−6</sup> and at least 8 mapped probes with nominal P &lt; 0.05. Gene FDR is BH-adjusted across all 24,085 annotated genes and is reported but is not an additional selection threshold. Sample sizes: {cptHealthyControlGroup === 'Responder' ? '7 responders' : '6 nonresponders'} vs {timepoint === 'Pre' ? '33' : '22'} healthy controls.</p>
           ) : (
             <p className="mt-1"><strong>{activeTab} {timepoint === 'Pre' ? 'Baseline' : 'Follow-up'} N8+ registry:</strong> each listed gene has at least 8 mapped probes with nominal P &lt; 0.05 and reported gene FDR &lt; 0.05 for this study and visit. This is a responder-versus-non-responder comparison.</p>
           )}
           <details className="mt-2 border-t border-emerald-200 pt-2">
             <summary className="cursor-pointer font-semibold text-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-900">Why Treatment uses N8+ but PTSD subtype does not</summary>
-            <p className="mt-2">The Treatment combined table has denser gene coverage: the median gene has 13 mapped probes, compared with 3 tested probes in the PTSD subtype analysis. A fixed N8+ rule is therefore meaningful here but would create strong array-coverage bias in PTSD. The two atlases use source-appropriate selection rules and their gene counts should not be compared as if the filters were identical.</p>
+            <p className="mt-2">The full Treatment meta-analysis table has denser gene coverage: the median gene has 13 mapped probes, compared with 3 tested probes in the PTSD subtype analysis. A fixed N8+ rule is therefore meaningful here but would create strong array-coverage bias in PTSD. The two atlases use source-appropriate selection rules and their gene counts should not be compared as if the filters were identical.</p>
           </details>
         </section>
+
+        {activeTab === 'CPT-HC' && (
+          <TreatmentDmrVenn
+            metaGenes={data.metaAnalyses[timepoint]}
+            referenceGenes={data.cptHealthyControl[timepoint].groups[cptHealthyControlGroup]}
+            timepoint={timepoint}
+            group={cptHealthyControlGroup}
+            onSelectGene={selectGeneInAnalysis}
+          />
+        )}
 
         {/* Filter Bar */}
         <div className="bg-white border border-slate-200 rounded-xl p-4 mb-5 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
@@ -664,8 +730,8 @@ export default function MdmaPage() {
                     <tr>
                       {([
                         { f: 'gene', l: 'Gene' },
-                        { f: 'pValue', l: activeTab === 'cross' ? 'Combined P' : 'Fisher P' },
-                        { f: 'deltaBeta', l: activeTab === 'cross' ? 'Combined Δβ' : 'Δβ' },
+                        { f: 'pValue', l: activeTab === 'cross' ? `${timepoint === 'Pre' ? 'Pre' : 'Post'} meta P` : 'Fisher P' },
+                        { f: 'deltaBeta', l: activeTab === 'cross' ? `${timepoint === 'Pre' ? 'Pre' : 'Post'} meta Δβ` : 'Δβ' },
                         { f: (activeTab === 'cross' ? 'nCohortsNominal' : 'nSigProbes') as keyof MdmaTableRow, l: activeTab === 'cross' ? 'Study evidence' : 'P<.05 / total' },
                       ] as const).map(({ f, l }) => (
                         <th key={f} className="p-0" aria-sort={sortField === f ? (sortAsc ? 'ascending' : 'descending') : 'none'}>
@@ -743,12 +809,12 @@ export default function MdmaPage() {
               </div>
             )}
 
-            {selectedResult?.kind === 'pooled-cross-cohort' && (
+            {selectedResult?.kind === 'timepoint-meta-analysis' && (
               <section className="rounded-xl border border-slate-300 bg-white p-4 shadow-xs" aria-labelledby="combined-result-title">
                 <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
                   <div>
-                    <h3 id="combined-result-title" className="text-sm font-bold text-slate-900">Overall combined result — {selectedResult.result.gene}</h3>
-                    <p className="mt-1 text-xs text-slate-500">One overall test across MDMA, ketamine, and CPT. This is not a Baseline or Follow-up result.</p>
+                    <h3 id="combined-result-title" className="text-sm font-bold text-slate-900">{selectedResult.timepoint === 'Pre' ? 'Baseline (Pre)' : 'Follow-up (Post)'} three-study meta-analysis — {selectedResult.result.gene}</h3>
+                    <p className="mt-1 text-xs text-slate-500">One same-visit meta-analysis across MDMA, ketamine, and CPT responder-versus-non-responder results.</p>
                   </div>
                   <div className="flex flex-wrap gap-2 sm:justify-end">
                     <span className="self-start rounded bg-slate-900 px-2.5 py-1 text-xs font-bold text-white">{cohortSupportLabel(selectedResult.result.nCohortsNominal)}</span>
@@ -756,9 +822,9 @@ export default function MdmaPage() {
                   </div>
                 </div>
                 <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-3">
-                  <div className="rounded-lg bg-slate-50 p-2"><dt className="text-slate-500">Combined P</dt><dd className="mt-0.5 font-mono font-bold">{formatProbability(selectedResult.result.pValue)} {significanceLabel(selectedResult.result.pValue)}</dd></div>
-                  <div className="rounded-lg bg-slate-50 p-2"><dt className="text-slate-500">Combined FDR</dt><dd className="mt-0.5 font-mono font-bold">{formatProbability(selectedResult.result.fdr)}</dd></div>
-                  <div className="rounded-lg bg-slate-50 p-2"><dt className="text-slate-500">Combined Δβ</dt><dd className="mt-0.5 font-mono font-bold">{selectedResult.result.deltaBeta > 0 ? '+' : ''}{selectedResult.result.deltaBeta.toFixed(4)}</dd></div>
+                  <div className="rounded-lg bg-slate-50 p-2"><dt className="text-slate-500">Meta-analysis P</dt><dd className="mt-0.5 font-mono font-bold">{formatProbability(selectedResult.result.pValue)} {significanceLabel(selectedResult.result.pValue)}</dd></div>
+                  <div className="rounded-lg bg-slate-50 p-2"><dt className="text-slate-500">Meta-analysis FDR</dt><dd className="mt-0.5 font-mono font-bold">{formatProbability(selectedResult.result.fdr)}</dd></div>
+                  <div className="rounded-lg bg-slate-50 p-2"><dt className="text-slate-500">Meta-analysis Δβ</dt><dd className="mt-0.5 font-mono font-bold">{selectedResult.result.deltaBeta > 0 ? '+' : ''}{selectedResult.result.deltaBeta.toFixed(4)}</dd></div>
                   {TREATMENT_COHORTS.map((cohort) => {
                     const component = selectedResult.result.cohortComponents[cohort];
                     return (
@@ -858,7 +924,7 @@ export default function MdmaPage() {
                   <div>
                     <h3 className="text-base font-bold text-slate-900">Visit-specific results — {selectedGene}</h3>
                     <p className="text-xs text-slate-500">
-                      Each visit group is a responder-versus-non-responder result. Positive and negative Top-3 means are drawn separately when both occur, so Mixed patterns are not collapsed into one net bar. The difference between visits is not itself a tested longitudinal change, and these six analyses are not the three component P values in the combined result.
+                      Each visit group is a responder-versus-non-responder result. Positive and negative Top-3 means are drawn separately when both occur, so Mixed patterns are not collapsed into one net bar. The difference between visits is not itself a tested longitudinal change. These source study results correspond to the same visits used in the separate Baseline and Follow-up meta-analyses.
                     </p>
                     {selectedGeneMissingStudies.length > 0 && <p className="mt-2 rounded border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-900">Not shown: {selectedGeneMissingStudies.join(', ')} — this gene was not provided in those source gene-level results.</p>}
                   </div>

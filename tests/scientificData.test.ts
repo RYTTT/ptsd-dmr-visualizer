@@ -20,13 +20,15 @@ function readJson(path: string): unknown {
   return JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8')) as unknown;
 }
 
-test('pooled treatment results never inherit a timepoint label or filename', () => {
+test('treatment meta-analysis labels and exports preserve the selected timepoint', () => {
   const baseline = treatmentViewDescriptor('cross', 'Pre');
   const followUp = treatmentViewDescriptor('cross', 'FUP');
-  assert.deepEqual(baseline, followUp);
-  assert.equal(baseline.kind, 'pooled-cross-cohort');
-  assert.equal(baseline.shortLabel, 'Combined result');
-  assert.doesNotMatch(baseline.csvFilename, /Pre|FUP|Baseline|Follow/u);
+  assert.notDeepEqual(baseline, followUp);
+  assert.equal(baseline.kind, 'timepoint-meta-analysis');
+  assert.match(baseline.title, /Baseline \(Pre\)/u);
+  assert.match(followUp.title, /Follow-up \(Post\)/u);
+  assert.match(baseline.csvFilename, /Pre_three-study-meta-analysis/u);
+  assert.match(followUp.csvFilename, /FUP_three-study-meta-analysis/u);
 
   const cohort = treatmentViewDescriptor('MDMA', 'Pre');
   assert.equal(cohort.kind, 'timepoint-cohort');
@@ -57,18 +59,68 @@ test('treatment database ships exact current screen counts and complete BDNF con
   }
 });
 
-test('combined treatment genes preserve exact three-study component support', () => {
+test('CPT healthy-control DMR registries preserve comparison, visit, and strict selection scope', () => {
   const parsed = validateMdmaMasterData(readJson('../public/data/mdma/dmrData.json'));
-  assert.deepEqual(Object.fromEntries([1, 2, 3].map((count) => [
-    count,
-    parsed.crossCohort.filter((gene) => gene.nCohortsNominal === count).length,
-  ])), { 1: 85, 2: 859, 3: 895 });
-  assert.equal(parsed.crossCohort.filter((gene) => !gene.componentSignsConsistent).length, 1549);
-  assert.equal(parsed.crossCohort.filter((gene) => gene.nCohortsNominal === 3 && !gene.componentSignsConsistent).length, 748);
-  for (const gene of parsed.crossCohort) {
-    for (const component of Object.values(gene.cohortComponents)) {
-      assert.ok(Number.isFinite(component.deltaBeta));
-      assert.ok(Number.isFinite(component.pValue));
+  assert.deepEqual(Object.fromEntries((['Pre', 'FUP'] as const).map((timepoint) => [
+    timepoint,
+    Object.fromEntries((['Responder', 'NonResponder'] as const).map((group) => [
+      group,
+      parsed.cptHealthyControl[timepoint].groups[group].length,
+    ])),
+  ])), {
+    Pre: { Responder: 44, NonResponder: 23 },
+    FUP: { Responder: 172, NonResponder: 335 },
+  });
+  for (const timepoint of ['Pre', 'FUP'] as const) {
+    for (const group of ['Responder', 'NonResponder'] as const) {
+      for (const result of parsed.cptHealthyControl[timepoint].groups[group]) {
+        assert.ok(result.pValue < 5e-6);
+        assert.ok(result.nSigProbes >= 8);
+      }
+    }
+  }
+  assert.deepEqual(Object.fromEntries((['Pre', 'FUP'] as const).map((timepoint) => {
+    const metaGenes = new Set(parsed.metaAnalyses[timepoint].map((result) => result.gene.toUpperCase()));
+    return [timepoint, Object.fromEntries((['Responder', 'NonResponder'] as const).map((group) => [
+      group,
+      parsed.cptHealthyControl[timepoint].groups[group]
+        .filter((result) => metaGenes.has(result.gene.toUpperCase())).length,
+    ]))];
+  })), {
+    Pre: { Responder: 27, NonResponder: 15 },
+    FUP: { Responder: 129, NonResponder: 201 },
+  });
+  const result = parsed.cptHealthyControl.FUP.groups.NonResponder[0];
+  const selected = findTreatmentResult(parsed, 'CPT-HC', 'FUP', result.gene, 'NonResponder');
+  assert.equal(selected?.kind, 'cpt-healthy-control');
+  if (selected?.kind !== 'cpt-healthy-control') assert.fail('Expected CPT healthy-control result');
+  assert.equal(selected.timepoint, 'FUP');
+  assert.equal(selected.group, 'NonResponder');
+  assert.match(treatmentViewDescriptor('CPT-HC', 'FUP', 'NonResponder').title, /CPT NonResponder vs HC · Follow-up \(FUP2\)/u);
+});
+
+test('Pre and Follow-up treatment meta-analyses preserve exact three-study component support', () => {
+  const parsed = validateMdmaMasterData(readJson('../public/data/mdma/dmrData.json'));
+  assert.deepEqual(Object.fromEntries((['Pre', 'FUP'] as const).map((timepoint) => [
+    timepoint,
+    Object.fromEntries([0, 1, 2, 3].map((count) => [
+      count,
+      parsed.metaAnalyses[timepoint].filter((gene) => gene.nCohortsNominal === count).length,
+    ])),
+  ])), {
+    Pre: { 0: 0, 1: 14, 2: 167, 3: 166 },
+    FUP: { 0: 0, 1: 30, 2: 434, 3: 651 },
+  });
+  assert.equal(parsed.metaAnalyses.Pre.filter((gene) => !gene.componentSignsConsistent).length, 280);
+  assert.equal(parsed.metaAnalyses.FUP.filter((gene) => !gene.componentSignsConsistent).length, 932);
+  for (const timepoint of ['Pre', 'FUP'] as const) {
+    for (const gene of parsed.metaAnalyses[timepoint]) {
+      assert.ok(gene.pValue < 5e-6);
+      assert.ok(gene.nSigProbes >= 8);
+      for (const component of Object.values(gene.cohortComponents)) {
+        assert.ok(Number.isFinite(component.deltaBeta));
+        assert.ok(Number.isFinite(component.pValue));
+      }
     }
   }
 });
@@ -116,10 +168,12 @@ test('subtype-selected results preserve all four observed subtype statistics wit
   }
 });
 
-test('treatment selection preserves pooled versus timepoint/cohort statistic scope', () => {
+test('treatment selection preserves meta-analysis timepoint and cohort statistic scope', () => {
   const data = validateMdmaMasterData(readJson('../public/data/mdma/dmrData.json'));
-  const pooled = findTreatmentResult(data, 'cross', 'Pre', data.crossCohort[0].gene);
-  assert.equal(pooled?.kind, 'pooled-cross-cohort');
+  const meta = findTreatmentResult(data, 'cross', 'Pre', data.metaAnalyses.Pre[0].gene);
+  assert.equal(meta?.kind, 'timepoint-meta-analysis');
+  if (meta?.kind !== 'timepoint-meta-analysis') assert.fail('Expected a timepoint meta-analysis result');
+  assert.equal(meta.timepoint, 'Pre');
 
   const cohort = data.timepoints.FUP.cohorts.Ketamine[0];
   const selected = findTreatmentResult(data, 'Ketamine', 'FUP', cohort.gene);
@@ -152,7 +206,8 @@ test('master and probe runtime validators accept shipped data and reject identit
   const ptsd = validateMasterDMRData(readJson('../public/data/dmrData.json'));
   const treatment = validateMdmaMasterData(readJson('../public/data/mdma/dmrData.json'));
   assert.ok(ptsd.crossSubtype.length > 0);
-  assert.ok(treatment.crossCohort.length > 0);
+  assert.equal(treatment.metaAnalyses.Pre.length, 347);
+  assert.equal(treatment.metaAnalyses.FUP.length, 1115);
 
   const probe = readJson('../public/data/probes/AHRR.json') as Record<string, unknown>;
   assert.equal(isGeneProbeData(probe, 'AHRR'), true);
@@ -202,8 +257,8 @@ test('master and probe runtime validators accept shipped data and reject identit
     version: string;
     sources: { key: string; commonRows: number }[];
   };
-  assert.equal(treatmentProbeIndex.version, 'treatment_all_probe_study_timepoint_and_cpt_reference_v4');
+  assert.equal(treatmentProbeIndex.version, 'treatment_all_probe_study_timepoint_and_cpt_reference_v6');
   for (const key of ['MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP']) {
-    assert.equal(treatmentProbeIndex.sources.find((source) => source.key === key)?.commonRows, 152_923);
+    assert.equal(treatmentProbeIndex.sources.find((source) => source.key === key)?.commonRows, 147_893);
   }
 });

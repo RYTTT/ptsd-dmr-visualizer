@@ -51,7 +51,12 @@ all-probe exports (602,031 probes for each responder-versus-non-responder
 comparison and 602,313 for each healthy-control comparison). The importer
 retains their intersection with the common three-study probe annotation so
 positions remain comparable. The website applies no P-value filter, and the
-healthy-control reference does not filter the Treatment result set.
+probe-level healthy-control reference does not filter the Treatment result set.
+The separate CPT-vs-HC gene-level tab derives Top-3 Fisher DMR summaries from
+the four unfiltered healthy-control sources and applies the explicit
+`P < 5e-6` plus `N_Sig_Probes_p05 >= 8` registry rule. Its same-visit Venn
+shows the exact gene-symbol intersection with the active three-study
+meta-analysis registry and exports both sets of statistics for shared genes.
 
 Treatment result data is generated from the versioned study CSV exports:
 
@@ -60,7 +65,8 @@ npm run import:treatment -- /path/to/IPW_DMP_Analysis_2026_v2_CD4T_arrayWeights
 ```
 
 The importer validates all expected source files, row counts, columns,
-probability/count bounds, duplicate genes, N8+ selection criteria, and exact
+probability/count bounds, duplicate genes, N8+ selection criteria, CPT-vs-HC
+Top-3 Fisher/BH derivation, and exact
 agreement between selected rows and their AllGenes context rows before
 replacing `public/data/mdma/dmrData.json`.
 
@@ -76,7 +82,7 @@ selected gene and validates the source adjusted-threshold partitions.
 ## Scientific interpretation
 
 Read the versioned [scientific data dictionary and display methods](docs/scientific-data-dictionary-v1.md)
-before interpreting or exporting results. It defines combined versus
+before interpreting or exporting results. It defines timepoint meta-analysis versus
 visit-specific views, missing-value handling, direction rules, P/FDR fields,
 and the distinct probe denominators. It also lists upstream methods and
 provenance metadata that are not present in the shipped dataset.

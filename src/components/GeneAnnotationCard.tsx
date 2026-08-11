@@ -34,6 +34,9 @@ export const GeneAnnotationCard: React.FC<AnnotationCardProps> = ({
     crossLinkParams.set('study', study);
     crossLinkParams.set('visit', visit);
   }
+  if (project === 'ptsd' && targetStat?.type.startsWith('timepoint-meta-analysis:')) {
+    crossLinkParams.set('visit', targetStat.type.split(':')[1]);
+  }
   if (project === 'mdma' && targetStat?.type.startsWith('subtype-unique:')) {
     crossLinkParams.set('subtype', targetStat.type.split(':')[1]);
   }
