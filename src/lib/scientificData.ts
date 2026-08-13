@@ -503,3 +503,27 @@ export function nominalPStars(pValue: number | null | undefined): NominalPStars 
   if (pValue < 0.01) return '**';
   return '*';
 }
+
+/**
+ * Returns the largest nominal P among displayed results passing an FDR cutoff.
+ * This lets a nominal-P volcano axis show the observed adjusted-significance
+ * boundary without incorrectly treating the FDR cutoff itself as a P value.
+ */
+export function displayedFdrNominalPBoundary(
+  results: readonly { pValue: number | null | undefined; fdr: number | null | undefined }[],
+  cutoff = 0.05,
+): number | null {
+  const passingPValues = results.flatMap(({ pValue, fdr }) => (
+    pValue != null &&
+    fdr != null &&
+    Number.isFinite(pValue) &&
+    Number.isFinite(fdr) &&
+    pValue >= 0 &&
+    pValue <= 1 &&
+    fdr >= 0 &&
+    fdr < cutoff
+      ? [pValue]
+      : []
+  ));
+  return passingPValues.length > 0 ? Math.max(...passingPValues) : null;
+}

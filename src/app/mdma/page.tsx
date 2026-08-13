@@ -34,6 +34,7 @@ import {
 import type { GeneProbeData, TreatmentProbeView } from '@/types/probe';
 import {
   findTreatmentResult,
+  displayedFdrNominalPBoundary,
   nominalPStars,
   serializeCsv,
   treatmentViewDescriptor,
@@ -68,6 +69,7 @@ interface VolcanoPoint {
   deltaBeta: number;
   direction: Direction;
   pValue: number;
+  fdr: number;
   negLogP: number;
 }
 
@@ -412,12 +414,17 @@ export default function MdmaPage() {
     return filteredData.map((d) => ({
       gene: d.gene, deltaBeta: d.deltaBeta,
       pValue: d.pValue,
+      fdr: d.fdr,
       negLogP: -Math.log10(Math.max(d.pValue, 1e-300)),
       direction: d.direction,
     }));
   }, [filteredData]);
   const concordantVolcanoData = useMemo(() => volcanoData.filter((item) => item.direction !== 'Mixed'), [volcanoData]);
   const mixedVolcanoData = useMemo(() => volcanoData.filter((item) => item.direction === 'Mixed'), [volcanoData]);
+  const volcanoFdrBoundaryP = useMemo(() => displayedFdrNominalPBoundary(volcanoData), [volcanoData]);
+  const volcanoFdrBoundaryY = volcanoFdrBoundaryP == null
+    ? null
+    : -Math.log10(Math.max(volcanoFdrBoundaryP, 1e-300));
 
   // CSV Export
   const handleExportCSV = () => {
@@ -675,6 +682,9 @@ export default function MdmaPage() {
                 <ReferenceLine y={-Math.log10(0.05)} stroke="#94a3b8" strokeDasharray="4 4" label={{ value: 'P < 0.05', fill: '#64748b', fontSize: 9 }} />
                 <ReferenceLine y={2} stroke="#64748b" strokeDasharray="4 4" label={{ value: 'P < 0.01', fill: '#64748b', fontSize: 9 }} />
                 <ReferenceLine y={3} stroke="#475569" strokeDasharray="4 4" label={{ value: 'P < 0.001', fill: '#475569', fontSize: 9 }} />
+                {volcanoFdrBoundaryY != null && (
+                  <ReferenceLine y={volcanoFdrBoundaryY} stroke="#047857" strokeWidth={2} strokeDasharray="10 4" label={{ value: 'FDR < 0.05', position: 'insideTopLeft', fill: '#047857', fontSize: 10, fontWeight: 700 }} />
+                )}
                 <Tooltip content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     const d = payload[0].payload;
@@ -683,6 +693,7 @@ export default function MdmaPage() {
                         <div className="font-bold">{d.gene}</div>
                         <div>Δβ: <span className="font-mono">{d.deltaBeta.toFixed(4)}</span></div>
                         <div>Nominal P: <span className="font-mono">{d.pValue < 1e-15 ? '< 1e-15' : d.pValue.toExponential(2)}</span> <strong>{significanceLabel(d.pValue)}</strong></div>
+                        <div>FDR: <span className="font-mono">{formatProbability(d.fdr)}</span></div>
                       </div>
                     );
                   }
@@ -707,6 +718,7 @@ export default function MdmaPage() {
               </ScatterChart>
             </ResponsiveContainer>
           </div>
+          <p className="mt-2 text-[10px] leading-relaxed text-slate-500"><span className="font-semibold text-emerald-700">━ ━ FDR &lt; 0.05 boundary:</span> the green line is placed at the largest nominal P among displayed results with FDR &lt; 0.05. FDR is not treated as a nominal P value.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-6">

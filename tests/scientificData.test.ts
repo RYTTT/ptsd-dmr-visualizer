@@ -6,6 +6,7 @@ import { isGeneProbeData } from '../src/lib/commonDatabase.ts';
 import {
   csvCell,
   deriveCrossSubtypeDirection,
+  displayedFdrNominalPBoundary,
   findPtsdResult,
   findTreatmentResult,
   nominalPStars,
@@ -19,6 +20,17 @@ import type { SubtypeStat } from '../src/types/dmr.ts';
 function readJson(path: string): unknown {
   return JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8')) as unknown;
 }
+
+test('FDR boundary uses the largest nominal P among adjusted-significant displayed results', () => {
+  assert.equal(displayedFdrNominalPBoundary([
+    { pValue: 0.0002, fdr: 0.01 },
+    { pValue: 0.002, fdr: 0.049 },
+    { pValue: 0.003, fdr: 0.05 },
+    { pValue: 0.0001, fdr: 0.2 },
+  ]), 0.002);
+  assert.equal(displayedFdrNominalPBoundary([{ pValue: 0.001, fdr: 0.05 }]), null);
+  assert.equal(displayedFdrNominalPBoundary([{ pValue: null, fdr: 0.01 }]), null);
+});
 
 test('treatment meta-analysis labels and exports preserve the selected timepoint', () => {
   const baseline = treatmentViewDescriptor('cross', 'Pre');

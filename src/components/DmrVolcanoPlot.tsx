@@ -12,7 +12,7 @@ import {
   type ScatterPointItem,
   type TooltipContentProps,
 } from 'recharts';
-import { nominalPStars } from '../lib/scientificData';
+import { displayedFdrNominalPBoundary, nominalPStars } from '../lib/scientificData';
 import type { Direction } from '../types/dmr';
 
 interface VolcanoItem {
@@ -21,6 +21,7 @@ interface VolcanoItem {
   totalProbes: number;
   isPtsd: boolean;
   pValue: number | null;
+  fdr: number;
   deltaBeta: number;
   effectDefinition: string;
   direction: Direction;
@@ -64,6 +65,7 @@ function VolcanoTooltip({ active, payload, pDefinition }: TooltipContentProps & 
       <div className="flex justify-between gap-4"><span className="text-slate-500">Chromosome</span><span className="font-mono text-slate-800">{item.chr}</span></div>
       <div className="flex justify-between gap-4"><span className="text-slate-500">{item.effectDefinition}</span><span className="font-mono font-bold text-slate-900">{item.deltaBeta > 0 ? '+' : ''}{item.deltaBeta.toFixed(4)}</span></div>
       <div className="flex justify-between gap-4"><span className="text-slate-500">{pDefinition}</span><span className="font-mono text-slate-800">{formatProbability(item.pValue)} {stars}</span></div>
+      <div className="flex justify-between gap-4"><span className="text-slate-500">FDR</span><span className="font-mono text-slate-800">{formatProbability(item.fdr)}</span></div>
       <div className="flex justify-between gap-4"><span className="text-slate-500">DMR tested probes</span><span className="font-mono text-slate-800">{item.totalProbes}</span></div>
       {item.direction === 'Mixed' && <p className="rounded border border-amber-200 bg-amber-50 p-1.5 text-[10px] text-amber-900">Opposing selected-probe directions can partially cancel in the signed mean; inspect the subtype and probe-level views before interpreting direction.</p>}
     </div>
@@ -99,6 +101,8 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, sel
   );
   const maxAbsoluteDeltaBeta = Math.max(...plottedData.map((item) => Math.abs(item.deltaBeta)), 0.01) * 1.05;
   const effectAxisLabel = plottedData[0]?.effectDefinition ?? 'Δβ summary';
+  const fdrBoundaryP = displayedFdrNominalPBoundary(plottedData);
+  const fdrBoundaryY = fdrBoundaryP == null ? null : probabilityScore(fdrBoundaryP);
 
   const getColor = (item: PlottedVolcanoItem) => item.direction === 'Mixed'
     ? '#b45309'
@@ -149,6 +153,15 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, sel
             <ReferenceLine y={-Math.log10(0.05)} stroke="#475569" strokeWidth={1.2} strokeDasharray="6 4" label={{ value: '*', position: 'insideRight', fill: '#475569', fontWeight: 700 }} />
             <ReferenceLine y={2} stroke="#7c3aed" strokeWidth={1.2} strokeDasharray="4 4" label={{ value: '**', position: 'insideRight', fill: '#7c3aed', fontWeight: 700 }} />
             <ReferenceLine y={3} stroke="#b45309" strokeWidth={1.2} strokeDasharray="2 3" label={{ value: '***', position: 'insideRight', fill: '#b45309', fontWeight: 700 }} />
+            {fdrBoundaryY != null && (
+              <ReferenceLine
+                y={fdrBoundaryY}
+                stroke="#047857"
+                strokeWidth={2}
+                strokeDasharray="10 4"
+                label={{ value: 'FDR < 0.05', position: 'insideTopLeft', fill: '#047857', fontSize: 10, fontWeight: 700 }}
+              />
+            )}
             <Scatter data={concordantData} shape="circle" onClick={handleClick}>{concordantData.map((item) => <Cell key={`${item.gene}-${item.chr}`} fill={getColor(item)} stroke={getStroke(item)} strokeWidth={getStrokeWidth(item)} opacity={getOpacity(item)} className="cursor-pointer" />)}</Scatter>
             <Scatter data={mixedData} shape="diamond" onClick={handleClick}>{mixedData.map((item) => <Cell key={`${item.gene}-${item.chr}`} fill={getColor(item)} stroke={getStroke(item)} strokeWidth={getStrokeWidth(item)} opacity={getOpacity(item)} className="cursor-pointer" />)}</Scatter>
           </ScatterChart>
@@ -156,7 +169,7 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, sel
       </div>
 
       <div id={noteId} className="mt-2 flex flex-wrap items-center justify-center gap-4 border-t border-slate-100 pt-2 text-[10px] text-slate-600">
-        <span><strong>*</strong> P &lt; 0.05</span><span><strong>**</strong> P &lt; 0.01</span><span><strong>***</strong> P &lt; 0.001</span><span>Nominal, uncorrected P values</span>
+        <span><strong>*</strong> P &lt; 0.05</span><span><strong>**</strong> P &lt; 0.01</span><span><strong>***</strong> P &lt; 0.001</span><span className="font-semibold text-emerald-700">━ ━ FDR &lt; 0.05 boundary</span><span>Nominal, uncorrected P values</span>
       </div>
       {nMixed > 0 && <p className="mt-2 rounded border border-amber-200 bg-amber-50/60 px-3 py-1.5 text-[10px] text-amber-900"><strong>◆ Mixed:</strong> opposing top-three probe directions can cancel in the mean. Significance stars use nominal P only; the plot does not show confidence intervals.</p>}
       <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50">
@@ -169,7 +182,7 @@ export const DmrVolcanoPlot: React.FC<VolcanoProps> = ({ data, onSelectGene, sel
           </table>
         </div>
       </details>
-      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">The vertical scale is capped at −log₁₀(P) = 8; exact P values remain in the tooltip and table. Nominal thresholds do not control the high-throughput multiple-testing error rate.</p>
+      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">The green line is placed at the largest nominal P among displayed results with FDR &lt; 0.05; FDR itself is not plotted as though it were a nominal P value. The vertical scale is capped at −log₁₀(P) = 8; exact P and FDR values remain in the tooltip and table. Nominal thresholds do not control the high-throughput multiple-testing error rate.</p>
     </div>
   );
 };

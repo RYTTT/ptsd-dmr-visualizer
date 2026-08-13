@@ -292,6 +292,7 @@ export default function Home() {
           totalProbes: row.totalProbes,
           isPtsd: row.isPtsd,
           pValue: stat.pValue,
+          fdr: stat.fdr,
           deltaBeta: stat.deltaBeta,
           effectDefinition: `${subtype} Delta_Beta_Top3`,
           direction: stat.direction,
