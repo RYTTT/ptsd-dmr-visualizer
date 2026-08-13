@@ -264,13 +264,25 @@ test('master and probe runtime validators accept shipped data and reject identit
   for (const key of ['MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP']) {
     assert.ok(probeRows.every((probeRow) => typeof probeRow[`${key}_P`] === 'number'));
   }
+  assert.equal(Array.isArray((treatmentProbe.metaSelectedTop3 as Record<string, unknown>)?.FUP), true);
+  assert.equal(((treatmentProbe.metaSelectedTop3 as Record<string, string[]>).FUP).length, 3);
 
   const treatmentProbeIndex = readJson('../public/data/mdma/treatment-probes/index.json') as {
     version: string;
     sources: { key: string; commonRows: number }[];
   };
-  assert.equal(treatmentProbeIndex.version, 'treatment_all_probe_study_timepoint_and_cpt_reference_v6');
+  assert.equal(treatmentProbeIndex.version, 'treatment_all_probe_study_timepoint_and_cpt_reference_v7');
   for (const key of ['MDMA_Pre', 'MDMA_FUP', 'Ketamine_Pre', 'Ketamine_FUP', 'CPT_Pre', 'CPT_FUP', 'CPT_RvHC_Pre', 'CPT_RvHC_FUP', 'CPT_NRvHC_Pre', 'CPT_NRvHC_FUP']) {
     assert.equal(treatmentProbeIndex.sources.find((source) => source.key === key)?.commonRows, 147_893);
   }
+
+  const ptprn2Probe = readJson('../public/data/mdma/treatment-probes/visits/PTPRN2.json') as {
+    metaSelectedTop3: { FUP: string[] };
+    probes: Record<string, string | number | null>[];
+  };
+  assert.deepEqual(ptprn2Probe.metaSelectedTop3.FUP, ['cg13327129', 'cg19363471', 'cg17500918']);
+  const ptprn2PostTop3 = ptprn2Probe.metaSelectedTop3.FUP.map((probeId) => (
+    ptprn2Probe.probes.find((probeRow) => probeRow.probe === probeId)?.MDMA_FUP_logFC
+  ));
+  assert.deepEqual(ptprn2PostTop3, [-0.01275, 0.0264, 0.00637]);
 });

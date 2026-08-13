@@ -2,10 +2,12 @@
 
 import React, { useMemo, useRef, useEffect, useState, useCallback } from 'react';
 import type { GeneProbeData, ProbeEntry, TreatmentProbeView } from '../types/probe';
+import type { TreatmentTimepoint } from '../types/dmr';
 
 interface GenomicTrackProps {
   geneData: GeneProbeData;
   treatmentView?: TreatmentProbeView;
+  metaHighlightTimepoint?: TreatmentTimepoint;
 }
 
 const SUBTYPE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
@@ -126,7 +128,7 @@ function formatProbability(value: number | null): string {
   return value < 0.001 ? value.toExponential(2) : value.toFixed(3);
 }
 
-export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatmentView = 'three-cohort' }) => {
+export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatmentView = 'three-cohort', metaHighlightTimepoint }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
@@ -215,6 +217,11 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
   const maxNegLogP = MAX_DISPLAY_NEG_LOG_P;
 
   const displayChr = geneData.chr.toLowerCase().startsWith('chr') ? geneData.chr : `chr${geneData.chr}`;
+  const metaSelectedProbeIds = useMemo(
+    () => new Set(metaHighlightTimepoint == null ? [] : (geneData.metaSelectedTop3?.[metaHighlightTimepoint] ?? [])),
+    [geneData.metaSelectedTop3, metaHighlightTimepoint],
+  );
+  const highlightedComparisonSuffix = metaHighlightTimepoint === 'Pre' ? '_Pre' : '_FUP';
 
   const accessibleRows = useMemo(() => {
     return geneData.probes.flatMap((probe) => SUBTYPES.flatMap((subtype) => {
@@ -223,9 +230,17 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
       const numericDeltaBeta = typeof deltaBeta === 'number' ? deltaBeta : null;
       const numericP = isProbability(nominalP) ? nominalP : null;
       if (numericP == null) return [];
-      return [{ probe: probe.probe, pos: probe.pos, feature: probe.feature || 'Unannotated', comparison: subtype.label, deltaBeta: numericDeltaBeta, nominalP: numericP }];
+      return [{
+        probe: probe.probe,
+        pos: probe.pos,
+        feature: probe.feature || 'Unannotated',
+        comparison: subtype.label,
+        deltaBeta: numericDeltaBeta,
+        nominalP: numericP,
+        metaSelected: metaSelectedProbeIds.has(probe.probe) && subtype.key.endsWith(highlightedComparisonSuffix),
+      }];
     }));
-  }, [geneData.probes, SUBTYPES]);
+  }, [geneData.probes, SUBTYPES, metaSelectedProbeIds, highlightedComparisonSuffix]);
   const hasZeroP = accessibleRows.some((row) => row.nominalP === 0);
   const hasClippedP = accessibleRows.some((row) => row.nominalP != null && row.nominalP > 0 && -Math.log10(row.nominalP) > maxNegLogP);
 
@@ -543,6 +558,16 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
               ctx.arc(x, yTop, 1.8, 0, Math.PI * 2);
               ctx.fill();
             }
+
+            const isMetaSelected = metaSelectedProbeIds.has(probe.probe)
+              && colSlot.key.endsWith(highlightedComparisonSuffix);
+            if (isMetaSelected) {
+              ctx.strokeStyle = '#0f172a';
+              ctx.lineWidth = 2.4;
+              ctx.beginPath();
+              ctx.arc(x, yTop, radius + 2.5, 0, Math.PI * 2);
+              ctx.stroke();
+            }
           }
         });
       });
@@ -836,6 +861,7 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
       { type: 'dash', color: P_05_COLOR, label: '* P < 0.05' },
       { type: 'dash', color: P_01_COLOR, label: '** P < 0.01' },
       { type: 'dash', color: P_001_COLOR, label: '*** P < 0.001' },
+      ...(metaSelectedProbeIds.size > 0 ? [{ type: 'ring', color: '#0f172a', label: `${metaHighlightTimepoint === 'Pre' ? 'Baseline' : 'Follow-up'} cross-study meta-selected Top-3` }] : []),
     ];
     
     // Add present feature annotations to legend
@@ -893,6 +919,12 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
         ctx.roundRect(lx, ly - 4, 16, 8, 2);
         ctx.fill();
         ctx.globalAlpha = 1.0;
+      } else if (item.type === 'ring') {
+        ctx.strokeStyle = item.color!;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.arc(lx + 7, ly, 6, 0, Math.PI * 2);
+        ctx.stroke();
       }
       
       ctx.fillStyle = '#334155';
@@ -935,6 +967,9 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
     bottomMargin,
     gridRows,
     treatmentView,
+    metaSelectedProbeIds,
+    metaHighlightTimepoint,
+    highlightedComparisonSuffix,
   ]);
 
   // ---- Tooltip on hover ----
@@ -1062,6 +1097,9 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
               {SUBTYPE_CONFIG[tooltip.subtype]?.label || tooltip.subtype}
             </span>
           </div>
+          {metaSelectedProbeIds.has(tooltip.probe.probe) && tooltip.subtype.endsWith(highlightedComparisonSuffix) && (
+            <div className="rounded border border-slate-300 bg-slate-50 px-2 py-1 text-[10px] font-bold text-slate-800">Cross-study meta-selected Top-3 probe</div>
+          )}
           <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
             <div>
               <span className="text-slate-400">Position</span>
@@ -1109,12 +1147,14 @@ export const GenomicTrackPlot: React.FC<GenomicTrackProps> = ({ geneData, treatm
         <div className="max-h-96 overflow-auto border-t border-slate-200">
           <table className="w-full whitespace-nowrap text-left text-xs">
             <caption className="sr-only">Available probe statistics for {geneData.gene} on {displayChr}</caption>
-            <thead className="sticky top-0 bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Probe</th><th className="px-3 py-2">Position (bp)</th><th className="px-3 py-2">Feature</th><th className="px-3 py-2">Comparison</th><th className="px-3 py-2">Δβ</th><th className="px-3 py-2">Nominal P</th><th className="px-3 py-2">Threshold tier</th></tr></thead>
-            <tbody>{accessibleRows.map((row) => <tr key={`${row.probe}-${row.comparison}`} className="border-t border-slate-200"><td className="px-3 py-2 font-mono font-semibold">{row.probe}</td><td className="px-3 py-2 font-mono">{row.pos.toLocaleString()}</td><td className="px-3 py-2">{row.feature}</td><td className="px-3 py-2">{row.comparison}</td><td className="px-3 py-2 font-mono">{row.deltaBeta == null ? 'Unavailable' : `${row.deltaBeta > 0 ? '+' : ''}${row.deltaBeta.toFixed(4)}`}</td><td className="px-3 py-2 font-mono">{formatProbability(row.nominalP)}</td><td className="px-3 py-2">{row.nominalP == null ? 'Unavailable' : row.nominalP < 0.001 ? '*** P < 0.001' : row.nominalP < 0.01 ? '** P < 0.01' : row.nominalP < 0.05 ? '* P < 0.05' : 'P ≥ 0.05'}</td></tr>)}</tbody>
+            <thead className="sticky top-0 bg-slate-100 text-slate-600"><tr><th className="px-3 py-2">Probe</th><th className="px-3 py-2">Position (bp)</th><th className="px-3 py-2">Feature</th><th className="px-3 py-2">Comparison</th><th className="px-3 py-2">Δβ</th><th className="px-3 py-2">Nominal P</th><th className="px-3 py-2">Threshold tier</th><th className="px-3 py-2">Meta Top-3</th></tr></thead>
+            <tbody>{accessibleRows.map((row) => <tr key={`${row.probe}-${row.comparison}`} className="border-t border-slate-200"><td className="px-3 py-2 font-mono font-semibold">{row.probe}</td><td className="px-3 py-2 font-mono">{row.pos.toLocaleString()}</td><td className="px-3 py-2">{row.feature}</td><td className="px-3 py-2">{row.comparison}</td><td className="px-3 py-2 font-mono">{row.deltaBeta == null ? 'Unavailable' : `${row.deltaBeta > 0 ? '+' : ''}${row.deltaBeta.toFixed(4)}`}</td><td className="px-3 py-2 font-mono">{formatProbability(row.nominalP)}</td><td className="px-3 py-2">{row.nominalP == null ? 'Unavailable' : row.nominalP < 0.001 ? '*** P < 0.001' : row.nominalP < 0.01 ? '** P < 0.01' : row.nominalP < 0.05 ? '* P < 0.05' : 'P ≥ 0.05'}</td><td className="px-3 py-2">{row.metaSelected ? 'Selected' : '—'}</td></tr>)}</tbody>
           </table>
         </div>
       </details>
       <p className="mt-2 text-[10px] leading-relaxed text-slate-500">{geneData.probeDataset ? 'All Treatment panels use unfiltered all-probe source exports; the figure applies no P-value filter.' : 'The probe figure uses uncorrected P values.'} Thresholds at P &lt; 0.05, P &lt; 0.01, and P &lt; 0.001 are descriptive and do not control the high-throughput multiple-testing error rate. Interpret them with Δβ and independent validation. Missing statistics are not converted to zero or “not significant”; confidence intervals and standard errors are not present in the probe dataset.</p>
+      {treatmentView === 'three-cohort' && metaHighlightTimepoint != null && metaSelectedProbeIds.size > 0 && <p className="mt-1 text-[10px] font-medium text-slate-700">Black rings identify the same three probes selected by the {metaHighlightTimepoint === 'Pre' ? 'Baseline' : 'Follow-up'} cross-study meta-analysis. Their cohort-specific values determine the component P, Δβ, and direction shown above.</p>}
+      {treatmentView === 'three-cohort' && metaHighlightTimepoint != null && metaSelectedProbeIds.size === 0 && <p className="mt-1 text-[10px] font-medium text-amber-800">The supplied common-probe meta file identifies Follow-up Top-3 probe IDs only. Baseline meta-selected probe IDs were not supplied, so the application does not infer or outline them.</p>}
       {isPtsdSubtypeFigure && <p className="mt-1 text-[10px] font-medium text-slate-600">Subtype and control-group definitions were not supplied with these result files. Confirm SSS, ADS, ICF, and ISS definitions against the study protocol before interpretation.</p>}
       {hasClippedP && <p className="mt-1 text-[10px] font-medium text-slate-600">Nominal P values below 1×10⁻⁸ are plotted at the fixed upper boundary (−log₁₀P = 8) so the three reference thresholds remain legible. Exact P values remain available in the tooltip and table.</p>}
       {hasZeroP && <p className="mt-1 text-[10px] font-medium text-amber-800">One or more stored nominal P values equal numeric zero (underflow/rounding). They are reported as zero in the table and plotted at the upper display boundary, not interpreted as literally zero probability.</p>}

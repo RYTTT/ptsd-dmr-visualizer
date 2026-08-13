@@ -54,7 +54,11 @@ PTSD keeps its source shared/subtype-selected rules; Treatment keeps N8+.
   the same P and probe-count screen; its full source also contains 24,084 genes.
 - Each timepoint-specific meta-analysis source provides a component P value, count-weighted Top-3
   Δβ, direction, and positive/negative probe summaries for each treatment
-  study. The application reports only the factual count of 1/3, 2/3, or 3/3
+  study. These component values evaluate the same three probes selected by the
+  cross-study meta-analysis; they do not reselect each study's own three
+  smallest probe P values. Therefore, a component may be `Mixed` even when that
+  study's independently selected Top-3 result is unidirectional. The application
+  reports only the factual count of 1/3, 2/3, or 3/3
   component P values below 0.05 and separately states whether the three
   component mean Δβ signs agree. Combined significance is never labeled a
   common or replicated effect.
@@ -156,6 +160,10 @@ The importer restricts all rows to probes in
 `Common_Probes_3Cohorts_Full_Statistics.csv`, providing a shared positional
 universe across panels. An empty panel means no common statistic was available;
 it is not interpreted as a zero effect or a non-significant estimate.
+That supplied common-probe meta file identifies the Follow-up meta-selected
+Top-3 probe IDs. The figure outlines those probes in black in all three
+Follow-up panels. No corresponding Baseline probe-level meta file was supplied,
+so the application does not infer or outline Baseline Top-3 IDs.
 
 ## Direction rule
 

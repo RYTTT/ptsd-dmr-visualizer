@@ -1,3 +1,5 @@
+import type { TreatmentTimepoint } from './dmr';
+
 export interface ProbeEntry {
   probe: string;
   pos: number;
@@ -31,6 +33,8 @@ export interface GeneProbeData {
   totalProbes: number;
   cpgIslands: CpGIsland[];
   probes: ProbeEntry[];
+  /** Probe IDs selected by the supplied same-visit cross-study meta-analysis. */
+  metaSelectedTop3?: Partial<Record<TreatmentTimepoint, string[]>>;
   /** Present when probe rows come from a context-specific scientific dataset. */
   probeDataset?: ProbeDatasetMetadata;
 }

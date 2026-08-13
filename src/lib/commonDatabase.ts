@@ -197,6 +197,15 @@ export function isGeneProbeData(value: unknown, requestedGene: string): value is
     probeIds.add(probe.probe);
   }
 
+  if (value.metaSelectedTop3 !== undefined) {
+    if (!isRecord(value.metaSelectedTop3)) return false;
+    for (const [timepoint, selectedProbes] of Object.entries(value.metaSelectedTop3)) {
+      if (!['Pre', 'FUP'].includes(timepoint) || !Array.isArray(selectedProbes) || selectedProbes.length !== 3) return false;
+      if (!selectedProbes.every((probe) => typeof probe === 'string' && probeIds.has(probe))) return false;
+      if (new Set(selectedProbes).size !== selectedProbes.length) return false;
+    }
+  }
+
   for (const island of value.cpgIslands) {
     if (
       !isRecord(island) ||

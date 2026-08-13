@@ -106,6 +106,7 @@ async function main() {
   const probesByGene = new Map<string, ProbeEntry[]>();
   const probeById = new Map<string, ProbeEntry>();
   const chromosomeByGene = new Map<string, string>();
+  const postMetaPByProbe = new Map<string, number>();
   const seenProbes = new Set<string>();
   const input = createReadStream(sourcePath);
   const lines = createInterface({ input, crlfDelay: Infinity });
@@ -131,6 +132,7 @@ async function main() {
     const probe = required(row, 'Probe_ID', source);
     if (seenProbes.has(probe)) throw new Error(`${source}: duplicate probe ${probe}`);
     seenProbes.add(probe);
+    postMetaPByProbe.set(probe, probability(row, 'Meta_P', source));
     const pos = finiteNumber(row, 'Position', source);
     if (!Number.isSafeInteger(pos) || pos <= 0) throw new Error(`${source}: Position must be a positive integer`);
     chromosomeByGene.set(normalizedGene, required(row, 'CHR', source));
@@ -213,6 +215,15 @@ async function main() {
       totalProbes: selected.totalProbes,
       cpgIslands: [],
       probes,
+      metaSelectedTop3: {
+        FUP: [...probes]
+          .sort((left, right) => {
+            const pDifference = (postMetaPByProbe.get(left.probe) ?? 1) - (postMetaPByProbe.get(right.probe) ?? 1);
+            return pDifference || left.probe.localeCompare(right.probe);
+          })
+          .slice(0, 3)
+          .map((probe) => probe.probe),
+      },
       probeDataset: {
         scope: 'treatment-study-timepoint-with-cpt-reference',
         comparison: 'Responder versus non-responder across three studies, plus CPT healthy-control references, at Baseline and Follow-up',
@@ -225,7 +236,7 @@ async function main() {
     await writeFile(new URL(`${selected.gene}.json`, directory), JSON.stringify(shard));
   }
   await writeFile(new URL('index.json', OUTPUT_ROOT), JSON.stringify({
-    version: 'treatment_all_probe_study_timepoint_and_cpt_reference_v6',
+    version: 'treatment_all_probe_study_timepoint_and_cpt_reference_v7',
     annotationSource: ANNOTATION_SOURCE,
     sources: DMP_SOURCES.map(({ key, file, coverage }) => ({ key, file, coverage, ...sourceCounts[key] })),
     selectedGenes: selectedGenes.size,

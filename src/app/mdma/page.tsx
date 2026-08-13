@@ -826,7 +826,7 @@ export default function MdmaPage() {
                 <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
                   <div>
                     <h3 id="combined-result-title" className="text-sm font-bold text-slate-900">{selectedResult.timepoint === 'Pre' ? 'Baseline (Pre)' : 'Follow-up (Post)'} three-study meta-analysis — {selectedResult.result.gene}</h3>
-                    <p className="mt-1 text-xs text-slate-500">One same-visit meta-analysis across MDMA, ketamine, and CPT responder-versus-non-responder results.</p>
+                    <p className="mt-1 text-xs text-slate-500">One same-visit meta-analysis across MDMA, ketamine, and CPT responder-versus-non-responder results. Each cohort component below evaluates the same three probes selected by cross-study Meta_P; it does not reselect that cohort&apos;s own Top-3 probes.</p>
                   </div>
                   <div className="flex flex-wrap gap-2 sm:justify-end">
                     <span className="self-start rounded bg-slate-900 px-2.5 py-1 text-xs font-bold text-white">{cohortSupportLabel(selectedResult.result.nCohortsNominal)}</span>
@@ -841,7 +841,7 @@ export default function MdmaPage() {
                     const component = selectedResult.result.cohortComponents[cohort];
                     return (
                     <div key={cohort} className="rounded-lg border border-slate-200 bg-white p-2">
-                      <dt className="text-slate-500">{cohort} component</dt>
+                      <dt className="text-slate-500">{cohort} values at meta-selected Top-3 probes</dt>
                       <dd className="mt-0.5 font-mono font-bold">P {formatProbability(component.pValue)} {significanceLabel(component.pValue)}</dd>
                       <dd className="mt-0.5 text-[11px] text-slate-700">Δβ <span className="font-mono font-semibold">{component.deltaBeta > 0 ? '+' : ''}{component.deltaBeta.toFixed(4)}</span> · {component.direction}</dd>
                     </div>
@@ -893,7 +893,7 @@ export default function MdmaPage() {
                     role="tabpanel"
                     aria-labelledby={treatmentProbeView === 'three-cohort' ? 'treatment-probe-tab-three-cohort' : 'treatment-probe-tab-cpt-reference'}
                   >
-                    <GenomicTrackPlot geneData={probeData} treatmentView={treatmentProbeView} />
+                    <GenomicTrackPlot geneData={probeData} treatmentView={treatmentProbeView} metaHighlightTimepoint={activeTab === 'cross' ? timepoint : undefined} />
                   </div>
                 )}
               </section>
